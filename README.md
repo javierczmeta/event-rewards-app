@@ -1,1 +1,1 @@
-# metau-capstone
+# event-rewards-app
