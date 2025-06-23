@@ -1,20 +1,12 @@
 import "./styles/App.css";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 function App() {
     return (
         <>
-            <Router>
-                <div>
-                    <Switch>
-                        <Route path="/">
-                            <div>
-                                Root Page
-                            </div>
-                        </Route>
-                    </Switch>
-                </div>
-            </Router>
+            <Routes>
+                <Route path="/" element={<div>Root Page</div>}/>
+            </Routes>
         </>
     );
 }
