@@ -35,9 +35,8 @@ model Event {
 
 // User model
 model User {
-  id             Int       @id @default(autoincrement())
-  username       String
-  email          String    @unique
+  id             Int        @id @default(autoincrement())
+  username       String     @unique
   password_hash  String
   profile        Profile?
   rsvps RSVP[]
@@ -50,11 +49,11 @@ model Profile {
   user            User      @relation(fields: [user_id], references: [id])
   user_id         Int       @unique
   display_name    String
-  points          Int
+  points          Int       @default(0)
   badges          Badge[]   @relation("ProfileBadges")
   display_badges  Badge[]   @relation("ProfileDisplayBadges")
   image           String?
-  age             Int
+  dob             DateTime
 }
 // RSVP model
 model RSVP {
