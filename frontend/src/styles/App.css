@@ -1,10 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
 
 #root {
+    height: 100vh;
     font-family: "Josefin Sans", sans-serif;
 
     display: grid;
-    grid-template-rows: auto auto;
+    grid-template-rows: auto 1fr auto;
 
-    --header-bg: #CED4DA;
+    --header-bg: #DEE2E6;
+    --footer-bg: #CED4DA;
 }
