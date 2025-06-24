@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Event model
+model Event {
+  id          Int        @id @default(autoincrement())
+  name        String
+  latitude    Float
+  longitude   Float
+  image       String?
+  start_time  DateTime
+  end_time    DateTime
+  created_at  DateTime   @default(now())
+  price       String
+  description String
+  tags        String[]
+  organizer   User       @relation("UserOrganizedEvents", fields: [organizer_id], references: [id])
+  organizer_id Int
+  feedback    Feedback[]
+  rsvps RSVP[]
+}
+
+// User model
+model User {
+  id             Int       @id @default(autoincrement())
+  username       String
+  email          String    @unique
+  password_hash  String
+  profile        Profile?
+  rsvps RSVP[]
+  feedbacks Feedback[]
+  organizedEvents Event[]  @relation("UserOrganizedEvents")
+}
+// Profile model
+model Profile {
+  id              Int       @id @default(autoincrement())
+  user            User      @relation(fields: [user_id], references: [id])
+  user_id         Int       @unique
+  display_name    String
+  points          Int
+  badges          Badge[]   @relation("ProfileBadges")
+  display_badges  Badge[]   @relation("ProfileDisplayBadges")
+  image           String?
+  age             Int
+}
+// RSVP model
+model RSVP {
+  id            Int       @id @default(autoincrement())
+  user          User      @relation(fields: [user_id], references: [id])
+  user_id       Int
+  event         Event     @relation(fields: [event_id], references: [id])
+  event_id      Int
+  status        String
+  check_in_time DateTime?
+}
+// Feedback model
+model Feedback {
+  id       Int     @id @default(autoincrement())
+  event    Event   @relation(fields: [event_id], references: [id])
+  event_id Int
+  user     User    @relation(fields: [user_id], references: [id])
+  user_id  Int
+  rating   Float
+  text     String
+}
+// Badge model
+model Badge {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String
+  requirement Int
+  icon        String
+  profiles    Profile[] @relation("ProfileBadges")
+  displayProfiles Profile[] @relation("ProfileDisplayBadges")
+}
