@@ -1,0 +1,17 @@
+.logo-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    padding: 10px;
+    cursor: pointer;
+    width: max-content;
+}
+
+.header-container {
+    background-color: var(--header-bg);
+}
+
+.img-container {
+    height: 50px;
+}
