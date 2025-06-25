@@ -20,25 +20,17 @@ server.get("/set", (req, res, next) => {
     res.status(200).send("done");
 });
 
-describe("GET /me", () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
-
-    it("should return 401 if user is not logged in", async () => {
-        const response = await request(server).get("/me");
-
-        expect(response.status).toBe(401);
-        expect(response.body.message).toContain("Not logged in");
-    });
-
-    it("should return user data if user is logged in", async () => {
-        prisma.user.findUnique.mockResolvedValue({ username: "testuser" });
-
+describe("POST /logout", () => {
+    it("should log out successfully and clear the session", async () => {
+        // Simulate setting session
         const agent = request.agent(server);
-        await agent.get("/set");
-        const response = await agent.get("/me");
+        await agent.get("/set")
+
+        // Perform logout
+        const response = await agent.post("/logout");
         expect(response.status).toBe(200);
-        expect(response.body).toEqual({ id: 1, username: "testuser" });
+        expect(response.body).toEqual({ message: "Logged out successfully" });
+        // Verify session is destroyed
+        await agent.get("/me").expect(401);
     });
 });
