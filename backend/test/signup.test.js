@@ -48,7 +48,7 @@ describe("POST /signup", () => {
         it("should return 400 if validation fails, username", async () => {
             const response = await request(server)
                 .post("/signup")
-                .send({ username: "", display_name: "Test", password: "password123", repeat_password: "password123", dob: "2000-01-01", img_url: "http://example.com/image.png" });
+                .send({ username: "", display_name: "Test", password: "password123", dob: "2000-01-01", img_url: "http://example.com/image.png" });
             expect(response.status).toBe(400);
             expect(response.body.message).toContain(
                 '"username" is not allowed to be empty'
@@ -58,7 +58,7 @@ describe("POST /signup", () => {
         it("should return 400 if validation fails, display_name", async () => {
             const response = await request(server)
                 .post("/signup")
-                .send({ username: "abcd", display_name: "", password: "password123", repeat_password: "password123", dob: "2000-01-01", img_url: "http://example.com/image.png" });
+                .send({ username: "abcd", display_name: "", password: "password123", dob: "2000-01-01", img_url: "http://example.com/image.png" });
             expect(response.status).toBe(400);
             expect(response.body.message).toContain(
                 '"display_name" is not allowed to be empty'
@@ -67,7 +67,7 @@ describe("POST /signup", () => {
         it("should return 400 if validation fails, password", async () => {
             const response = await request(server)
                 .post("/signup")
-                .send({ username: "abcd", display_name: "Test", password: "short", repeat_password: "password123", dob: "2000-01-01", img_url: "http://example.com/image.png" }); // Invalid data
+                .send({ username: "abcd", display_name: "Test", password: "short", dob: "2000-01-01", img_url: "http://example.com/image.png" }); // Invalid data
             expect(response.status).toBe(400);
             expect(response.body.message).toContain(
                 '"password" length must be at least 8 characters long'
@@ -77,7 +77,7 @@ describe("POST /signup", () => {
         it("should return 400 if validation fails, img_url", async () => {
             const response = await request(server)
                 .post("/signup")
-                .send({ username: "abcd", display_name: "Test", password: "password123", repeat_password: "password123", dob: "2000-01-01", img_url: "invalid-url" }); // Invalid data
+                .send({ username: "abcd", display_name: "Test", password: "password123", dob: "2000-01-01", img_url: "invalid-url" }); // Invalid data
             expect(response.status).toBe(400);
             expect(response.body.message).toContain(
                 '"img_url" must be a valid uri'
@@ -86,7 +86,7 @@ describe("POST /signup", () => {
         it("should return 400 if validation fails, img_url file type", async () => {
             const response = await request(server)
                 .post("/signup")
-                .send({ username: "abcd", display_name: "Test", password: "password123", repeat_password: "password123", dob: "2000-01-01", img_url: "http://example.com/image.txt" })
+                .send({ username: "abcd", display_name: "Test", password: "password123", dob: "2000-01-01", img_url: "http://example.com/image.txt" })
             expect(response.status).toBe(400);
             expect(response.body.message).toContain(
                 '"img_url" with value "http://example.com/image.txt" fails to match the required pattern'
@@ -95,7 +95,7 @@ describe("POST /signup", () => {
         it("should return 400 if validation fails, dob", async () => {
             const response = await request(server)
                 .post("/signup")
-                .send({ username: "abcd", display_name: "Test", password: "password123", repeat_password: "password123", dob: "2026-01-01", img_url: "http://example.com/image.png" }); // Invalid data
+                .send({ username: "abcd", display_name: "Test", password: "password123", dob: "2026-01-01", img_url: "http://example.com/image.png" }); // Invalid data
             expect(response.status).toBe(400);
             expect(response.body.message).toContain(
                 '"dob" must be less than "now"'

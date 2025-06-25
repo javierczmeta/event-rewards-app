@@ -4,7 +4,6 @@ const newUserSchema = Joi.object({
     username: Joi.string().alphanum().min(3).max(30).required(),
     display_name: Joi.string().required(),
     password: Joi.string().min(8).required(),
-    repeat_password: Joi.ref("password"),
     img_url: Joi.string()
         .uri({
             scheme: ["http", "https"],
