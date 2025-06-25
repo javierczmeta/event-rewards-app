@@ -1,7 +1,5 @@
 const request = require("supertest");
-const express = require("express");
-const server = express();
-const bodyParser = require("body-parser");
+const server = require("../server");
 
 // Mock the PrismaClient
 jest.mock("../generated/prisma", () => {
@@ -22,18 +20,6 @@ jest.mock("../utils", () => ({
 }));
 
 const verifyPassword = require("../utils").verifyPassword;
-
-// Use bodyParser middleware to parse JSON
-server.use(bodyParser.json());
-
-// Import your route
-server.post("/login", require("../server"));
-
-// Error handling middleware
-server.use((err, req, res, next) => {
-    const { message, status = 500 } = err;
-    res.status(status).json({ message: "ERROR 💀 " + message });
-});
 
 describe("POST /login", () => {
     beforeEach(() => {
