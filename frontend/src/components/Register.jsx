@@ -5,11 +5,13 @@ const Register = () => {
     const usenameInput = useFormInput("");
     const passInput = useFormInput("");
     const repeatInput = useFormInput("");
+    const imageInput = useFormInput("");
     const dobInput = useFormInput("");
 
 
     const handleSignUpSubmit = (e) => {
         e.preventDefault();
+        
     }
 
     return (
@@ -43,6 +45,13 @@ const Register = () => {
                 required
                 pattern={`${passInput.value}`}
                 title="Match password"
+            ></input>
+            <input
+                type="text"
+                placeholder="Image URL"
+                {...imageInput}
+                pattern="^https?:\/\/.*\.(jpg|jpeg|png|gif|bmp|webp)$"
+                title="Submit valid image link."
             ></input>
             <label>Date of Birth:</label>
             <input type="date" {...dobInput} required></input>
