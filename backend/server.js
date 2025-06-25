@@ -4,8 +4,10 @@ const rateLimit = require("express-rate-limit");
 const session = require("express-session");
 
 const { hashPassword, verifyPassword } = require("./utils");
+const { hashPassword, verifyPassword } = require("./utils");
 
 const { PrismaClient } = require("./generated/prisma");
+const { newUserSchema, loginSchema } = require("./validation");
 const { newUserSchema, loginSchema } = require("./validation");
 const prisma = new PrismaClient();
 
@@ -50,8 +52,8 @@ server.post("/signup", async (req, res, next) => {
 
     //
     let hashed = "";
-    try {
-        hashed = await hashPassword(password);
+    try  {
+        hashed = await hashPassword(password);;
     } catch (e) {
         return next({status: 400, message: e.message})
     }
