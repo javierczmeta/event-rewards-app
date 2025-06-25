@@ -12,4 +12,9 @@ const newUserSchema = Joi.object({
     dob: Joi.date().less("now").required(),
 }).required();
 
-module.exports = { newUserSchema };
+const loginSchema = Joi.object({
+    username: Joi.string().required(),
+    password: Joi.string().required()
+}).required()
+
+module.exports = { newUserSchema, loginSchema };
