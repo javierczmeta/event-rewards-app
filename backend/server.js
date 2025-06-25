@@ -1,10 +1,11 @@
 const express = require("express");
 const cors = require("cors");
+const rateLimit = require("express-rate-limit");
 
-const { hashPassword } = require("./utils");
+const { hashPassword, verifyPassword } = require("./utils");
 
 const { PrismaClient } = require("./generated/prisma");
-const { newUserSchema } = require("./validation");
+const { newUserSchema, loginSchema } = require("./validation");
 const prisma = new PrismaClient();
 
 const server = express();
@@ -16,10 +17,8 @@ server.use(express.json());
     password has to be at least 8 characters long
 */
 server.post("/signup", async (req, res, next) => {
-
-
     // Validate with joi
-    const {error} = newUserSchema.validate(req.body);
+    const { error } = newUserSchema.validate(req.body);
 
     if (error) {
         next({ status: 400, message: error.details[0].message });
@@ -37,10 +36,10 @@ server.post("/signup", async (req, res, next) => {
 
     //
     let hashed = "";
-    try{
-        hashed = await hashPassword(password)
+    try {
+        hashed = await hashPassword(password);
     } catch (e) {
-        next({status: 400, message: e.message})
+        next({ status: 400, message: e.message });
     }
 
     const newUser = await prisma.user.create({
@@ -63,10 +62,46 @@ server.post("/signup", async (req, res, next) => {
     res.status(201).json({ message: "User created successfully!" });
 });
 
+
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    message: { error: "Too many failed login attempts. Try again later." },
+});
+
+
+/* [POST] Logs in a user.
+    Checks against database
+*/
+server.post("/login", loginLimiter, async (req, res, next) => {
+    const { error } = loginSchema.validate(req.body);
+
+    if (error) {
+        next({ status: 400, message: error.details[0].message });
+    }
+
+    const { username, password } = req.body;
+
+    const user = await prisma.user.findUnique({
+        where: { username },
+    });
+
+    if (!user) {
+        next({ status: 400, message: "Invalid username or password." });
+    }
+
+    const isValidPassword = await verifyPassword(password, user.password_hash);
+
+    if (!isValidPassword) {
+        next({ status: 400, message: "Invalid username or password." });
+    }
+
+    res.json({ message: "Login successful!" });
+});
+
 // Error handling middleware
 server.use((err, req, res, next) => {
     const { message, status = 500 } = err;
-    console.log(message);
     res.status(status).json({ message: "ERROR 💀 " + message });
 });
 
