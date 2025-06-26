@@ -7,7 +7,7 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
     const getUserProfile = useQuery({
-        queryKey: ["user"],
+        queryKey: ['user', document.cookie],
         queryFn: () => {
             const url = import.meta.env.VITE_SERVER_API;
             return axios.get(`${url}/me`, {
