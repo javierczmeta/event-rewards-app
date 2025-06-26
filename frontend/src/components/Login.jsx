@@ -4,10 +4,13 @@ import axios from "axios";
 import { useEffect } from "react";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import { useUser } from "../contexts/UserContext";
+import { useNavigate } from "react-router";
 
 const Login = () => {
     const usernameProps = useFormInput("");
     const passProps = useFormInput("");
+
+    const navigate = useNavigate()
 
     const {refetch} = useUser()
 
@@ -41,8 +44,7 @@ const Login = () => {
         }
         if (loginMutation.isSuccess) {
             toast.success("⭐ Success! Redirecting...");
-            refetch()
-            window.location.href = "/";
+            refetch().then(navigate("/"))
         }
     }, [loginMutation.status]);
 
