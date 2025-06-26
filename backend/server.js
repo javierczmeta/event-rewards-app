@@ -110,8 +110,9 @@ server.post("/login", loginLimiter, async (req, res, next) => {
         return next({ status: 400, message: "Invalid username or password." });
     }
 
-    req.session.userId = user.id;
     res.json({ message: "Login successful!" });
+    req.session.userId = user.id;
+    
 });
 
 /* [GET] Session data
