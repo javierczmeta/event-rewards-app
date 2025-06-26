@@ -22,7 +22,12 @@ let sessionConfig = {
 };
 
 const server = express();
-server.use(cors());
+server.use(
+    cors({
+        origin: process.env.FRONTEND_URL,
+        credentials: true, // Allows sending credentials
+    })
+);
 server.use(express.json());
 server.use(session(sessionConfig));
 
@@ -108,9 +113,8 @@ server.post("/login", loginLimiter, async (req, res, next) => {
         return next({ status: 400, message: "Invalid username or password." });
     }
 
-    res.json({ message: "Login successful!" });
     req.session.userId = user.id;
-    
+    res.json({ message: "Login successful!" });
 });
 
 /* [GET] Session data
