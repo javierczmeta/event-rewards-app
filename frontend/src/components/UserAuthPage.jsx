@@ -1,14 +1,24 @@
 import { useNavigate, Outlet, useLocation } from "react-router";
 import "../styles/UserAuthPage.css";
+import { useUser } from "../contexts/UserContext";
+import { useEffect } from "react";
 
 const UserAuthPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const { user } = useUser();
+
+    useEffect(() => {
+        if (user) {
+            navigate("/");
+        }
+    }, []);
+
     const path = location.pathname;
 
-    const loginClass = "auth-button " + (path === "/login" ? "active" : "")
-    const signupClass = "auth-button " + (path === "/signup" ? "active" : "")
+    const loginClass = "auth-button " + (path === "/login" ? "active" : "");
+    const signupClass = "auth-button " + (path === "/signup" ? "active" : "");
 
     return (
         <main className="auth-main">
