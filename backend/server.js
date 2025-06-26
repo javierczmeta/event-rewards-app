@@ -4,10 +4,8 @@ const rateLimit = require("express-rate-limit");
 const session = require("express-session");
 
 const { hashPassword, verifyPassword } = require("./utils");
-const { hashPassword, verifyPassword } = require("./utils");
 
 const { PrismaClient } = require("./generated/prisma");
-const { newUserSchema, loginSchema } = require("./validation");
 const { newUserSchema, loginSchema } = require("./validation");
 const prisma = new PrismaClient();
 
