@@ -130,9 +130,7 @@ server.get("/me", async (req, res, next) => {
     res.json({ id: req.session.userId, username: user.username });
 });
 
-/* [POST] Logs out the user
-    Return logged in user, if available
-*/
+/* [POST] Logs out the user */
 server.post("/logout", async (req, res, next) => {
     req.session.destroy((err) => {
         if (err) {
