@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import {useLocalStorage} from "@uidotdev/usehooks"
 
 const UserContext = createContext();
 
@@ -15,7 +16,7 @@ export const UserProvider = ({ children }) => {
         },
         refetchOnWindowFocus: false
     });
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useLocalStorage("user", null);
 
     useEffect(() => {
         if (status === "success") {
