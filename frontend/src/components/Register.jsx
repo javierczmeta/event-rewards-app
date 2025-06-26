@@ -12,7 +12,7 @@ const Register = () => {
     const imageInput = useFormInput("");
     const dobInput = useFormInput("");
 
-    const mutation = useMutation({
+    const signUpMutation = useMutation({
         mutationFn: (newUser) => {
             const url = import.meta.env.VITE_SERVER_API;
             return axios.post(`${url}/signup`, newUser);
@@ -29,17 +29,17 @@ const Register = () => {
             dob: dobInput.value,
         };
 
-        mutation.mutate(newUser);
+        signUpMutation.mutate(newUser);
     };
 
     useEffect(() => {
-        if (mutation.isError) {
-            toast.error(mutation.error.response.data.message);
+        if (signUpMutation.isError) {
+            toast.error(signUpMutation.error.response.data.message);
         }
-        if (mutation.isSuccess) {
+        if (signUpMutation.isSuccess) {
             toast.success("⭐ Success creating new user!");
         }
-    }, [mutation.status]);
+    }, [signUpMutation.status]);
 
     return (
         <>
@@ -86,9 +86,9 @@ const Register = () => {
                 <button
                     className="action-button"
                     type="submit"
-                    disabled={mutation.isPending}
+                    disabled={signUpMutation.isPending}
                 >
-                    {mutation.isPending ? "Saving..." : "Sign Up"}
+                    {signUpMutation.isPending ? "Saving..." : "Sign Up"}
                 </button>
             </form>
             <ToastContainer
