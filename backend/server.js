@@ -89,7 +89,7 @@ server.post("/login", loginLimiter, async (req, res, next) => {
     const { error } = loginSchema.validate(req.body);
 
     if (error) {
-        next({ status: 400, message: error.details[0].message });
+        return next({ status: 400, message: error.details[0].message });
     }
 
     const { username, password } = req.body;
@@ -99,17 +99,18 @@ server.post("/login", loginLimiter, async (req, res, next) => {
     });
 
     if (!user) {
-        next({ status: 400, message: "Invalid username or password." });
+        return next({ status: 400, message: "Invalid username or password." });
     }
 
     const isValidPassword = await verifyPassword(password, user.password_hash);
 
     if (!isValidPassword) {
-        next({ status: 400, message: "Invalid username or password." });
+        return next({ status: 400, message: "Invalid username or password." });
     }
 
-    req.session.userId = user.id;
     res.json({ message: "Login successful!" });
+    req.session.userId = user.id;
+    
 });
 
 /* [GET] Session data
@@ -117,7 +118,7 @@ server.post("/login", loginLimiter, async (req, res, next) => {
 */
 server.get("/me", async (req, res, next) => {
     if (!req.session.userId) {
-        next({ status: 401, message: "Not logged in" });
+        return next({ status: 401, message: "Not logged in" });
     }
 
     const user = await prisma.user.findUnique({
