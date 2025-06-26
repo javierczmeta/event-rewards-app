@@ -6,10 +6,11 @@ import UserAuthPage from "./components/UserAuthPage";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import WithAuth from "./components/WithAuth";
+import RootPage from "./components/RootPage";
 
 function App() {
 
-    const ProtectedRoot = WithAuth(<div>Root Page</div>)
+    let ProtectedRoot = WithAuth(RootPage)
 
     return (
         <>
