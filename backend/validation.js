@@ -8,7 +8,8 @@ const newUserSchema = Joi.object({
         .uri({
             scheme: ["http", "https"],
         })
-        .pattern(/\.(jpg|jpeg|png|gif|bmp|webp)$/i),
+        .pattern(/\.(jpg|jpeg|png|gif|bmp|webp)$/i)
+        .allow(""),
     dob: Joi.date().less("now").required(),
 }).required();
 

@@ -22,7 +22,7 @@ server.post("/signup", async (req, res, next) => {
     const {error} = newUserSchema.validate(req.body);
 
     if (error) {
-        next({ status: 400, message: error.details[0].message });
+        return next({ status: 400, message: error.details[0].message });
     }
 
     const { username, display_name, password, img_url, dob } = req.body;
@@ -32,7 +32,7 @@ server.post("/signup", async (req, res, next) => {
     });
 
     if (existingUser) {
-        next({ status: 400, message: "Username already exists." });
+        return next({ status: 400, message: "Username already exists." });
     }
 
     //
@@ -40,7 +40,7 @@ server.post("/signup", async (req, res, next) => {
     try{
         hashed = await hashPassword(password)
     } catch (e) {
-        next({status: 400, message: e.message})
+        return next({status: 400, message: e.message})
     }
 
     const newUser = await prisma.user.create({
