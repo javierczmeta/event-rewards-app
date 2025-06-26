@@ -55,7 +55,7 @@ const Register = () => {
             ></input>
             <label>Date of Birth:</label>
             <input type="date" {...dobInput} required></input>
-            <button className="action-button" type="sumbit">Sign Up</button>
+            <button className="action-button" type="submit">Sign Up</button>
         </form>
     );
 };
