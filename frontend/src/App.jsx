@@ -5,24 +5,23 @@ import { Routes, Route } from "react-router-dom";
 import UserAuthPage from "./components/UserAuthPage";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-const queryClient = new QueryClient()
+import WithAuth from "./components/WithAuth";
 
 function App() {
+
+    const ProtectedRoot = WithAuth(<div>Root Page</div>)
+
     return (
         <>
-            <QueryClientProvider client={queryClient}>
-                <Header />
-                <Routes>
-                    <Route path="/" element={<div>Root Page</div>} />
-                    <Route element={<UserAuthPage />}>
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/signup" element={<Register />} />
-                    </Route>
-                </Routes>
-                <Footer />
-            </QueryClientProvider>
+            <Header />
+            <Routes>
+                <Route path="/" element={<ProtectedRoot/>} />
+                <Route element={<UserAuthPage />}>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Register />} />
+                </Route>
+            </Routes>
+            <Footer />
         </>
     );
 }
