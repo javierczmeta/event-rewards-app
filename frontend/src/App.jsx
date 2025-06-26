@@ -11,6 +11,7 @@ import RootPage from "./components/RootPage";
 function App() {
 
     let ProtectedRoot = WithAuth(RootPage)
+    let ProtectedFeed = WtihAuth(<div>Feed</div>)
 
     return (
         <>
@@ -21,6 +22,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Register />} />
                 </Route>
+                <Route path="/feed" element={<ProtectedFeed/>}/>
             </Routes>
             <Footer />
         </>
