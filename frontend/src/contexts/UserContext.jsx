@@ -16,7 +16,17 @@ export const UserProvider = ({ children }) => {
         },
         refetchOnWindowFocus: false
     });
+
     const [user, setUser] = useLocalStorage("user", null);
+
+    const logOut = () => {
+        const url = import.meta.env.VITE_SERVER_API;
+        axios.post(`${url}/logout`, {}, {
+                withCredentials: true,
+            });
+
+        setUser(null);
+    }
 
     useEffect(() => {
         if (getUserProfile.status === "success") {
@@ -28,7 +38,7 @@ export const UserProvider = ({ children }) => {
 
 
     return (
-        <UserContext.Provider value={{ user, refetch: getUserProfile.refetch }}>
+        <UserContext.Provider value={{ user, refetch: getUserProfile.refetch, logOut }}>
             {children}
         </UserContext.Provider>
     );
