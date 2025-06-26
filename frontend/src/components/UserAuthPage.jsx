@@ -13,7 +13,7 @@ const UserAuthPage = () => {
         if (user) {
             navigate("/");
         }
-    }, []);
+    }, [user]);
 
     const path = location.pathname;
 
