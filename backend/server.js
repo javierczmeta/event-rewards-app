@@ -4,8 +4,10 @@ const rateLimit = require("express-rate-limit");
 const session = require("express-session");
 
 const { hashPassword, verifyPassword } = require("./utils");
+const { hashPassword, verifyPassword } = require("./utils");
 
 const { PrismaClient } = require("./generated/prisma");
+const { newUserSchema, loginSchema } = require("./validation");
 const { newUserSchema, loginSchema } = require("./validation");
 const prisma = new PrismaClient();
 
@@ -50,10 +52,10 @@ server.post("/signup", async (req, res, next) => {
 
     //
     let hashed = "";
-    try {
-        hashed = await hashPassword(password);
+    try  {
+        hashed = await hashPassword(password);;
     } catch (e) {
-        return next({status: 400, message: e.message})
+        return next({ status: 400, message: e.message });
     }
 
     const newUser = await prisma.user.create({
@@ -89,7 +91,7 @@ server.post("/login", loginLimiter, async (req, res, next) => {
     const { error } = loginSchema.validate(req.body);
 
     if (error) {
-        next({ status: 400, message: error.details[0].message });
+        return next({ status: 400, message: error.details[0].message });
     }
 
     const { username, password } = req.body;
@@ -99,13 +101,13 @@ server.post("/login", loginLimiter, async (req, res, next) => {
     });
 
     if (!user) {
-        next({ status: 400, message: "Invalid username or password." });
+        return next({ status: 400, message: "Invalid username or password." });
     }
 
     const isValidPassword = await verifyPassword(password, user.password_hash);
 
     if (!isValidPassword) {
-        next({ status: 400, message: "Invalid username or password." });
+        return next({ status: 400, message: "Invalid username or password." });
     }
 
     req.session.userId = user.id;
@@ -117,7 +119,7 @@ server.post("/login", loginLimiter, async (req, res, next) => {
 */
 server.get("/me", async (req, res, next) => {
     if (!req.session.userId) {
-        next({ status: 401, message: "Not logged in" });
+        return next({ status: 401, message: "Not logged in" });
     }
 
     const user = await prisma.user.findUnique({
@@ -126,6 +128,17 @@ server.get("/me", async (req, res, next) => {
     });
 
     res.json({ id: req.session.userId, username: user.username });
+});
+
+/* [POST] Logs out the user */
+server.post("/logout", async (req, res, next) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).json({ error: "Failed to log out" });
+        }
+        res.clearCookie("connect.sid"); // Clear session cookie
+        res.json({ message: "Logged out successfully" });
+    });
 });
 
 // Error handling middleware
