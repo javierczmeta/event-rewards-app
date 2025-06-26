@@ -34,7 +34,11 @@ const Register = () => {
 
     useEffect(() => {
         if (signUpMutation.isError) {
-            toast.error(signUpMutation.error.response.data.message);
+            if (loginMutation.error.response) {
+                toast.error(loginMutation.error.response.data.message);
+            } else {
+                toast.error("Unknown error...");
+            }
         }
         if (signUpMutation.isSuccess) {
             toast.success("⭐ Success creating new user!");
