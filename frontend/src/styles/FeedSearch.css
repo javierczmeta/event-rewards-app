@@ -29,6 +29,8 @@
     transition: box-shadow 0.3s ease-in;
 
     cursor: pointer;
+
+    transition: width 0.3s ease-in-out;
 }
 
 .feed-tool-container:hover {
@@ -39,4 +41,13 @@
     background-color: red;
     padding: 3px;
     border-radius: 50%;
+}
+
+.feed-tool-container.expanded {
+    width: 400px;
+}
+
+.search-input {
+    field-sizing: content;
+    border: none;
 }
