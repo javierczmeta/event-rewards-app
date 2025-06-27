@@ -12,7 +12,7 @@ import EventFeed from "./components/EventFeed";
 function App() {
 
     let ProtectedRoot = WithAuth(RootPage)
-    let ProtectedFeed = WithAuth(<EventFeed/>)
+    let ProtectedFeed = WithAuth(EventFeed)
 
     return (
         <>
