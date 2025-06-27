@@ -6,7 +6,7 @@ const EventFeed = () => {
         id: 1,
         name: "The First Event",
         latitude: 37.453,
-        longitude: 122.1817,
+        longitude: -122.1817,
         image: null,
         start_time: "2025-06-27T18:00:00.000Z",
         end_time: "2025-06-28T00:00:00.000Z",
