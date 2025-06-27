@@ -34,6 +34,8 @@ const Event = ({ event }) => {
                 </p>
                 <p>{event.price}</p>
                 <p>{event.rewards} point(s)</p>
+            </div>
+            <div className="event-description">
                 <div className="tag-container">
                     {event.tags
                         ? event.tags.map((tag, index) => (
@@ -41,8 +43,6 @@ const Event = ({ event }) => {
                             ))
                         : "No tags"}
                 </div>
-            </div>
-            <div className="event-description">
                 <p>{event.description}</p>
             </div>
         </div>
