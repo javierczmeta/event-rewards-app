@@ -6,7 +6,7 @@ import {useLocalStorage} from "@uidotdev/usehooks"
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-    const { status, data, error, refetch } = useQuery({
+    const getUserProfile = useQuery({
         queryKey: ["user"],
         queryFn: () => {
             const url = import.meta.env.VITE_SERVER_API;
@@ -19,16 +19,16 @@ export const UserProvider = ({ children }) => {
     const [user, setUser] = useLocalStorage("user", null);
 
     useEffect(() => {
-        if (status === "success") {
-            setUser(data.data);
-        } else if (status === "error") {
+        if (getUserProfile.status === "success") {
+            setUser(getUserProfile.data.data);
+        } else if (getUserProfile.status === "error") {
             setUser(null);
         }
-    }, [status]);
+    }, [getUserProfile.status]);
 
 
     return (
-        <UserContext.Provider value={{ user, refetch }}>
+        <UserContext.Provider value={{ user, refetch: getUserProfile.refetch }}>
             {children}
         </UserContext.Provider>
     );
