@@ -1,9 +1,31 @@
-import "../styles/EventFeed.css"
+import "../styles/EventFeed.css";
+import Event from "./Event";
 
 const EventFeed = () => {
-    return (<div>
+    const exampleEvent = {
+        id: 1,
+        name: "The First Event",
+        latitude: 37.453,
+        longitude: 122.1817,
+        image: null,
+        start_time: "2025-06-27T18:00:00.000Z",
+        end_time: "2025-06-28T00:00:00.000Z",
+        created_at: "2025-06-27T00:00:00.000Z",
+        price: "Free",
+        rewards: 1000,
+        description:
+            "The first event in the famous menlo park. Come celebrate the first week of my project",
+        tags: ["Celebration", "Javier", "Joy"],
+        organizer_id: 5,
+    };
 
-    </div>)
-}
+    return (
+        <main className="feed-main">
+            <div className="events-container">
+                <Event event={exampleEvent} />
+            </div>
+        </main>
+    );
+};
 
 export default EventFeed;
