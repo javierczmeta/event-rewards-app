@@ -3,15 +3,26 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect } from "react";
 import { ToastContainer, toast, Slide } from "react-toastify";
+import { useUser } from "../contexts/UserContext";
+import { useNavigate } from "react-router";
 
 const Login = () => {
     const usernameProps = useFormInput("");
     const passProps = useFormInput("");
 
+    const navigate = useNavigate()
+
+    const {refetch} = useUser()
+
     const loginMutation = useMutation({
         mutationFn: (user) => {
+            if (!user.username || !user.password) {
+                throw new Error("No username or password");
+            }
             const url = import.meta.env.VITE_SERVER_API;
-            return axios.post(`${url}/login`, user);
+            return axios.post(`${url}/login`, user, {
+                withCredentials: true,
+            });
         },
     });
 
@@ -25,16 +36,18 @@ const Login = () => {
         loginMutation.mutate(user);
     };
 
+    
     useEffect(() => {
         if (loginMutation.isError) {
             if (loginMutation.error.response) {
                 toast.error(loginMutation.error.response.data.message);
             } else {
-                toast.error("Unknown error...");
+                toast.error("Unknown Error... Try again later");
             }
         }
         if (loginMutation.isSuccess) {
             toast.success("⭐ Success! Redirecting...");
+            refetch().then(navigate("/"))
         }
     }, [loginMutation.status]);
 
