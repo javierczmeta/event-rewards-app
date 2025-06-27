@@ -18,6 +18,7 @@ const prisma = new PrismaClient(); // Use the mocked PrismaClient
 server.get("/set", (req, res, next) => {
     req.session.userId = 1;
     res.status(200).send("done");
+    return
 });
 
 describe("GET /me", () => {
