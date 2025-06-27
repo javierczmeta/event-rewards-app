@@ -16,6 +16,9 @@ const Login = () => {
 
     const loginMutation = useMutation({
         mutationFn: (user) => {
+            if (!user.username || !user.password) {
+                throw new Error("No username or password");
+            }
             const url = import.meta.env.VITE_SERVER_API;
             return axios.post(`${url}/login`, user, {
                 withCredentials: true,
