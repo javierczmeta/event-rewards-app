@@ -11,7 +11,7 @@ import RootPage from "./components/RootPage";
 function App() {
 
     let ProtectedRoot = WithAuth(RootPage)
-    let ProtectedFeed = WtihAuth(<div>Feed</div>)
+    let ProtectedFeed = WithAuth(<div>Feed</div>)
 
     return (
         <>
