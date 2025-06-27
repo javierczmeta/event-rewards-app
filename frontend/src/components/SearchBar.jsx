@@ -13,7 +13,7 @@ const SearchBar = ({searchFieldProps}) => {
             }}
         >
             {expanded ? (
-                <form>
+                <form onSubmit={(e) => {e.preventDefault()}}>
                     <input type="text" className="search-input" autoFocus placeholder="Search Bar" {...searchFieldProps}></input>
                 </form>
             ) : (
