@@ -19,6 +19,8 @@
     --action-button-bg: #ADB5BD;
     --action-button-active: #495057;
     --action-button-hover: #6C757D;
+
+    --div-border: #CED4DA;
 }
 
 button {

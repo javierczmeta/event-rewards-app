@@ -1,0 +1,42 @@
+.feed-options-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+}
+
+.feed-tool-container {
+    font-size: 15px;
+    font-weight: 600;
+
+    background-color: white;
+    border-style: solid;
+    border-color: var(--div-border);
+    padding: 8px;
+    border-radius: 30px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+
+    padding-left: 12px;
+    height: 44px;
+
+    box-shadow: 0 0 1px rgb(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease-in;
+
+    cursor: pointer;
+}
+
+.feed-tool-container:hover {
+    box-shadow: 0 0 4px rgb(0, 0, 0, 0.3);
+}
+
+.feed-search-icon {
+    background-color: red;
+    padding: 3px;
+    border-radius: 50%;
+}
