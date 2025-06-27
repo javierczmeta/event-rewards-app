@@ -25,6 +25,7 @@ const Header = () => {
             </div>
             <Routes>
                 <Route path="/feed" element={<FeedSearch />} />
+                <Route path="*" element={<></>} />
             </Routes>
             {user ? (
                 <LogOut
