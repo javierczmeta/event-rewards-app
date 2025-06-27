@@ -5,7 +5,10 @@ const Event = ({ event }) => {
 
     return (
         <div className="event-card">
-            <div className="event-image"></div>
+
+            <div className="event-image">
+                {event.image ? <img src={event.image} alt={event.name}></img> : <></>}
+            </div>
             <div className="event-info">
                 <h2>{event.name}</h2>
                 <p>{date}</p>
