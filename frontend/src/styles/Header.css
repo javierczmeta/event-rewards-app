@@ -23,6 +23,8 @@
 
 .logout-button {
     cursor: pointer;
+    justify-self: right;
+    align-self: center;
     margin-right: 30px;
 }
 
