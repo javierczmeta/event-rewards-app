@@ -10,10 +10,19 @@
 
 .header-container {
     background-color: var(--header-bg);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .img-container {
     height: 50px;
+}
+
+.logout-button {
+    cursor: pointer;
+    margin-right: 30px;
 }
 
 h1 {

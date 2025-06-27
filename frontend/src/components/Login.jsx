@@ -12,7 +12,7 @@ const Login = () => {
 
     const navigate = useNavigate()
 
-    const {refetch} = useUser()
+    const {user, refetch} = useUser()
 
     const loginMutation = useMutation({
         mutationFn: (user) => {
@@ -35,7 +35,6 @@ const Login = () => {
 
         loginMutation.mutate(user);
     };
-
     
     useEffect(() => {
         if (loginMutation.isError) {
@@ -47,7 +46,7 @@ const Login = () => {
         }
         if (loginMutation.isSuccess) {
             toast.success("⭐ Success! Redirecting...");
-            refetch().then(navigate("/"))
+            refetch()
         }
     }, [loginMutation.status]);
 

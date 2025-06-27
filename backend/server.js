@@ -13,7 +13,7 @@ let sessionConfig = {
     name: "sessionId",
     secret: "keep it secret, keep it safe",
     cookie: {
-        maxAge: 1000 * 60 * 5,
+        maxAge: 1000 * 60 * 60. * 24,
         secure: process.env.RENDER ? true : false,
         httpOnly: false,
     },
@@ -139,7 +139,9 @@ server.post("/logout", async (req, res, next) => {
         if (err) {
             return res.status(500).json({ error: "Failed to log out" });
         }
-        res.clearCookie("connect.sid"); // Clear session cookie
+        res.clearCookie("sessionId", (err) => {
+            console.log(err)
+        }); // Clear session cookie
         res.json({ message: "Logged out successfully" });
     });
 });
