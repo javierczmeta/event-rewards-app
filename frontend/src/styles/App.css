@@ -5,9 +5,11 @@
     font-family: "Raleway", sans-serif;
 
     display: grid;
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: 80px auto 35px;
 
     color-scheme: light;
+
+    overflow: hidden;
 
     --header-bg: #dee2e6;
     --footer-bg: #ced4da;

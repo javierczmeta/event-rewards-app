@@ -1,10 +1,11 @@
 .feed-main {
     display: flex;
     justify-content: center;
+    position: relative;
+        overflow-y: hidden;
 }
 
 .events-container {
-    height: 100%;
     background-color: var(--feed-bg);
     border-right-style: solid;
     border-left-style: solid;
@@ -12,6 +13,8 @@
     min-width: 60%;
     padding: 20px;
     gap: 20px;
+
+    overflow: scroll;
 
     display: flex;
     flex-direction: column;
