@@ -1,7 +1,6 @@
 const request = require("supertest");
 const server = require("../server");
 
-
 // Mock the PrismaClient
 jest.mock("../generated/prisma", () => {
     const mPrismaClient = {
@@ -16,8 +15,11 @@ jest.mock("../generated/prisma", () => {
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient(); // Use the mocked PrismaClient
 
-
 describe("GET /events", () => {
+    beforeEach(() => {
+        prisma.event.findMany.mockReset();
+    });
+
     it("should return a list of events", async () => {
         const mockEvents = [
             { id: 1, name: "Event 1" },
@@ -30,15 +32,140 @@ describe("GET /events", () => {
         expect(response.body).toEqual(mockEvents);
     });
 
-    it("should return filtered events based on search query", async () => {
-        const mockEvents = [{ id: 1, name: "Event 1" }];
+    it("should sort events by name", async () => {
+        const mockEvents = [
+            {
+                name: "Event B",
+                start_time: "2023-10-02",
+                created_at: "2023-09-02",
+                rewards: 20,
+            },
+            {
+                name: "Event A",
+                start_time: "2023-10-01",
+                created_at: "2023-09-01",
+                rewards: 10,
+            },
+        ];
         prisma.event.findMany.mockResolvedValue(mockEvents);
-
-        const response = await request(server)
-            .get("/events")
-            .query({ search: "Event 1" });
+        const response = await request(server).get("/events?sort=name");
         expect(response.status).toBe(200);
-        expect(response.body).toEqual(mockEvents);
+        expect(response.body).toEqual([
+            {
+                name: "Event A",
+                start_time: "2023-10-01",
+                created_at: "2023-09-01",
+                rewards: 10,
+            },
+            {
+                name: "Event B",
+                start_time: "2023-10-02",
+                created_at: "2023-09-02",
+                rewards: 20,
+            },
+        ]);
+    });
+
+    it("should sort events by start time", async () => {
+        const mockEvents = [
+            {
+                name: "Event A",
+                start_time: "2023-10-01",
+                created_at: "2023-09-01",
+                rewards: 10,
+            },
+            {
+                name: "Event B",
+                start_time: "2023-10-02",
+                created_at: "2023-09-02",
+                rewards: 20,
+            },
+        ];
+        prisma.event.findMany.mockResolvedValue(mockEvents);
+        const response = await request(server).get("/events?sort=start");
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual([
+            {
+                name: "Event B",
+                start_time: "2023-10-02",
+                created_at: "2023-09-02",
+                rewards: 20,
+            },
+            {
+                name: "Event A",
+                start_time: "2023-10-01",
+                created_at: "2023-09-01",
+                rewards: 10,
+            },
+        ]);
+    });
+
+    it("should sort events by posting time", async () => {
+        const mockEvents = [
+            {
+                name: "Event B",
+                start_time: "2023-10-02",
+                created_at: "2023-09-02",
+                rewards: 20,
+            },
+            {
+                name: "Event A",
+                start_time: "2023-10-01",
+                created_at: "2023-09-01",
+                rewards: 10,
+            },
+        ];
+        prisma.event.findMany.mockResolvedValue(mockEvents);
+        const response = await request(server).get("/events?sort=posting");
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual([
+            {
+                name: "Event A",
+                start_time: "2023-10-01",
+                created_at: "2023-09-01",
+                rewards: 10,
+            },
+            {
+                name: "Event B",
+                start_time: "2023-10-02",
+                created_at: "2023-09-02",
+                rewards: 20,
+            },
+        ]);
+    });
+
+    it("should sort events by points", async () => {
+        const mockEvents = [
+            {
+                name: "Event A",
+                start_time: "2023-10-01",
+                created_at: "2023-09-01",
+                rewards: 10,
+            },
+            {
+                name: "Event B",
+                start_time: "2023-10-02",
+                created_at: "2023-09-02",
+                rewards: 20,
+            },
+        ];
+        prisma.event.findMany.mockResolvedValue(mockEvents);
+        const response = await request(server).get("/events?sort=points");
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual([
+            {
+                name: "Event B",
+                start_time: "2023-10-02",
+                created_at: "2023-09-02",
+                rewards: 20,
+            },
+            {
+                name: "Event A",
+                start_time: "2023-10-01",
+                created_at: "2023-09-01",
+                rewards: 10,
+            },
+        ]);
     });
 });
 
