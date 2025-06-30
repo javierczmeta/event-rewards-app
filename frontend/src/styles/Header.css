@@ -10,10 +10,11 @@
 
 .header-container {
     background-color: var(--header-bg);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    border-bottom-style: solid;
+    border-color: var(--div-border);
 }
 
 .img-container {
