@@ -23,6 +23,7 @@ const EventFeed = ({searchFieldProps}) => {
                 {getEvents.isPending && <div><p>Loading...</p></div>}
                 {getEvents.isError && <div>{getEvents.error}</div>}
                 {getEvents.isSuccess && getEvents.data.data.map(event => <Event key={event.id} event={event}/>)}
+                {getEvents.isSuccess && getEvents.data.data.length === 0 && <h3>No Events to show...</h3>}
             </div>
         </main>
     );
