@@ -55,8 +55,8 @@ server.post("/signup", async (req, res, next) => {
 
     //
     let hashed = "";
-    try  {
-        hashed = await hashPassword(password);;
+    try {
+        hashed = await hashPassword(password);
     } catch (e) {
         return next({ status: 400, message: e.message });
     }
@@ -144,6 +144,44 @@ server.post("/logout", async (req, res, next) => {
         }); // Clear session cookie
         res.json({ message: "Logged out successfully" });
     });
+});
+
+/* [GET] /events
+    Returns a list of all events 
+*/
+server.get("/events", async (req, res, next) => {
+    let requestQueries = req.query;
+    let fetchedEvents = [];
+
+    fetchedEvents = await prisma.event.findMany({
+        where: { name: { contains: requestQueries.search, mode: "insensitive" } },
+    });
+
+    res.json(fetchedEvents);
+});
+
+/* [GET] /events/id
+    Returns speific event
+*/
+server.get("/events/:id", async (req, res, next) => {
+    let id = req.params.id;
+
+    // make sure id is Integer
+    if (!Number.isInteger(Number(id))) {
+        next({ message: "ID of the event has to be an integer", status: 400 });
+        return;
+    }
+
+    let fetchedEvent = await prisma.event.findUnique({ where: { id: parseInt(id) } });
+
+    if (!fetchedEvent) {
+        return next({
+            message: "The event with the specified ID does not exist",
+            status: 404,
+        });
+    } else {
+        res.json(fetchedEvent);
+    }
 });
 
 // Error handling middleware
