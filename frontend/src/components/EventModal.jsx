@@ -19,12 +19,6 @@ const EventModal = () => {
         refetchOnWindowFocus: false,
     });
 
-    if (getEvent.isError) {
-        console.log(getEvent.error)
-        navigate('/feed')
-        return
-    }
-
     if (getEvent.isPending) {
         return (
             <div className="modal-overlay">
@@ -33,6 +27,11 @@ const EventModal = () => {
             </aside>
         </div>
         )
+    }
+
+    if (getEvent.isError) {
+        navigate('/feed')
+        return
     }
 
 
