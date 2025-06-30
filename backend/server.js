@@ -150,14 +150,14 @@ server.post("/logout", async (req, res, next) => {
     Returns a list of all events 
 */
 server.get("/events", async (req, res, next) => {
-    let queries = req.query;
-    let events = [];
+    let requestQueries = req.query;
+    let fetchedEvents = [];
 
-    events = await prisma.event.findMany({
-        where: { name: { contains: queries.search, mode: "insensitive" } },
+    fetchedEvents = await prisma.event.findMany({
+        where: { name: { contains: requestQueries.search, mode: "insensitive" } },
     });
 
-    res.json(events);
+    res.json(fetchedEvents);
 });
 
 /* [GET] /events/id
@@ -167,20 +167,20 @@ server.get("/events/:id", async (req, res, next) => {
     let id = req.params.id;
 
     // make sure id is Integer
-    if (isNaN(id)) {
+    if (!Number.isInteger(Number(id))) {
         next({ message: "ID of the event has to be an integer", status: 400 });
         return;
     }
 
-    let event = await prisma.event.findUnique({ where: { id: parseInt(id) } });
+    let fetchedEvent = await prisma.event.findUnique({ where: { id: parseInt(id) } });
 
-    if (!event) {
+    if (!fetchedEvent) {
         return next({
             message: "The event with the specified ID does not exist",
             status: 404,
         });
     } else {
-        res.json(event);
+        res.json(fetchedEvent);
     }
 });
 
