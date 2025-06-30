@@ -2,13 +2,13 @@ import "../styles/Event.css";
 import { createDateWithOffset } from "../utils/createDateWithOffset";
 import { useReverseGeocoding } from "../utils/useReverseGeocoding";
 
-const Event = ({ event }) => {
+const Event = ({ event, setChosenEvent }) => {
     const date = createDateWithOffset(event.start_time).toLocaleString();
 
     const getEventLocation = useReverseGeocoding(event.id, event.longitude, event.latitude)
 
     return (
-        <div className="event-card">
+        <div className="event-card" onClick={() => {setChosenEvent(event)}}>
             <div className="event-image">
                {event.image ? <img src={event.image} alt={`Image for the event: ${event.name}`}></img> : <img src='./event_placeholder.svg' alt={`Placeholder Image`}></img>}
             </div>
