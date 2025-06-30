@@ -19,16 +19,19 @@ function App() {
     // Search states
     const searchFieldProps = useFormInput("")
 
+    //Sorting states
+    const [sortState, setSortState] = useState("")
+
     return (
         <>
-            <Header searchFieldProps={searchFieldProps}/>
+            <Header searchFieldProps={searchFieldProps} sortState={sortState} setSortState={setSortState}/>
             <Routes>
                 <Route path="/" element={<ProtectedRoot/>} />
                 <Route element={<UserAuthPage />}>
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Register />} />
                 </Route>
-                <Route path="/feed" element={<ProtectedFeed searchFieldProps={searchFieldProps}/>}/>
+                <Route path="/feed" element={<ProtectedFeed searchFieldProps={searchFieldProps} sortState={sortState}/>}/>
             </Routes>
             <Footer />
         </>

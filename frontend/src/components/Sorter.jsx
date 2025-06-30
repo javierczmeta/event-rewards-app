@@ -1,22 +1,20 @@
 import "../styles/Sorter.css";
 import { Funnel } from "lucide-react";
 import useComponentVisible from "../utils/useComponentVisible";
-import { useState } from "react";
 import FilterOption from "./FilterOption";
 
-const Sorter = () => {
+const Sorter = ({sortState, setSortState}) => {
     const {
         ref,
         isComponentVisible: showSorters,
         setIsComponentVisible: setShowSorters,
     } = useComponentVisible(false);
-    const [sortState, setSortState] = useState(null);
 
     const sortOptions = [
-        "Name",
-        "Event Start Date",
-        "Event Posting Date",
-        "Points",
+        ['name' ,"Name"],
+        ['start', "Event Start Date"],
+        ['posting', "Event Posting Date"],
+        ['points', "Points"],
     ];
 
     const containerClass = "feed-tool-container " + (sortState ? "sort-selected" : "")
@@ -29,7 +27,7 @@ const Sorter = () => {
                     setShowSorters(true);
                 }}
             >
-                <Funnel size={20} /> {sortState ? "Sorting by " + sortState : "Sort"} 
+                <Funnel size={20} /> {sortState ? "Sorting by " + sortOptions.find(x => x[0] === sortState)[1] : "Sort"} 
             </div>
         );
     } else {
