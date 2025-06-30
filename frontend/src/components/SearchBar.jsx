@@ -1,25 +1,33 @@
 import { Search } from "lucide-react";
-import { useRef, useState } from "react";
-import { useOutsideAlerter } from "../utils/useOutsideAlerter";
+import {useState } from "react";
+import useComponentVisible from "../utils/useComponentVisible";
 
-const SearchBar = ({searchFieldProps}) => {
-    const [expanded, setExpanded] = useState(false);
-    const searchClass = "feed-tool-container" + (expanded ? " expanded" : "");
+const SearchBar = ({ searchFieldProps }) => {
+    const {ref, isComponentVisible: expandBar, setIsComponentVisible: setExpandBar} = useComponentVisible(false);
+    const searchClass = "feed-tool-container" + (expandBar ? " expanded" : "");
 
-    const wrapperRef = useRef(null);
-    useOutsideAlerter(wrapperRef, () => {if (expanded) {setExpanded(!expanded)}})
 
     return (
         <div
             className={searchClass}
             onClick={() => {
-                setExpanded(!expanded);
+                setExpandBar(!expandBar)
             }}
-            ref={wrapperRef}
+            ref={ref}
         >
-            {expanded ? (
-                <form onSubmit={(e) => {e.preventDefault()}}>
-                    <input type="text" className="search-input" autoFocus placeholder="Search Bar" {...searchFieldProps}></input>
+            {expandBar ? (
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                    }}
+                >
+                    <input
+                        type="text"
+                        className="search-input"
+                        autoFocus
+                        placeholder="Search Bar"
+                        {...searchFieldProps}
+                    ></input>
                 </form>
             ) : (
                 <p>Search Bar</p>
