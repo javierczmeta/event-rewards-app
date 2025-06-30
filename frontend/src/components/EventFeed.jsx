@@ -2,6 +2,8 @@ import "../styles/EventFeed.css";
 import Event from "./Event";
 import { useQuery } from "@tanstack/react-query";
 import axios from 'axios'
+import EventModal from "./EventModal";
+import useComponentVisible from "../utils/useComponentVisible";
 
 const EventFeed = ({searchFieldProps, sortState}) => {
 
@@ -16,6 +18,8 @@ const EventFeed = ({searchFieldProps, sortState}) => {
         refetchOnWindowFocus: false,
         refetchInterval: 1000 * 60 * 5
     });
+
+    const {ref, isComponentVisible: chosenEvent, setIsComponentVisible: setChosenEvent} = useComponentVisible(null)
 
     return (
         <main className="feed-main">
