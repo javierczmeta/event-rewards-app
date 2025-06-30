@@ -1,9 +1,13 @@
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useOutsideAlerter } from "../utils/useOutsideAlerter";
 
 const SearchBar = ({searchFieldProps}) => {
     const [expanded, setExpanded] = useState(false);
     const searchClass = "feed-tool-container" + (expanded ? " expanded" : "");
+
+    const wrapperRef = useRef(null);
+    useOutsideAlerter(wrapperRef, () => {if (expanded) {setExpanded(!expanded)}})
 
     return (
         <div
@@ -11,6 +15,7 @@ const SearchBar = ({searchFieldProps}) => {
             onClick={() => {
                 setExpanded(!expanded);
             }}
+            ref={wrapperRef}
         >
             {expanded ? (
                 <form onSubmit={(e) => {e.preventDefault()}}>
