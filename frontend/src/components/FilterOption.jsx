@@ -1,15 +1,15 @@
 const FilterOption = ({ option, setShowSorters, sortState, setSortState }) => {
-    const containerClass = "feed-tool-container " + (sortState === option ? "sort-selected" : "")
+    const containerClass = "feed-tool-container " + (sortState === option[0] ? "sort-selected" : "")
     
     return (
         <div
             className={containerClass}
             onClick={() => {
-                setSortState(option);
+                setSortState(option[0]);
                 setShowSorters(false);
             }}
         >
-            <p>{option}</p>
+            <p>{option[1]}</p>
         </div>
     );
 };

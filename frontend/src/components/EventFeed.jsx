@@ -3,13 +3,13 @@ import Event from "./Event";
 import { useQuery } from "@tanstack/react-query";
 import axios from 'axios'
 
-const EventFeed = ({searchFieldProps}) => {
+const EventFeed = ({searchFieldProps, sortState}) => {
 
     const getEvents = useQuery({
-        queryKey: ['events', searchFieldProps.value],
+        queryKey: ['events', searchFieldProps.value, sortState],
         queryFn: () => {
             const url = import.meta.env.VITE_SERVER_API;
-            return axios.get(`${url}/events?search=${searchFieldProps.value}`, {
+            return axios.get(`${url}/events?search=${searchFieldProps.value}&sort=${sortState}`, {
                 withCredentials: true,
             });
         },
