@@ -1,0 +1,10 @@
+.sorters-container {
+    display: flex;
+    flex-direction: row;
+    gap: 3px;
+}
+
+.sort-selected {
+    background-color: #343A40;
+    color: white;
+}
