@@ -3,7 +3,7 @@ import { createDateWithOffset } from "../utils/createDateWithOffset";
 import { useReverseGeocoding } from "../utils/useReverseGeocoding";
 import { useNavigate } from "react-router";
 
-const Event = ({ event }) => {
+const Event = ({ event, setChosenEvent }) => {
     const date = createDateWithOffset(event.start_time).toLocaleString();
     const navigate = useNavigate()
 
