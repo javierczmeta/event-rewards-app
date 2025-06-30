@@ -12,7 +12,7 @@ const Event = ({ event }) => {
     return (
         <div className="event-card" onClick={() => {navigate(`/feed/${event.id}`)}}>
             <div className="event-image">
-               {event.image ? <img src={event.image} alt={`Image for the event: ${event.name}`}></img> : <img src='./event_placeholder.svg' alt={`Placeholder Image`}></img>}
+                {event.image ? <img src={event.image} alt={`Image for the event: ${event.name}`}></img> : <img src='./event_placeholder.svg' alt={`Placeholder Image`}></img>}
             </div>
             <div className="event-info">
                 <h2>{event.name}</h2>
