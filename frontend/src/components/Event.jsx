@@ -1,8 +1,9 @@
 import "../styles/Event.css";
+import { createDateWithOffset } from "../utils/createDateWithOffset";
 import { useReverseGeocoding } from "../utils/useReverseGeocoding";
 
 const Event = ({ event }) => {
-    const date = new Date(event.start_time).toLocaleString();
+    const date = createDateWithOffset(event.start_time).toLocaleString();
 
     const getEventLocation = useReverseGeocoding(event.id, event.longitude, event.latitude)
 
