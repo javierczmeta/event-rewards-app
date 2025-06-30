@@ -154,7 +154,8 @@ server.get("/events", async (req, res, next) => {
     let fetchedEvents = [];
 
     fetchedEvents = await prisma.event.findMany({
-        where: { name: { contains: requestQueries.search, mode: "insensitive" } }
+        where: { name: { contains: requestQueries.search, mode: "insensitive" } },
+        include: {organizer: {include: {profile: true}}}
     });
 
     switch (requestQueries.sort) {
