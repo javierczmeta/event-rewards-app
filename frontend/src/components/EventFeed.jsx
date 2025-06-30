@@ -20,7 +20,6 @@ const EventFeed = ({searchFieldProps, sortState}) => {
     });
 
 
-
     return (
         <main className="feed-main">
             <div className="events-container">
