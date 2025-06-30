@@ -19,6 +19,8 @@ const EventFeed = ({searchFieldProps, sortState}) => {
         refetchInterval: 1000 * 60 * 5
     });
 
+    const {ref, isComponentVisible: chosenEvent, setIsComponentVisible: setChosenEvent} = useComponentVisible(null)
+
     return (
         <main className="feed-main">
             <div className="events-container">
