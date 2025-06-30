@@ -1,84 +1,44 @@
+import { useParams, useNavigate } from "react-router";
 import "../styles/EventModal.css";
-import { createDateWithOffset } from "../utils/createDateWithOffset";
-import { useReverseGeocoding } from "../utils/useReverseGeocoding";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import SingleEventInfo from "./SingleEventInfo";
 
-const EventModal = ({ ref, chosenEvent }) => {
-    const startDate = createDateWithOffset(chosenEvent.start_time);
-    const endDate = createDateWithOffset(chosenEvent.end_time);
+const EventModal = () => {
+    const {eventID} = useParams()
+    const navigate = useNavigate()
 
-    const getEventLocation = useReverseGeocoding(
-        chosenEvent.id,
-        chosenEvent.longitude,
-        chosenEvent.latitude
-    );
+    const getEvent = useQuery({
+        queryKey: ['event', eventID],
+        queryFn: () => {
+            const url = import.meta.env.VITE_SERVER_API;
+            return axios.get(`${url}/events/${eventID}`, {
+                withCredentials: true,
+            });
+        },
+        refetchOnWindowFocus: false,
+    });
+
+    if (getEvent.isError) {
+        console.log(getEvent.error)
+        navigate('/feed')
+        return
+    }
+
+    if (getEvent.isPending) {
+        return (
+            <div className="modal-overlay">
+            <aside className="modal-content">
+                <h4>Loading...</h4>
+            </aside>
+        </div>
+        )
+    }
+
 
     return (
-        <div className="modal-overlay">
-            <aside className="modal-content" ref={ref}>
-                <img
-                    src={chosenEvent.image}
-                    alt={"Image for " + chosenEvent.name}
-                    className="modal-image"
-                ></img>
-                <div className="modal-event-info">
-                    <h2 className="modal-event-title">{chosenEvent.name}</h2>
-                    <div className="time-info">
-                        <p className="span-grid">
-                            <span>When?</span> {startDate.toLocaleDateString()}
-                        </p>
-                        <p>Starts at {startDate.toLocaleTimeString()}</p>
-                        <p>Ends at {endDate.toLocaleTimeString()}</p>
-                    </div>
-                    {getEventLocation.isSuccess && (
-                        <p>
-                            <span>Where? </span>
-                            {
-                                getEventLocation.data.data.features[0]
-                                    .properties.full_address
-                            }
-                        </p>
-                    )}
-                    <p>
-                        <span>Price:</span> {chosenEvent.price}
-                    </p>
-                    <p>
-                        <span>Points:</span> {chosenEvent.rewards} points
-                    </p>
-                    <div className="tag-container">
-                        {chosenEvent.tags
-                            ? chosenEvent.tags.map((tag, index) => (
-                                  <div key={index} className="tag">
-                                      {tag}
-                                  </div>
-                              ))
-                            : "No tags"}
-                    </div>
-                    <p>
-                        <span>Organizer: </span>
-                    </p>
-                    <div className="organizer-section">
-                        <div className="organizer-image">
-                            {chosenEvent.organizer.profile.image ? (
-                                <img
-                                    src={chosenEvent.organizer.profile.image}
-                                ></img>
-                            ) : (
-                                <></>
-                            )}
-                        </div>
-                        <p className="organizer-name">{chosenEvent.organizer.profile.display_name}</p>
-                    </div>
-                </div>
-                <p className="span-grid">
-                    Description: {chosenEvent.description}
-                </p>
-                <p className="span-grid">
-                    <span>People Going: </span>
-                </p>
-                <p className="span-grid">
-                    <span>Your status:</span>
-                </p>
-            </aside>
+        <div className="modal-overlay" onClick={()=>{navigate('/feed')}}>
+            <SingleEventInfo chosenEvent={getEvent.data.data}/>
         </div>
     );
 };
