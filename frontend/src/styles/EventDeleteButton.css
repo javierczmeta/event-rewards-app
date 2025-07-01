@@ -1,0 +1,24 @@
+.delete-button {
+    background-color: #E04F4F;
+    aspect-ratio: 1/1;
+
+    position: absolute;
+    padding: 7px;
+    border-radius: 50%;
+
+    left:-15px;
+    top: -15px;
+
+    border-style: solid;
+    border-color: #660708;
+    border-width: 2px;
+}
+
+.delete-button:hover {
+    background-color: #ba181b;
+}
+
+.delete-button:active {
+    background-color: #780000;
+    transform: scale(0.95);
+}
