@@ -141,7 +141,7 @@ server.get("/me", async (req, res, next) => {
         },
     });
 
-    res.json({ id: req.session.userId, username: user.username });
+    res.json(user);
 });
 
 /* [POST] Logs out the user */
@@ -226,6 +226,25 @@ server.get("/events/:id", async (req, res, next) => {
     }
 });
 
+/* [GET] /users/id/events
+    Returns events organized by the userID
+*/
+server.get("/users/:id/events", async (req, res, next) => {
+    let userId = req.params.id;
+
+    // make sure id is Integer
+    if (!Number.isInteger(Number(userId))) {
+        next({ message: "ID of the user has to be an integer", status: 400 });
+        return;
+    }
+
+    let fetchedEvents = await prisma.event.findMany({
+        where: { organizer_id: parseInt(userId) },
+    });
+
+    res.json(fetchedEvents);
+});
+
 /* [DELETE] /events/id
     Deletes an event if the request is coming from the user who organized the event
 */
@@ -242,15 +261,20 @@ server.delete("/events/:id", isAuthenticated, async (req, res, next) => {
     try {
         let deletedEvent = await prisma.event.delete({
             where: { id: parseInt(eventId), organizer_id: sessionID },
-        }); 
+        });
         return res.json(deletedEvent);
     } catch (e) {
-        if (e.meta) { // Means it was a prisma error (no record found)
-            next({status: 404, message: "No event with the specified ID was found for this user"})
+        if (e.meta) {
+            // Means it was a prisma error (no record found)
+            next({
+                status: 404,
+                message:
+                    "No event with the specified ID was found for this user",
+            });
         } else {
-            next({status: 500, message: "Internal server error"})
+            next({ status: 500, message: "Internal server error" });
         }
-        return
+        return;
     }
 });
 
