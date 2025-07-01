@@ -6,7 +6,7 @@ const session = require("express-session");
 const { hashPassword, verifyPassword } = require("./utils");
 
 const { PrismaClient } = require("./generated/prisma");
-const { newUserSchema, loginSchema } = require("./validation");
+const { newUserSchema, loginSchema, isAuthenticated } = require("./validation");
 const prisma = new PrismaClient();
 
 let sessionConfig = {
@@ -140,7 +140,7 @@ server.post("/logout", async (req, res, next) => {
             return res.status(500).json({ error: "Failed to log out" });
         }
         res.clearCookie("sessionId", (err) => {
-            console.log(err)
+            console.log(err);
         }); // Clear session cookie
         res.json({ message: "Logged out successfully" });
     });
@@ -154,22 +154,32 @@ server.get("/events", async (req, res, next) => {
     let fetchedEvents = [];
 
     fetchedEvents = await prisma.event.findMany({
-        where: { name: { contains: requestQueries.search, mode: "insensitive" } },
-        include: {organizer: {include: {profile: true}}}
+        where: {
+            name: { contains: requestQueries.search, mode: "insensitive" },
+        },
+        include: { organizer: { include: { profile: true } } },
     });
 
     switch (requestQueries.sort) {
         case "name":
-            fetchedEvents.sort((a,b) => {return a.name.localeCompare(b.name)})
+            fetchedEvents.sort((a, b) => {
+                return a.name.localeCompare(b.name);
+            });
             break;
         case "start":
-            fetchedEvents.sort((a,b) => {return (new Date(b.start_time)) - (new Date(a.start_time))})
+            fetchedEvents.sort((a, b) => {
+                return new Date(b.start_time) - new Date(a.start_time);
+            });
             break;
         case "posting":
-            fetchedEvents.sort((a,b) => {return (new Date(a.created_at)) - (new Date(b.created_at))})
+            fetchedEvents.sort((a, b) => {
+                return new Date(a.created_at) - new Date(b.created_at);
+            });
             break;
         case "points":
-            fetchedEvents.sort((a,b) => {return b.rewards - a.rewards})
+            fetchedEvents.sort((a, b) => {
+                return b.rewards - a.rewards;
+            });
             break;
         default:
             break;
@@ -190,7 +200,10 @@ server.get("/events/:id", async (req, res, next) => {
         return;
     }
 
-    let fetchedEvent = await prisma.event.findUnique({ where: { id: parseInt(id) },include: {organizer: {include: {profile: true}}} });
+    let fetchedEvent = await prisma.event.findUnique({
+        where: { id: parseInt(id) },
+        include: { organizer: { include: { profile: true } } },
+    });
 
     if (!fetchedEvent) {
         return next({
@@ -199,6 +212,34 @@ server.get("/events/:id", async (req, res, next) => {
         });
     } else {
         res.json(fetchedEvent);
+    }
+});
+
+/* [DELETE] /events/id
+    Deletes an event if the request is coming from the user who organized the event
+*/
+server.delete("/events/:id", isAuthenticated, async (req, res, next) => {
+    let eventId = req.params.id;
+    const sessionID = req.session.userId;
+
+    // make sure id is Integer
+    if (!Number.isInteger(Number(eventId))) {
+        next({ message: "ID of the event has to be an integer", status: 400 });
+        return;
+    }
+
+    try {
+        let deletedEvent = await prisma.event.delete({
+            where: { id: parseInt(eventId), organizer_id: sessionID },
+        }); 
+        return res.json(deletedEvent);
+    } catch (e) {
+        if (e.meta) { // Means it was a prisma error (no record found)
+            next({status: 404, message: "No event with the specified ID was found for this user"})
+        } else {
+            next({status: 500, message: "Internal server error"})
+        }
+        return
     }
 });
 
