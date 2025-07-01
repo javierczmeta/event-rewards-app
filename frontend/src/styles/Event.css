@@ -4,7 +4,7 @@
     border-color: var(--feed-border);
     padding: 20px;
 
-    max-width: 900px;
+    width: 900px;
     max-height: 250px;
 
     border-radius: 30px;
@@ -79,4 +79,8 @@
     height: 100%;
     width: 100%;
     object-fit: cover;
+}
+
+.tag.mine {
+    background-color: #dbb42c;
 }

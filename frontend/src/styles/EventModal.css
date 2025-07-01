@@ -12,6 +12,8 @@
 }
 
 .modal-content {
+    position: relative;
+
     background-color: white;
     width: max-content;
     padding: 20px;
@@ -21,7 +23,6 @@
     grid-template-columns: 2fr 3fr;
     max-width: 60%;
     max-height: 80vh;
-    overflow-y: auto;
 
     gap: 20px;
 }
@@ -78,6 +79,8 @@
     border-radius: 50px;
     border-style: solid;
     border-color: var(--feed-border);
+
+    display: flex;
 }
 
 .organizer-name{
