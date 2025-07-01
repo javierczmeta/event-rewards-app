@@ -2,10 +2,14 @@ import "../styles/Event.css";
 import { createDateWithOffset } from "../utils/createDateWithOffset";
 import { useReverseGeocoding } from "../utils/useReverseGeocoding";
 import { useNavigate } from "react-router";
+import { useUser } from "../contexts/UserContext";
 
 const Event = ({ event }) => {
     const date = createDateWithOffset(event.start_time).toLocaleString();
     const navigate = useNavigate()
+
+    const {user} = useUser()
+
 
     const getEventLocation = useReverseGeocoding(event.id, event.longitude, event.latitude)
 
@@ -20,13 +24,14 @@ const Event = ({ event }) => {
                 <p>
                     {getEventLocation.isError && `Error Fetching Location`}
                     {getEventLocation.isPending && "Fetching Location"}
-                    {getEventLocation.isSuccess && getEventLocation.data.data.features[0].properties.context.place.name}
+                    {getEventLocation.isSuccess && getEventLocation.data.data.features[0] && getEventLocation.data.data.features[0].properties.context.place.name}
                 </p>
                 <p>{event.price}</p>
                 <p>{event.rewards} point(s)</p>
             </div>
             <div className="event-description">
                 <div className="tag-container">
+                    {user.id === event.organizer_id ? <div className="tag mine">My Event</div> : <></>}
                     {event.tags
                         ? event.tags.map((tag, index) => (
                                 <div key={index} className="tag">{tag}</div>
