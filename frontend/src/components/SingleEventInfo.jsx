@@ -1,9 +1,13 @@
 import { createDateWithOffset } from "../utils/createDateWithOffset";
 import { useReverseGeocoding } from "../utils/useReverseGeocoding";
+import {useUser} from "../contexts/UserContext"
+import EventDeleteButton from "./EventDeleteButton";
 
 const SingleEventInfo = ({chosenEvent}) => {
     const startDate = createDateWithOffset(chosenEvent.start_time);
     const endDate = createDateWithOffset(chosenEvent.end_time);
+
+    const {user} = useUser()
 
     const getEventLocation = useReverseGeocoding(
         chosenEvent.id,
@@ -30,7 +34,7 @@ const SingleEventInfo = ({chosenEvent}) => {
                 {getEventLocation.isSuccess && (
                     <p>
                         <span>Where? </span>
-                        {
+                        {getEventLocation.data.data.features[0] &&
                             getEventLocation.data.data.features[0].properties
                                 .full_address
                         }
@@ -68,6 +72,7 @@ const SingleEventInfo = ({chosenEvent}) => {
                         {chosenEvent.organizer.profile.display_name}
                     </p>
                 </div>
+                
             </div>
             <p className="span-grid">Description: {chosenEvent.description}</p>
             <p className="span-grid">
@@ -75,7 +80,9 @@ const SingleEventInfo = ({chosenEvent}) => {
             </p>
             <p className="span-grid">
                 <span>Your status:</span>
+                {user.id === chosenEvent.organizer_id ? " Organizer" : <></>}
             </p>
+            {user.id === chosenEvent.organizer_id ? <EventDeleteButton eventId={chosenEvent.id}/> : <></>}
         </aside>
     );
 };
