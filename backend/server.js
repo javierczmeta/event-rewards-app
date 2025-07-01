@@ -127,7 +127,18 @@ server.get("/me", async (req, res, next) => {
 
     const user = await prisma.user.findUnique({
         where: { id: req.session.userId },
-        select: { username: true },
+        select: {
+            username: true,
+            id: true,
+            profile: {
+                select: {
+                    display_name: true,
+                    display_badges: true,
+                    image: true,
+                    points: true,
+                },
+            },
+        },
     });
 
     res.json({ id: req.session.userId, username: user.username });
