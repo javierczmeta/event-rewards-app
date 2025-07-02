@@ -1,19 +1,10 @@
 import "../styles/Event.css";
-import { useQuery } from "@tanstack/react-query";
-import axios from 'axios'
+import { useReverseGeocoding } from "../utils/useReverseGeocoding";
 
 const Event = ({ event }) => {
     const date = new Date(event.start_time).toLocaleString();
 
-    const getEventLocation = useQuery({
-        queryKey: [event.id],
-        queryFn: () => {
-            const apiToken = import.meta.env.VITE_GEOCODING_TOKEN;
-            const url = `https://api.mapbox.com/search/geocode/v6/reverse?longitude=${event.longitude}&latitude=${event.latitude}&access_token=${apiToken}`;
-            return axios.get(url);
-        },
-        refetchOnWindowFocus: false,
-    });
+    const getEventLocation = useReverseGeocoding(event.id, event.longitude, event.latitude)
 
     return (
         <div className="event-card">
