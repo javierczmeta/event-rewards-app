@@ -3,10 +3,10 @@ const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const session = require("express-session");
 
-const { hashPassword, verifyPassword } = require("./utils");
+const { hashPassword, verifyPassword, calculateRewards } = require("./utils");
 
 const { PrismaClient } = require("./generated/prisma");
-const { newUserSchema, loginSchema, isAuthenticated } = require("./validation");
+const { newUserSchema, loginSchema, isAuthenticated, newEventSchema } = require("./validation");
 const prisma = new PrismaClient();
 
 let sessionConfig = {
@@ -53,7 +53,6 @@ server.post("/signup", async (req, res, next) => {
         return next({ status: 400, message: "Username already exists." });
     }
 
-    //
     let hashed = "";
     try {
         hashed = await hashPassword(password);
@@ -276,6 +275,41 @@ server.delete("/events/:id", isAuthenticated, async (req, res, next) => {
         }
         return;
     }
+});
+
+/* [POST] events
+    creates a new event with the sent information
+    */
+server.post("/events", isAuthenticated, async (req, res, next) => {
+    // Validate with joi
+    const { error } = newEventSchema.validate(req.body);
+
+    if (error) {
+        return next({ status: 400, message: error.details[0].message });
+    }
+
+    let { name, latitude, longitude, image, start_time, end_time, price, description, tags } = req.body;
+
+    let event = {
+        name,
+            latitude,
+            longitude,
+            image,
+            start_time: new Date(start_time),
+            end_time: new Date(end_time),
+            price,
+            description,
+            tags,
+            organizer_id: req.session.userId
+    }
+
+    event = {...event, rewards: await calculateRewards(0, event)}
+
+    const added = await prisma.event.create({
+        data: event,
+    });
+
+    res.json(added);
 });
 
 // Error handling middleware
