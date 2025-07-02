@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-const CreateMap = () => {
+const CreateMap = ({longitudeProps, latitudeProps}) => {
     const mapContainerRef = useRef();
     const mapRef = useRef();
 
@@ -15,8 +15,14 @@ const CreateMap = () => {
             zoom: 15, // starting zoom
         });
 
+        const marker = new mapboxgl.Marker()
+            .setLngLat([longitudeProps.value, latitudeProps.value])
+            .addTo(mapRef.current);
+
         mapRef.current.on("click", (e) => {
-            console.log(`A click event has occurred at ${e.lngLat}`);
+            longitudeProps.setValue(e.lngLat.lng)
+            latitudeProps.setValue(e.lngLat.lat)
+            marker.setLngLat([e.lngLat.lng, e.lngLat.lat]);
         });
 
         return () => {
