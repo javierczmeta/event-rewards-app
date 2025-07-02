@@ -7,14 +7,14 @@ const Event = ({ event }) => {
         <div className="event-card">
 
             <div className="event-image">
-                {event.image ? <img src={event.image} alt={event.name}></img> : <></>}
+                {event.image ? <img src={event.image} alt={`Image for the event: ${event.name}`}></img> : <img src='./event_placeholder.svg' alt={`Placeholder Image`}></img>}
             </div>
             <div className="event-info">
                 <h2>{event.name}</h2>
                 <p>{date}</p>
                 <p>
                     Placeholder location {event.latitude} {event.longitude}
-                    {/* Will use geocoder api to get location */}
+                    {/* TODO: use geocoder api to get location */}
                 </p>
                 <p>{event.price}</p>
                 <p>{event.rewards} point(s)</p>
