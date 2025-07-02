@@ -1,9 +1,10 @@
 import { useFormInput } from "../utils/useFormInput";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import CreateMap from "./CreateMap";
 import "../styles/CreatePage.css";
+import { useNavigate } from "react-router";
 
 const CreatePage = () => {
     const formInputs = {
@@ -14,7 +15,52 @@ const CreatePage = () => {
         startDateProps: useFormInput(""),
         endDateProps: useFormInput(""),
         priceProps: useFormInput(),
+        descProps: useFormInput(""),
         catProps: useFormInput("Miscellaneous"),
+    };
+
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+
+    const createEventMutation = useMutation({
+        mutationFn: (event) => {
+            const url = import.meta.env.VITE_SERVER_API;
+            return axios.post(`${url}/events`, event, {
+                withCredentials: true,
+            });
+        },
+        onSuccess: () => {
+            toast.success("Success");
+            queryClient.invalidateQueries("events");
+            navigate("/");
+        },
+        onError: (e) => {
+            console.log(e);
+            if (e.response) {
+                toast.error(e.response.data.message);
+            } else {
+                toast.error("Unknown Error... Try again later");
+            }
+        },
+    });
+
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        const newEvent = {
+            name: formInputs.nameProps.value,
+            longitude: formInputs.longitudeProps.value,
+            latitude: formInputs.latitudeProps.value,
+            image: formInputs.imageProps.value,
+            start_time: formInputs.startDateProps.value,
+            end_time: formInputs.endDateProps.value,
+            price: formInputs.priceProps.value,
+            description: formInputs.descProps.value,
+            category: formInputs.catProps.value,
+        };
+        if (newEvent.price === 0) {
+            newEvent[price] = "Free"
+        }
+        createEventMutation.mutate(newEvent);
     };
 
     return (
@@ -23,7 +69,7 @@ const CreatePage = () => {
             <CreateMap formInputs={formInputs} />
             <p>Longitude: {formInputs.longitudeProps.value}</p>
             <p>Latitude: {formInputs.latitudeProps.value}</p>
-            <form className="create-form">
+            <form className="create-form" onSubmit={handleFormSubmit}>
                 <div className="form-components-container">
                     <input
                         type="text"
@@ -44,6 +90,7 @@ const CreatePage = () => {
                             type="datetime-local"
                             required
                             {...formInputs.startDateProps}
+                            min={new Date(Date.now()).toISOString()}
                         ></input>
                     </div>
 
@@ -53,13 +100,25 @@ const CreatePage = () => {
                             type="datetime-local"
                             required
                             {...formInputs.endDateProps}
+                            min={formInputs.startDateProps.value}
                         ></input>
                     </div>
 
                     <div>
                         <label>Price in $</label>
-                        <input type="number" placeholder="Price" required {...formInputs.priceProps}></input>
+                        <input
+                            type="number"
+                            placeholder="Price"
+                            required
+                            {...formInputs.priceProps}
+                        ></input>
                     </div>
+
+                    <input
+                        type="text"
+                        placeholder="Description"
+                        {...formInputs.descProps}
+                    ></input>
 
                     <select required {...formInputs.catProps}>
                         <option value="Miscellaneous">
