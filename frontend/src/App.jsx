@@ -7,11 +7,12 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import WithAuth from "./components/WithAuth";
 import RootPage from "./components/RootPage";
+import EventFeed from "./components/EventFeed";
 
 function App() {
 
     let ProtectedRoot = WithAuth(RootPage)
-    let ProtectedFeed = WithAuth(<div>Feed</div>)
+    let ProtectedFeed = WithAuth(EventFeed)
 
     return (
         <>

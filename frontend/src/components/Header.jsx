@@ -25,12 +25,13 @@ const Header = () => {
             </div>
             <Routes>
                 <Route path="/feed" element={<FeedSearch />} />
-                <Route path="*" element={<></>} />
+                <Route path="*" element={<div></div>} />
             </Routes>
             {user ? (
                 <LogOut
                     className="logout-button"
                     strokeWidth={3}
+                    size={30}
                     onClick={logOut}
                 />
             ) : (
