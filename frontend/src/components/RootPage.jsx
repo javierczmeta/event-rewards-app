@@ -46,7 +46,7 @@ const RootPage = () => {
                 <div className="organized-container">
                     {getOrganizedEvents.data &&
                         getOrganizedEvents.data.data.map((event) => (
-                            <Event event={event} />
+                            <Event key={event.id} event={event} />
                         ))}
                 </div>
             </div>
