@@ -10,11 +10,13 @@ import RootPage from "./components/RootPage";
 import EventFeed from "./components/EventFeed";
 import { useState } from "react";
 import { useFormInput } from "./utils/useFormInput";
+import CreatePage from "./components/CreatePage";
 
 function App() {
 
     let ProtectedRoot = WithAuth(RootPage)
     let ProtectedFeed = WithAuth(EventFeed)
+    let ProtectedCreate = WithAuth(CreatePage)
 
     // Search states
     const searchFieldProps = useFormInput("")
@@ -31,6 +33,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Register />} />
                 </Route>
+                <Route path="/create" element={<ProtectedCreate/>}/>
                 <Route path="/feed/*" element={<ProtectedFeed searchFieldProps={searchFieldProps} sortState={sortState}/>}/>
             </Routes>
             <Footer />
