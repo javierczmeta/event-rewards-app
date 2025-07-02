@@ -5,6 +5,7 @@ import { ToastContainer, toast, Slide } from "react-toastify";
 import CreateMap from "./CreateMap";
 import "../styles/CreatePage.css";
 import { useNavigate } from "react-router";
+import { reverseCreateDateWithOffset } from "../utils/createDateWithOffset";
 
 const CreatePage = () => {
     const formInputs = {
@@ -51,8 +52,8 @@ const CreatePage = () => {
             longitude: formInputs.longitudeProps.value,
             latitude: formInputs.latitudeProps.value,
             image: formInputs.imageProps.value,
-            start_time: formInputs.startDateProps.value,
-            end_time: formInputs.endDateProps.value,
+            start_time: reverseCreateDateWithOffset(formInputs.startDateProps.value),
+            end_time: reverseCreateDateWithOffset(formInputs.endDateProps.value),
             price: formInputs.priceProps.value,
             description: formInputs.descProps.value,
             category: formInputs.catProps.value,
