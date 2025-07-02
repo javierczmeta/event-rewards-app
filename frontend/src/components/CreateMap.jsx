@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-const CreateMap = ({longitudeProps, latitudeProps}) => {
+const CreateMap = ({formInputs}) => {
     const mapContainerRef = useRef();
     const mapRef = useRef();
 
@@ -16,12 +16,12 @@ const CreateMap = ({longitudeProps, latitudeProps}) => {
         });
 
         const marker = new mapboxgl.Marker()
-            .setLngLat([longitudeProps.value, latitudeProps.value])
+            .setLngLat([formInputs.longitudeProps.value, formInputs.latitudeProps.value])
             .addTo(mapRef.current);
 
         mapRef.current.on("click", (e) => {
-            longitudeProps.setValue(e.lngLat.lng)
-            latitudeProps.setValue(e.lngLat.lat)
+            formInputs.longitudeProps.setValue(e.lngLat.lng)
+            formInputs.latitudeProps.setValue(e.lngLat.lat)
             marker.setLngLat([e.lngLat.lng, e.lngLat.lat]);
         });
 
