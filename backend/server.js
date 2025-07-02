@@ -288,7 +288,7 @@ server.post("/events", isAuthenticated, async (req, res, next) => {
         return next({ status: 400, message: error.details[0].message });
     }
 
-    let { name, latitude, longitude, image, start_time, end_time, price, description, tags } = req.body;
+    let { name, latitude, longitude, image, start_time, end_time, price, description, category } = req.body;
 
     let event = {
         name,
@@ -299,7 +299,7 @@ server.post("/events", isAuthenticated, async (req, res, next) => {
             end_time: new Date(end_time),
             price,
             description,
-            tags,
+            category,
             organizer_id: req.session.userId
     }
 
