@@ -1,4 +1,10 @@
-
+.map-container {
+    width: 500px;
+    height: 500px;
+    object-fit: contain;
+    overflow: hidden;
+    border-radius: 15px;
+}
 
 .create-main {
     display: flex;
