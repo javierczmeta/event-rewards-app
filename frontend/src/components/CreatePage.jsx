@@ -2,6 +2,7 @@ import { useFormInput } from "../utils/useFormInput";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { ToastContainer, toast, Slide } from "react-toastify";
+import CreateMap from "./CreateMap";
 import "../styles/CreatePage.css"
 
 const CreatePage = () => {
@@ -11,6 +12,7 @@ const CreatePage = () => {
             
             
                 <h2>Create a new event</h2>
+                <CreateMap/>
                 <form className="create-form">
                 <div>
                     <input type="text" placeholder="Name" required></input>
