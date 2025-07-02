@@ -6,13 +6,17 @@ import CreateMap from "./CreateMap";
 import "../styles/CreatePage.css"
 
 const CreatePage = () => {
+    const longitudeProps = useFormInput(-122.1486120978705)
+    const latitudeProps = useFormInput(37.4845092388847)
 
     return (
         <main className="create-main">
             
             
                 <h2>Create a new event</h2>
-                <CreateMap/>
+                <CreateMap longitudeProps={longitudeProps} latitudeProps={latitudeProps}/>
+                <p>Longitude: {longitudeProps.value}</p>
+                <p>Latitude: {latitudeProps.value}</p>
                 <form className="create-form">
                 <div>
                     <input type="text" placeholder="Name" required></input>
