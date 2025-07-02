@@ -14,7 +14,8 @@ export const UserProvider = ({ children }) => {
                 withCredentials: true,
             });
         },
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
+        retry: false
     });
 
     const [user, setUser] = useLocalStorage("user", null);
