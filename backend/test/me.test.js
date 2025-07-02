@@ -34,12 +34,13 @@ describe("GET /me", () => {
     });
 
     it("should return user data if user is logged in", async () => {
-        prisma.user.findUnique.mockResolvedValue({ username: "testuser" });
+        prisma.user.findUnique.mockResolvedValue({ id:1, username: "testuser" });
 
         const agent = request.agent(server);
         await agent.get("/set");
         const response = await agent.get("/me");
         expect(response.status).toBe(200);
+        console.log(response.body)
         expect(response.body).toEqual({ id: 1, username: "testuser" });
     });
 });
