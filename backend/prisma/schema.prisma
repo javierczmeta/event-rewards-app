@@ -27,10 +27,9 @@ model Event {
   price       String
   rewards     Int       @default(0)
   description String
-  tags        String[]
+  category    String    @default("Miscellaneous")
   organizer   User       @relation("UserOrganizedEvents", fields: [organizer_id], references: [id])
   organizer_id Int
-  feedback    Feedback[]
   rsvps RSVP[]
 }
 
@@ -41,9 +40,9 @@ model User {
   password_hash  String
   profile        Profile?
   rsvps RSVP[]
-  feedbacks Feedback[]
   organizedEvents Event[]  @relation("UserOrganizedEvents")
 }
+
 // Profile model
 model Profile {
   id              Int       @id @default(autoincrement())
@@ -66,16 +65,8 @@ model RSVP {
   status        String
   check_in_time DateTime?
 }
-// Feedback model
-model Feedback {
-  id       Int     @id @default(autoincrement())
-  event    Event   @relation(fields: [event_id], references: [id])
-  event_id Int
-  user     User    @relation(fields: [user_id], references: [id])
-  user_id  Int
-  rating   Float
-  text     String
-}
+
+
 // Badge model
 model Badge {
   id          Int     @id @default(autoincrement())
