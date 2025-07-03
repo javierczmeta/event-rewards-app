@@ -154,7 +154,8 @@ server.get("/events", async (req, res, next) => {
     let fetchedEvents = [];
 
     fetchedEvents = await prisma.event.findMany({
-        where: { name: { contains: requestQueries.search, mode: "insensitive" } }
+        where: { name: { contains: requestQueries.search, mode: "insensitive" } },
+        include: {organizer: {include: {profile: true}}}
     });
 
     switch (requestQueries.sort) {
@@ -189,7 +190,7 @@ server.get("/events/:id", async (req, res, next) => {
         return;
     }
 
-    let fetchedEvent = await prisma.event.findUnique({ where: { id: parseInt(id) } });
+    let fetchedEvent = await prisma.event.findUnique({ where: { id: parseInt(id) },include: {organizer: {include: {profile: true}}} });
 
     if (!fetchedEvent) {
         return next({
