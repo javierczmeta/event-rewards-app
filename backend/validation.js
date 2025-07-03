@@ -22,13 +22,22 @@ const newEventSchema = Joi.object({
     name: Joi.string().required(),
     latitude: Joi.number().required().min(-90).max(90) , 
     longitude: Joi.number().required().min(-180).max(180), 
-    image: Joi.string(),
+    image: Joi.string()
+        .uri({
+            scheme: ["http", "https"],
+        })
+        .pattern(/\.(jpg|jpeg|png|gif|bmp|webp)$/i)
+        .allow(""),
     start_time: Joi.date().required().min('now'),
     end_time: Joi.date().required().min(Joi.ref('start_time')),
     price: Joi.string().required(), 
     description: Joi.string().required(),
     category: Joi.string(),
 }).required();
+
+const rsvpValidation = Joi.object({
+    status: Joi.string().pattern(/^(Going|Maybe|Not Going)?$/).required()
+}).required()
 
 // Authentication Verification
 const isAuthenticated = (req, res, next) => {
@@ -40,4 +49,6 @@ const isAuthenticated = (req, res, next) => {
     next();
 };
 
-module.exports = { newUserSchema, loginSchema, newEventSchema, isAuthenticated };
+
+
+module.exports = { newUserSchema, loginSchema, newEventSchema, rsvpValidation, isAuthenticated };
