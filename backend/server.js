@@ -384,6 +384,55 @@ server.post("/events/:id/rsvp", isAuthenticated, async (req, res, next) => {
     res.json(added);
 });
 
+/* [PATCH] events/id/rsvp
+    edits the rsvp status
+    */
+server.patch("/events/:id/rsvp", isAuthenticated, async (req, res, next) => {
+    let eventId = req.params.id;
+    const sessionID = req.session.userId;
+
+    // Validate with joi
+    const { error } = rsvpValidation.validate(req.body);
+    if (error) {
+        return next({ status: 400, message: error.details[0].message });
+    }
+
+    // make sure id is Integer
+    if (!Number.isInteger(Number(eventId))) {
+        next({ message: "ID of the event has to be an integer", status: 400 });
+        return;
+    }
+
+    eventId = parseInt(eventId)
+
+    let fetchedRSVP = await prisma.rSVP.findMany({
+        where: { event_id: eventId, user_id: sessionID },
+    });
+    if (fetchedRSVP.length === 0) {
+        return next({
+            message: "RSVP data for this user and event does not exixt",
+            status: 404,
+        });
+    }
+
+    fetchedRSVP = fetchedRSVP[0]
+
+    let { status } = req.body;
+
+    let editedRsvp = {
+        user_id: sessionID,
+        event_id: eventId,
+        status,
+    };
+
+    const updateRSVP = await prisma.rSVP.update({
+        where: {id: fetchedRSVP.id},
+        data: editedRsvp
+    });
+
+    res.json(updateRSVP);
+});
+
 // Error handling middleware
 server.use((err, req, res, next) => {
     const { message, status = 500 } = err;
