@@ -351,7 +351,7 @@ server.post("/events/:id/rsvp", isAuthenticated, async (req, res, next) => {
     let fetchedRSVP = await prisma.rSVP.findMany({
         where: { event_id: parseInt(eventId), user_id: sessionID },
     });
-    if (fetchedRSVP) {
+    if (fetchedRSVP.length !== 0) {
         return next({
             message: "RSVP data for this user and event already exixts",
             status: 409,
