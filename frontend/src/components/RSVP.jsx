@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useUser } from "../contexts/UserContext";
 import { useParams } from "react-router";
-import { useState } from "react";
 import { ToastContainer, toast, Slide } from "react-toastify";
 
 
@@ -30,7 +29,6 @@ const RSVP = () => {
             if (!getRSVP.isSuccess) {throw new Error("Did not fetch data.")}
             const url = import.meta.env.VITE_SERVER_API;
             
-            console.log(getRSVP.data.data)
             if (getRSVP.data.data.length === 0) {
                 return axios.post(`${url}/events/${eventID}/rsvp`, {status} , {
                 withCredentials: true,
@@ -97,6 +95,7 @@ const RSVP = () => {
                     Not Going...
                 </button>
             </div>
+            {rsvpState === "Going" ? <div className="check-in-container"><button>Check In</button></div> : <></>}
             <ToastContainer
                     position="top-right"
                     autoClose={3000}
