@@ -6,7 +6,8 @@ jest.mock("../generated/prisma", () => {
     const mPrismaClient = {
         rSVP: {
             create: jest.fn(),
-            findMany: jest.fn()
+            findMany: jest.fn(),
+            update: jest.fn()
         },
         event: {
             findUnique: jest.fn()
@@ -80,6 +81,64 @@ describe("POST /events/:id/rsvp", () => {
         });
         const response = await agent
             .post("/events/1/rsvp")
+            .send({ status: "Going" });
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({
+            id: 1,
+            user_id: 1,
+            event_id: 1,
+            status: "going",
+        });
+    });
+});
+
+
+describe("PATCH /events/:id/rsvp", () => {
+    let agent;
+    beforeEach(async () => {
+        agent = request.agent(server);
+        await agent.get("/set"); // Simulate setting session
+    });
+
+    it("should return 400 if validation fails", async () => {
+        const response = await agent
+            .patch("/events/1/rsvp")
+            .send({ invalidField: "invalidValue" });
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBeDefined();
+    });
+
+    it("should return 400 if event ID is not an integer", async () => {
+        const response = await agent
+            .patch("/events/notAnInteger/rsvp")
+            .send({ status: "Going" });
+        expect(response.status).toBe(400);
+        expect(response.body.message).toContain(
+            "ID of the event has to be an integer"
+        );
+    });
+
+    it("should return 404 if RSVP does not exist", async () => {
+        prisma.rSVP.findMany.mockResolvedValueOnce([]);
+        const response = await agent
+            .patch("/events/1/rsvp")
+            .send({ status: "Going" });
+        expect(response.status).toBe(404);
+        expect(response.body.message).toContain(
+            "RSVP data for this user and event does not exixt"
+        );
+    });
+
+    it("should update the RSVP and return it", async () => {
+        prisma.rSVP.findMany.mockResolvedValueOnce([{ id: 1 }]);
+        prisma.rSVP.update.mockResolvedValueOnce({
+            id: 1,
+            user_id: 1,
+            event_id: 1,
+            status: "going",
+        });
+        const response = await agent
+            .patch("/events/1/rsvp")
             .send({ status: "Going" });
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
