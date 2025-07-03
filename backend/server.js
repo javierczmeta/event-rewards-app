@@ -13,7 +13,7 @@ let sessionConfig = {
     name: "sessionId",
     secret: "keep it secret, keep it safe",
     cookie: {
-        maxAge: 1000 * 60 * 60. * 24,
+        maxAge: 1000 * 60 * 60 * 24,
         secure: process.env.RENDER ? true : false,
         httpOnly: false,
     },
@@ -154,8 +154,25 @@ server.get("/events", async (req, res, next) => {
     let fetchedEvents = [];
 
     fetchedEvents = await prisma.event.findMany({
-        where: { name: { contains: requestQueries.search, mode: "insensitive" } },
+        where: { name: { contains: requestQueries.search, mode: "insensitive" } }
     });
+
+    switch (requestQueries.sort) {
+        case "name":
+            fetchedEvents.sort((a,b) => {return a.name.localeCompare(b.name)})
+            break;
+        case "start":
+            fetchedEvents.sort((a,b) => {return (new Date(b.start_time)) - (new Date(a.start_time))})
+            break;
+        case "posting":
+            fetchedEvents.sort((a,b) => {return (new Date(a.created_at)) - (new Date(b.created_at))})
+            break;
+        case "points":
+            fetchedEvents.sort((a,b) => {return b.rewards - a.rewards})
+            break;
+        default:
+            break;
+    }
 
     res.json(fetchedEvents);
 });
