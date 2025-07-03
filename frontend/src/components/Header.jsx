@@ -4,7 +4,7 @@ import { LogOut } from "lucide-react";
 import { Route, Routes, useNavigate } from "react-router";
 import FeedSearch from "./FeedSearch";
 
-const Header = () => {
+const Header = ({searchFieldProps}) => {
     const { user, logOut } = useUser();
 
     let navigate = useNavigate();
@@ -24,7 +24,7 @@ const Header = () => {
                 <h1>Origami</h1>
             </div>
             <Routes>
-                <Route path="/feed" element={<FeedSearch />} />
+                <Route path="/feed" element={<FeedSearch searchFieldProps={searchFieldProps}/>} />
                 <Route path="*" element={<div></div>} />
             </Routes>
             {user ? (

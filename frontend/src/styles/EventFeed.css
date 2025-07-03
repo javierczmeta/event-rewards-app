@@ -11,10 +11,7 @@
     border-color: var(--feed-border);
     min-width: 60%;
     padding: 20px;
-    padding-bottom: 0px;
     gap: 20px;
-
-    overflow-y: auto;
 
     display: flex;
     flex-direction: column;
