@@ -1,0 +1,7 @@
+.rsvp-container {
+    border-style: solid;
+    border-radius: 50px;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+}
