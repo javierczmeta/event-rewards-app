@@ -11,7 +11,7 @@ jest.mock("../generated/prisma", () => {
                 name: "Test Event",
                 latitude: 45,
                 longitude: 90,
-                image: "test.jpg",
+                image: "https://test.jpg",
                 start_time: new Date(Date.now() + 3600000).toISOString(), // 1 hour from now
                 end_time: new Date(Date.now() + 7200000).toISOString(), // 2 hours from now
                 price: "100",
@@ -30,6 +30,7 @@ const prisma = new PrismaClient(); // Use the mocked PrismaClient
 server.get("/set", (req, res, next) => {
     req.session.userId = 1;
     res.status(200).send("done");
+    next()
 });
 
 describe("POST /events", () => {
@@ -43,7 +44,7 @@ describe("POST /events", () => {
             name: "Test Event",
             latitude: 45,
             longitude: 90,
-            image: "test.jpg",
+            image: "https://test.jpg",
             start_time: new Date(Date.now() + 3600000).toISOString(), // 1 hour from now
             end_time: new Date(Date.now() + 7200000).toISOString(), // 2 hours from now
             price: "100",
