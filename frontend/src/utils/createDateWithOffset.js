@@ -8,3 +8,15 @@ export const createDateWithOffset = (isoDate) => {
 
     return adjustedDate
 }
+
+// Return UTC time
+export const reverseCreateDateWithOffset = (isoDate) => {
+    const clientDate = new Date()
+    const offset = clientDate.getTimezoneOffset() * 60 * 1000
+
+    let originalDate = new Date(isoDate) 
+
+    let adjustedDate = new Date(originalDate.getTime() - offset);
+
+    return adjustedDate
+}

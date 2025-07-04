@@ -16,7 +16,7 @@ jest.mock("../generated/prisma", () => {
                 end_time: new Date(Date.now() + 7200000).toISOString(), // 2 hours from now
                 price: "100",
                 description: "Test Description",
-                tags: ["test"],
+                category: "test",
             }),
         },
     };
@@ -48,7 +48,7 @@ describe("POST /events", () => {
             end_time: new Date(Date.now() + 7200000).toISOString(), // 2 hours from now
             price: "100",
             description: "Test Description",
-            tags: ["test"],
+            category: "test",
         };
 
         const response = await agent
@@ -63,7 +63,7 @@ describe("POST /events", () => {
         expect(response.body.image).toBe(newEvent.image);
         expect(response.body.price).toBe(newEvent.price);
         expect(response.body.description).toBe(newEvent.description);
-        expect(response.body.tags).toEqual(newEvent.tags);
+        expect(response.body.category).toEqual(newEvent.category);
         expect(response.body.organizer_id).toBe(1);
     });
 
@@ -86,7 +86,7 @@ describe("POST /events", () => {
             end_time: new Date(Date.now() + 7200000).toISOString(),
             price: "100",
             description: "Test Description",
-            tags: ["test"],
+            category: "test",
         };
         const response = await agent
             .post("/events")
