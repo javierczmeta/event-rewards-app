@@ -34,8 +34,8 @@ const Register = () => {
 
     useEffect(() => {
         if (signUpMutation.isError) {
-            if (loginMutation.error.response) {
-                toast.error(loginMutation.error.response.data.message);
+            if (signUpMutation.error.response) {
+                toast.error(signUpMutation.error.response.data.message);
             } else {
                 toast.error("Unknown error...");
             }
