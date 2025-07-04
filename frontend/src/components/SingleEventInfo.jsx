@@ -3,6 +3,7 @@ import { useReverseGeocoding } from "../utils/useReverseGeocoding";
 import { useUser } from "../contexts/UserContext";
 import EventDeleteButton from "./EventDeleteButton";
 import RSVP from "./RSVP";
+import CheckIn from "./CheckIn";
 
 const SingleEventInfo = ({ chosenEvent }) => {
     const startDate = createDateWithOffset(chosenEvent.start_time);
@@ -86,7 +87,7 @@ const SingleEventInfo = ({ chosenEvent }) => {
                 <p>
                     <span>Your status:</span>
                 </p>
-                {user.id === chosenEvent.organizer_id ? <p> Organizer</p> : <RSVP />}
+                {user.id === chosenEvent.organizer_id ? <><p> Organizer: </p> <CheckIn/> </> : <RSVP />}
             </div>
             {user.id === chosenEvent.organizer_id ? (
                 <EventDeleteButton eventId={chosenEvent.id} />
