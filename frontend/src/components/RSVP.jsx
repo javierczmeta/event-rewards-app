@@ -95,7 +95,6 @@ const RSVP = () => {
                     Not Going...
                 </button>
             </div>
-            {rsvpState === "Going" ? <div className="check-in-container"><button>Check In</button></div> : <></>}
             <ToastContainer
                     position="top-right"
                     autoClose={3000}
