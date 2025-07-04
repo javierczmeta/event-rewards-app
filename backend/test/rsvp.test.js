@@ -185,3 +185,91 @@ describe("GET /events/:id/rsvp", () => {
         expect(response.body).toEqual(mockRSVP);
     });
 });
+
+describe("PATCH /events/:eventid/checkin/:userid", () => {
+    let agent;
+    beforeEach(async () => {
+        agent = request.agent(server);
+        await agent.get("/set"); // Simulate setting session
+    });
+
+    it("should return 400 if event ID is not an integer", async () => {
+        const response = await agent.patch("/events/notAnInteger/checkin/1");
+        expect(response.status).toBe(400);
+        expect(response.body.message).toContain(
+            "ID of the event has to be an integer"
+        );
+    });
+
+    it("should return 400 if user ID is not an integer", async () => {
+        const response = await agent.patch("/events/1/checkin/notAnInteger");
+        expect(response.status).toBe(400);
+        expect(response.body.message).toContain(
+            "ID of the user has to be an integer"
+        );
+    });
+
+    it("should return 401 if the session user is not the organizer", async () => {
+        prisma.event.findUnique.mockResolvedValueOnce({
+            id: 1,
+            organizer_id: 2, // Different from session user ID
+        });
+        const response = await agent.patch("/events/1/checkin/1");
+        expect(response.status).toBe(401);
+        expect(response.body.message).toContain(
+            "Only the organizer can check in people."
+        );
+    });
+
+    it("should return 404 if the event does not exist", async () => {
+        prisma.event.findUnique.mockResolvedValueOnce(null);
+        const response = await agent.patch("/events/1/checkin/1");
+        expect(response.status).toBe(404);
+        expect(response.body.message).toContain(
+            "The event with the specified ID does not exist"
+        );
+    });
+
+    it("should return 404 if RSVP does not exist", async () => {
+        prisma.event.findUnique.mockResolvedValueOnce({
+            id: 1,
+            organizer_id: 1, // Same as session user ID
+        });
+        prisma.rSVP.findMany.mockResolvedValueOnce([]);
+        const response = await agent.patch("/events/1/checkin/1");
+        expect(response.status).toBe(404);
+        expect(response.body.message).toContain(
+            "The rsvp with the specified IDs does not exist"
+        );
+    });
+
+    it("should update the RSVP with check-in time and return it", async () => {
+        const mockRSVP = {
+            id: 1,
+            user_id: 1,
+            event_id: 1,
+            status: "going",
+            check_in_time: null,
+        };
+        const updatedRSVP = {
+            ...mockRSVP,
+            check_in_time: new Date(Date.now()),
+        };
+        prisma.event.findUnique.mockResolvedValueOnce({
+            id: 1,
+            organizer_id: 1, // Same as session user ID
+        });
+        prisma.rSVP.findMany.mockResolvedValueOnce([mockRSVP]);
+        prisma.rSVP.update.mockResolvedValueOnce(updatedRSVP);
+
+        const response = await agent.patch("/events/1/checkin/1");
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual(expect.objectContaining({
+            id: 1,
+            user_id: 1,
+            event_id: 1,
+            status: "going",
+            check_in_time: expect.any(String), // Check that check_in_time is a string (ISO format)
+        }));
+    });
+});
