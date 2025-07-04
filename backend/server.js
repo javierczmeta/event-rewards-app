@@ -413,6 +413,41 @@ server.get("/events/:id/rsvp", isAuthenticated, async (req, res, next) => {
     res.json(fetchedRSVP);
 });
 
+/* [PATCH] events/id/checkin
+    Adds current time to rsvp
+    */
+server.patch("/events/:id/checkin", isAuthenticated, async (req, res, next) => {
+    let eventId = req.params.id;
+    const sessionID = req.session.userId;
+
+    // make sure id is Integer
+    if (!Number.isInteger(Number(eventId))) {
+        next({ message: "ID of the event has to be an integer", status: 400 });
+        return;
+    }
+
+    eventId = parseInt(eventId)
+
+    let fetchedRSVP = await prisma.rSVP.findMany({
+        where: { event_id: eventId, user_id: sessionID },
+    });
+    if (fetchedRSVP.length === 0) {
+        return next({
+            message: "The rsvp with the specified IDs does not exist",
+            status: 404,
+        })
+    }
+
+    fetchedRSVP = fetchedRSVP[0]
+
+    const updateRSVP = await prisma.rSVP.update({
+        where: {id: fetchedRSVP.id},
+        data: {check_in_time: new Date(Date.now())}
+    });
+
+    res.json(updateRSVP);
+});
+
 // Error handling middleware
 server.use((err, req, res, next) => {
     const { message, status = 500 } = err;
