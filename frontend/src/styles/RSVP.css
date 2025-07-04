@@ -16,28 +16,6 @@
     background-color: var(--feed-border);
 }
 
-.check-in-container  {
-    margin-left: 20px;
-    border-style: solid;
-    border-width: 1px;
-    border-color: var(--root-button-bg);
-    border-radius: 50px;
-    display: flex;
-    overflow: hidden;
-}
-
-.check-in-container button:hover,.check-in-container button:active {
-    background-color: var(--feed-border);
-}
-
-.check-in-container button {
-    padding: 10px;
-}
-
-.check-in-container button:focus {
-    background-color: white;
-}
-
 .rsvp-container button.active {
     background-color: var(--root-button-bg-hover);
     color: var(--auth-button-active-text);
