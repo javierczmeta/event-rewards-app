@@ -20,7 +20,6 @@ const CheckIn = () => {
         },
         onSuccess: () => {
             toast.success("Success");
-            queryClient.invalidateQueries("rsvp");
         },
         onError: (e) => {
             console.log(e);
