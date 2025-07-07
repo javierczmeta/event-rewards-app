@@ -485,6 +485,31 @@ server.patch(
     }
 );
 
+/* [GET] events/id/attendees
+    gets the rsvp status
+    */
+server.get("/events/:id/attendees", async (req, res, next) => {
+    let eventId = req.params.id;
+
+    // make sure id is Integer
+    if (!Number.isInteger(Number(eventId))) {
+        next({ message: "ID of the event has to be an integer", status: 400 });
+        return;
+    }
+
+    eventId = parseInt(eventId);
+
+    let fetchedRSVP = await prisma.rSVP.findMany({
+        where: { event_id: eventId, status: "Going" },
+        include: {user: {select: {profile: true}}}
+    });
+    if (fetchedRSVP.length === 0) {
+        return res.json([]);
+    }
+
+    res.json(fetchedRSVP);
+});
+
 // Error handling middleware
 server.use((err, req, res, next) => {
     const { message, status = 500 } = err;
