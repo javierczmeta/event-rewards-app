@@ -40,6 +40,10 @@ button {
     background: none;
     cursor: pointer;
 }
+
+button:focus {
+    background-color: white;
+}
 /**
  * 1. Change the font styles in all browsers.
  * 2. Remove the margin in Firefox and Safari.

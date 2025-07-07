@@ -1,8 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useParams } from "react-router";
-import { ToastContainer, toast, Slide } from "react-toastify";
+import { toast } from "react-toastify";
 import { useFormInput } from "../utils/useFormInput";
+import "../styles/CheckIn.css"
 
 const CheckIn = () => {
     const userProps = useFormInput("");
@@ -32,7 +33,7 @@ const CheckIn = () => {
     });
 
     return (
-        <form
+        <form className="checkin-form"
             onSubmit={(e) => {
                 e.preventDefault();
                 setCheckInMutation.mutate(userProps.value);
