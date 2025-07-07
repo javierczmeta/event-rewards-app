@@ -1,6 +1,5 @@
 import GeneralMap from "./GeneralMap";
 import "../styles/MapPage.css"
-import { useState } from "react";
 
 const MapPage = () => {
     return (<main className="map-main">
