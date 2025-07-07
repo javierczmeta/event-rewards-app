@@ -242,3 +242,58 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
         }));
     });
 });
+
+describe("GET /events/:id/attendees", () => {
+    let agent;
+    beforeEach(async () => {
+        agent = request.agent(server);
+    });
+
+    it("should return 400 if event ID is not an integer", async () => {
+        const response = await agent.get("/events/notAnInteger/attendees");
+        expect(response.status).toBe(400);
+        expect(response.body.message).toContain(
+            "ID of the event has to be an integer"
+        );
+    });
+
+    it("should return an empty array if no attendees are found", async () => {
+        prisma.rSVP.findMany.mockResolvedValueOnce([]);
+        const response = await agent.get("/events/1/attendees");
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual([]);
+    });
+
+    it("should return the list of attendees if they exist", async () => {
+        const mockAttendees = [
+            {
+                id: 1,
+                user_id: 1,
+                event_id: 1,
+                status: "Going",
+                user: {
+                    profile: {
+                        name: "John Doe",
+                        email: "john@example.com",
+                    },
+                },
+            },
+            {
+                id: 2,
+                user_id: 2,
+                event_id: 1,
+                status: "Going",
+                user: {
+                    profile: {
+                        name: "Jane Smith",
+                        email: "jane@example.com",
+                    },
+                },
+            },
+        ];
+        prisma.rSVP.findMany.mockResolvedValueOnce(mockAttendees);
+        const response = await agent.get("/events/1/attendees");
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual(mockAttendees);
+    });
+});
