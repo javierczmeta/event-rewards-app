@@ -205,6 +205,66 @@ server.get("/events", async (req, res, next) => {
     res.json(fetchedEvents);
 });
 
+/* [GET] /events/within-bounds
+    Returns events inside the requested area
+    Recieves 2 queries sw corned and ne corner
+*/
+server.get("/events/within-bounds", async (req, res, next) => {
+    let swLng = req.query.swLng;
+    let swLat = req.query.swLat;
+    let neLng = req.query.neLng;
+    let neLat = req.query.neLat;
+
+    // make sure corners are numbers
+    if (
+        !Number.isFinite(Number(swLng)) ||
+        !Number.isFinite(Number(swLat)) ||
+        !Number.isFinite(Number(neLng)) ||
+        !Number.isFinite(Number(neLat))
+    ) {
+        next({
+            message: "Bounding coordinates have to be numbers",
+            status: 400,
+        });
+        return;
+    }
+
+    swLng = parseFloat(swLng);
+    swLat = parseFloat(swLat);
+    neLng = parseFloat(neLng);
+    neLat = parseFloat(neLat);
+
+    // make sure corners are valid coordinates
+    if (
+        !(
+            -180 <= swLng &&
+            swLng <= 180 &&
+            -180 <= neLng &&
+            neLng <= 180 &&
+            -90 <= swLat &&
+            swLat <= 90 &&
+            -90 <= neLat &&
+            neLat <= 90
+        )
+    ) {
+        next({
+            message: "Bounding coordinates out of range",
+            status: 400,
+        });
+        return;
+    }
+
+    let fetchedEvents = await prisma.event.findMany({
+        where: {
+            longitude: { gte: swLng, lte: neLng },
+            latitude: { gte: swLat, lte: neLat },
+            end_time: { gte: new Date(Date.now()) },
+        },
+    });
+
+    res.json(fetchedEvents);
+});
+
 /* [GET] /events/id
     Returns speific event
 */
@@ -486,7 +546,7 @@ server.patch(
 );
 
 /* [GET] events/id/attendees
-    gets the rsvp status
+    gets the user profiles of the pople who are "Going" to an event
     */
 server.get("/events/:id/attendees", async (req, res, next) => {
     let eventId = req.params.id;
@@ -501,7 +561,7 @@ server.get("/events/:id/attendees", async (req, res, next) => {
 
     let fetchedRSVP = await prisma.rSVP.findMany({
         where: { event_id: eventId, status: "Going" },
-        include: {user: {select: {profile: true}}}
+        include: { user: { select: { profile: true } } },
     });
 
     res.json(fetchedRSVP);
