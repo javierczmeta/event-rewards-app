@@ -53,13 +53,9 @@ const SingleEventInfo = ({ chosenEvent }) => {
                     <span>Points:</span> {chosenEvent.rewards} points
                 </p>
                 <div className="tag-container">
-                    {chosenEvent.tags
-                        ? chosenEvent.tags.map((tag, index) => (
-                              <div key={index} className="tag">
-                                  {tag}
-                              </div>
-                          ))
-                        : "No tags"}
+                    <div className="tag">
+                        {chosenEvent.category}
+                    </div>
                 </div>
                 <p>
                     <span>Organizer: </span>
@@ -69,9 +65,10 @@ const SingleEventInfo = ({ chosenEvent }) => {
                         {chosenEvent.organizer.profile.image ? (
                             <img
                                 src={chosenEvent.organizer.profile.image}
+                                alt={`Profile picture for ${chosenEvent.organizer.profile.display_name}`}
                             ></img>
                         ) : (
-                            <></>
+                            <img src="../pfp_placeholder.jpg" alt={`Profile picture for ${chosenEvent.organizer.profile.display_name}`}></img>
                         )}
                     </div>
                     <p className="organizer-name">
