@@ -1,0 +1,27 @@
+.map-event-card {
+    padding: 5px;
+    width: 250px;
+    box-shadow: 0 0 4px rgb(0,0,0,0.1);
+    height: min(max-content, 350px);
+    border-radius: 25px;
+
+    overflow-y: auto;
+    cursor: pointer;
+}
+
+.map-event-card:hover {
+box-shadow: 0 0 8px rgb(0,0,0,0.2);
+    
+}
+
+.map-event-image{
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+.map-event-address {
+    color: #ADB5BD;
+    font-weight: 900;
+}
