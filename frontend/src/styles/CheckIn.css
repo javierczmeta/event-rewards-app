@@ -1,0 +1,10 @@
+.checkin-form {
+    display: flex;
+    gap: 10px;
+
+    border-style: solid;
+    border-width: 1px;
+
+    padding: 5px;
+    border-radius: 5px;
+}
