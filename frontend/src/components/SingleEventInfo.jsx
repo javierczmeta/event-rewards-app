@@ -4,6 +4,10 @@ import { useUser } from "../contexts/UserContext";
 import EventDeleteButton from "./EventDeleteButton";
 import RSVP from "./RSVP";
 import CheckIn from "./CheckIn";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import UserImage from "./UserImage";
+import UserBadge from "./UserBadge";
 
 const SingleEventInfo = ({ chosenEvent }) => {
     const startDate = createDateWithOffset(chosenEvent.start_time);
@@ -62,9 +66,8 @@ const SingleEventInfo = ({ chosenEvent }) => {
                 </p>
                 <div className="organizer-section">
                     <div className="organizer-image">
-                        {chosenEvent.organizer.profile.image ? (
-                            <img
-                                src={chosenEvent.organizer.profile.image}
+                        <UserImage
+                            image={chosenEvent.organizer.profile.image}
                                 alt={`Profile picture for ${chosenEvent.organizer.profile.display_name}`}
                             ></img>
                         ) : (
