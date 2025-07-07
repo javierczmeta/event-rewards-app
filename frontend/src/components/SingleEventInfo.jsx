@@ -21,6 +21,14 @@ const SingleEventInfo = ({ chosenEvent }) => {
         chosenEvent.latitude
     );
 
+    const getAttendees = useQuery({
+        queryKey: ["attendees", chosenEvent.id],
+        queryFn: () => {
+            const url = import.meta.env.VITE_SERVER_API;
+            return axios.get(`${url}/events/${chosenEvent.id}/attendees/`);
+        },
+    });
+
     return (
         <aside
             className="modal-content"
@@ -57,9 +65,7 @@ const SingleEventInfo = ({ chosenEvent }) => {
                     <span>Points:</span> {chosenEvent.rewards} points
                 </p>
                 <div className="tag-container">
-                    <div className="tag">
-                        {chosenEvent.category}
-                    </div>
+                    <div className="tag">{chosenEvent.category}</div>
                 </div>
                 <p>
                     <span>Organizer: </span>
@@ -68,11 +74,8 @@ const SingleEventInfo = ({ chosenEvent }) => {
                     <div className="organizer-image">
                         <UserImage
                             image={chosenEvent.organizer.profile.image}
-                                alt={`Profile picture for ${chosenEvent.organizer.profile.display_name}`}
-                            ></img>
-                        ) : (
-                            <img src="../pfp_placeholder.jpg" alt={`Profile picture for ${chosenEvent.organizer.profile.display_name}`}></img>
-                        )}
+                            alt={`Profile picture for ${chosenEvent.organizer.profile.display_name}`}
+                        />
                     </div>
                     <p className="organizer-name">
                         {chosenEvent.organizer.profile.display_name}
@@ -80,14 +83,31 @@ const SingleEventInfo = ({ chosenEvent }) => {
                 </div>
             </div>
             <p className="span-grid">Description: {chosenEvent.description}</p>
-            <p className="span-grid">
-                <span>People Going: </span>
-            </p>
+            <div className="span-grid user-container">
+                <p>
+                    <span>People Going: </span>
+                </p>
+                {getAttendees.isSuccess &&
+                    getAttendees.data.data.map((rsvp) => {
+                        return (
+                            <UserBadge
+                                key={rsvp.user_id}
+                                profile={rsvp.user.profile}
+                            />
+                        );
+                    })}
+            </div>
             <div className="span-grid status-container">
                 <p>
                     <span>Your status:</span>
                 </p>
-                {user.id === chosenEvent.organizer_id ? <><p> Organizer: </p> <CheckIn/> </> : <RSVP />}
+                {user.id === chosenEvent.organizer_id ? (
+                    <>
+                        <p> Organizer: </p> <CheckIn />{" "}
+                    </>
+                ) : (
+                    <RSVP />
+                )}
             </div>
             {user.id === chosenEvent.organizer_id ? (
                 <EventDeleteButton eventId={chosenEvent.id} />
