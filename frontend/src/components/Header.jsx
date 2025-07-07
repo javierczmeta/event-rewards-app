@@ -3,6 +3,7 @@ import { useUser } from "../contexts/UserContext";
 import { LogOut } from "lucide-react";
 import { Route, Routes, useNavigate } from "react-router";
 import FeedSearch from "./FeedSearch";
+import MapTools from "./MapTools";
 
 const Header = ({searchFieldProps, sortState, setSortState}) => {
     const { user, logOut } = useUser();
@@ -25,6 +26,7 @@ const Header = ({searchFieldProps, sortState, setSortState}) => {
             </div>
             <Routes>
                 <Route path="/feed" element={<FeedSearch searchFieldProps={searchFieldProps} sortState={sortState} setSortState={setSortState}/>} />
+                <Route path="/map" element={<MapTools/>}/>
                 <Route path="*" element={<div></div>} />
             </Routes>
             {user ? (
