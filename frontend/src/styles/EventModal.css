@@ -67,6 +67,7 @@
     background-color: gray;
     width: 40px;
     border-radius: 50%;
+    overflow: hidden;
 }
 
 .organizer-section{
