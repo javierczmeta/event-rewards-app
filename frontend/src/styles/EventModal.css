@@ -87,3 +87,10 @@
 .organizer-name{
     font-weight: 700;
 }
+
+.user-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 3px;
+}
