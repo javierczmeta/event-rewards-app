@@ -102,3 +102,39 @@ describe("POST /events/:id/rsvp", () => {
         });
     });
 });
+
+describe("GET /events/:id/rsvp", () => {
+    let agent;
+    beforeEach(async () => {
+        agent = request.agent(server);
+        await agent.get("/set"); // Simulate setting session
+    });
+
+    it("should return 400 if event ID is not an integer", async () => {
+        const response = await agent.get("/events/notAnInteger/rsvp");
+        expect(response.status).toBe(400);
+        expect(response.body.message).toContain(
+            "ID of the event has to be an integer"
+        );
+    });
+
+    it("should return an empty array if RSVP does not exist", async () => {
+        prisma.rSVP.findMany.mockResolvedValueOnce([]);
+        const response = await agent.get("/events/1/rsvp");
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual([]);
+    });
+
+    it("should return the RSVP if it exists", async () => {
+        const mockRSVP = {
+            id: 1,
+            user_id: 1,
+            event_id: 1,
+            status: "going",
+        };
+        prisma.rSVP.findMany.mockResolvedValueOnce([mockRSVP]);
+        const response = await agent.get("/events/1/rsvp");
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual(mockRSVP);
+    });
+});
