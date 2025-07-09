@@ -51,3 +51,8 @@
     field-sizing: content;
     border: none;
 }
+
+.feed-tool-container.active {
+    background-color: #9E643C;
+    color: white;
+}
