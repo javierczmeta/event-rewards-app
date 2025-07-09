@@ -26,9 +26,11 @@ function App() {
     //Sorting states
     const [sortState, setSortState] = useState("")
 
+    const [isRecommending,setIsRecommending] = useState(false)
+
     return (
         <>
-            <Header searchFieldProps={searchFieldProps} sortState={sortState} setSortState={setSortState}/>
+            <Header searchFieldProps={searchFieldProps} sortState={sortState} setSortState={setSortState} setIsRecommending={setIsRecommending} isRecommending={isRecommending}/>
             <Routes>
                 <Route path="/" element={<ProtectedRoot/>} />
                 <Route element={<UserAuthPage />}>
@@ -36,7 +38,7 @@ function App() {
                     <Route path="/signup" element={<Register />} />
                 </Route>
                 <Route path="/create" element={<ProtectedCreate/>}/>
-                <Route path="/feed/*" element={<ProtectedFeed searchFieldProps={searchFieldProps} sortState={sortState}/>}/>
+                <Route path="/feed/*" element={<ProtectedFeed searchFieldProps={searchFieldProps} sortState={sortState} isRecommending={isRecommending}/>}/>
                 <Route path="/map" element={<ProtectedMap/>}/>
             </Routes>
             <Footer />

@@ -5,8 +5,7 @@ import axios from 'axios'
 import EventModal from "./EventModal";
 import { Routes, Route } from "react-router";
 
-const EventFeed = ({searchFieldProps, sortState}) => {
-
+const EventFeed = ({ searchFieldProps, sortState, isRecommending }) => {
     const getEvents = useQuery({
         queryKey: ['events', searchFieldProps.value, sortState],
         queryFn: () => {
