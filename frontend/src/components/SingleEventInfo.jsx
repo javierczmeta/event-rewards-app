@@ -84,7 +84,7 @@ const SingleEventInfo = ({ chosenEvent }) => {
                 <p>
                     <span>People Going: </span>
                 </p>
-                {getAttendees.isSuccess &&
+                {getAttendees.isSuccess && 
                     getAttendees.data.data.map((rsvp) => {
                         return (
                             <UserBadge
