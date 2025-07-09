@@ -6,7 +6,13 @@ const session = require("express-session");
 const { hashPassword, verifyPassword, calculateRewards } = require("./utils");
 
 const { PrismaClient } = require("./generated/prisma");
-const { newUserSchema, loginSchema, isAuthenticated, newEventSchema } = require("./validation");
+const {
+    newUserSchema,
+    loginSchema,
+    isAuthenticated,
+    newEventSchema,
+    rsvpValidation,
+} = require("./validation");
 const prisma = new PrismaClient();
 
 let sessionConfig = {
@@ -288,25 +294,91 @@ server.post("/events", isAuthenticated, async (req, res, next) => {
         return next({ status: 400, message: error.details[0].message });
     }
 
-    let { name, latitude, longitude, image, start_time, end_time, price, description, category } = req.body;
+    let {
+        name,
+        latitude,
+        longitude,
+        image,
+        start_time,
+        end_time,
+        price,
+        description,
+        category,
+    } = req.body;
 
     let event = {
         name,
-            latitude,
-            longitude,
-            image,
-            start_time: new Date(start_time),
-            end_time: new Date(end_time),
-            price,
-            description,
-            category,
-            organizer_id: req.session.userId
-    }
+        latitude,
+        longitude,
+        image,
+        start_time: new Date(start_time),
+        end_time: new Date(end_time),
+        price,
+        description,
+        category,
+        organizer_id: req.session.userId,
+    };
 
-    event = {...event, rewards: await calculateRewards(0, event)}
+    event = { ...event, rewards: await calculateRewards(0, event) };
 
     const added = await prisma.event.create({
         data: event,
+    });
+
+    res.json(added);
+});
+
+/* [POST] events/id/rsvp
+    creates a new rsvp
+    */
+server.post("/events/:id/rsvp", isAuthenticated, async (req, res, next) => {
+    const eventId = req.params.id;
+    const sessionID = req.session.userId;
+
+    // Validate with joi
+    const { error } = rsvpValidation.validate(req.body);
+    if (error) {
+        return next({ status: 400, message: error.details[0].message });
+    }
+
+    // make sure id is Integer
+    if (!Number.isInteger(Number(eventId))) {
+        next({ message: "ID of the event has to be an integer", status: 400 });
+        return;
+    }
+
+    // avoid duplicates
+    let fetchedRSVP = await prisma.rSVP.findMany({
+        where: { event_id: parseInt(eventId), user_id: sessionID },
+    });
+    if (fetchedRSVP.length !== 0) {
+        return next({
+            message: "RSVP data for this user and event already exixts",
+            status: 409,
+        });
+    }
+
+    // confirm event exists
+    let fetchedEvent = await prisma.event.findUnique({
+        where: { id: parseInt(eventId) },
+    });
+    if (!fetchedEvent) {
+        return next({
+            message: "The event with the specified ID does not exist",
+            status: 404,
+        });
+    }
+
+    let { status } = req.body;
+
+    let newRsvp = {
+        user_id: sessionID,
+        event_id: parseInt(eventId),
+        status,
+    };
+
+    const added = await prisma.rSVP.create({
+        data: newRsvp
     });
 
     res.json(added);
