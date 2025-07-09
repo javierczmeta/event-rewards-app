@@ -3,7 +3,7 @@ import "../styles/MapEventCard.css";
 import { useReverseGeocoding } from "../utils/useReverseGeocoding";
 import { useNavigate } from "react-router";
 
-const MapEventCard = ({ event }) => {
+const MapEventCard = ({ event, mapRef }) => {
     const getEventLocation = useReverseGeocoding(
         event.id,
         event.longitude,
