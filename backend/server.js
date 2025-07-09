@@ -13,7 +13,7 @@ const {
     newEventSchema,
     rsvpValidation,
 } = require("./validation");
-const prisma = new PrismaClient();
+const { prisma } = require("./prismaClient");
 
 let sessionConfig = {
     name: "sessionId",
