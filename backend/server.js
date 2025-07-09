@@ -351,12 +351,6 @@ server.post("/events/:id/rsvp", isAuthenticated, async (req, res, next) => {
     let fetchedRSVP = await prisma.rSVP.findMany({
         where: { event_id: parseInt(eventId), user_id: sessionID },
     });
-    if (fetchedRSVP.length !== 0) {
-        return next({
-            message: "RSVP data for this user and event already exixts",
-            status: 409,
-        });
-    }
 
     // confirm event exists
     let fetchedEvent = await prisma.event.findUnique({
@@ -377,11 +371,19 @@ server.post("/events/:id/rsvp", isAuthenticated, async (req, res, next) => {
         status,
     };
 
-    const added = await prisma.rSVP.create({
-        data: newRsvp
-    });
-
-    res.json(added);
+    // Already one
+    if (fetchedRSVP.length !== 0) {
+        const updateRSVP = await prisma.rSVP.update({
+            where: { id: fetchedRSVP[0].id },
+            data: newRsvp,
+        });
+        res.json(updateRSVP);
+    } else {
+        const added = await prisma.rSVP.create({
+            data: newRsvp,
+        });
+        res.json(added);
+    }
 });
 
 // Error handling middleware
