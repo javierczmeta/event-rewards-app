@@ -32,7 +32,7 @@ const EventDeleteButton = ({ eventId }) => {
             <button
                 className="delete-button"
                 onClick={() => {
-                    deleteEventMutation.mutate(eventId);
+                    if (confirm("Are you sure?")){deleteEventMutation.mutate(eventId);}
                 }}
             >
                 <Trash color="white" strokeWidth={2} size={32} />
