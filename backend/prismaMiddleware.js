@@ -55,14 +55,14 @@ async function verifyRsvpExistance(req, res, next) {
         userId = req.params.userId
     }
 
-    let fetchedRSVP = await prisma.rSVP.findMany({
+    let fetchedRSVP = await prisma.rSVP.findFirst({
         where: { event_id: req.params.eventId, user_id: userId },
     });
-    if (fetchedRSVP.length === 0) {
+    if (!fetchedRSVP) {
         return res.status(404).json({message: "RSVP data for this user and event does not exist"})
     }
 
-    req.rsvp = fetchedRSVP[0];
+    req.rsvp = fetchedRSVP;
     next();
 }
 
