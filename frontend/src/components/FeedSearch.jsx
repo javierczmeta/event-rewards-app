@@ -4,7 +4,7 @@ import SearchBar from "./SearchBar";
 import Sorter from "./Sorter";
 import { useNavigate } from "react-router";
 
-const FeedSearch = ({ searchFieldProps, sortState, setSortState }) => {
+const FeedSearch = ({ searchFieldProps, sortState, setSortState, setIsRecommending, isRecommending}) => {
     const navigate = useNavigate();
 
     return (
