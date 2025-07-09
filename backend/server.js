@@ -19,6 +19,8 @@ const {
     rsvpValidation,
     verifyParamstoInt,
 } = require("./validation");
+
+const { calculateCategoryWeights, probabilityGoing } = require("./recommendation");
 const { prisma } = require("./prismaClient");
 
 let sessionConfig = {
@@ -211,6 +213,33 @@ server.get("/events", async (req, res, next) => {
     res.json(fetchedEvents);
 });
 
+/* [GET] recommended events
+*/
+server.get("/events/recommended", isAuthenticated, async (req, res, next) => {
+    const sessionID = req.session.userId;
+
+    // Get events that have not happened, user is not organizer, and user status is not "Going"
+    const allEvents = await prisma.event.findMany({
+        where: {organizer_id: {not: sessionID}, rsvps: {none: {user_id: sessionID, status: "Going"}}, start_time: {gte: new Date(Date.now())}}
+    });
+
+    const weights = await calculateCategoryWeights(sessionID)
+
+    for (let i = 0; i < allEvents.length; i++) {
+        const probabilityDueToSimilarity = await probabilityGoing(sessionID, allEvents[i].id)
+
+        const multiplier = (weights[allEvents[i].category] + probabilityDueToSimilarity)
+
+        allEvents[i].score = allEvents[i].rewards * multiplier
+        allEvents[i].multiplier = multiplier
+    }
+
+    allEvents.sort((a, b) => {return b.score - a.score})
+
+    res.json(allEvents.slice(0,5));
+});
+
+
 /* [GET] /events/within-bounds
     Returns events inside the requested area
     Recieves 2 queries sw corned and ne corner
@@ -307,23 +336,23 @@ server.delete(
     isAuthenticated,
     verifyParamstoInt,
     async (req, res, next) => {
-    let eventId = req.params.id;
-    const sessionID = req.session.userId;
+        let eventId = req.params.id;
+        const sessionID = req.session.userId;
 
-    try {
-        let deletedEvent = await prisma.event.delete({
+        try {
+            let deletedEvent = await prisma.event.delete({
                 where: { id: eventId, organizer_id: sessionID },
-        });
-        return res.json(deletedEvent);
-    } catch (e) {
-        if (e.meta) {
-            // Means it was a prisma error (no record found)
-            next({
-                status: 404,
-                message:
-                    "No event with the specified ID was found for this user",
             });
-        } else {
+            return res.json(deletedEvent);
+        } catch (e) {
+            if (e.meta) {
+                // Means it was a prisma error (no record found)
+                next({
+                    status: 404,
+                    message:
+                        "No event with the specified ID was found for this user",
+                });
+            } else {
                 next({ message: "Internal server error" });
             }
             return;
@@ -385,13 +414,13 @@ server.post(
     verifyParamstoInt,
     verifyEventExistance,
     async (req, res, next) => {
-    const sessionID = req.session.userId;
+        const sessionID = req.session.userId;
 
-    // Validate with joi
-    const { error } = rsvpValidation.validate(req.body);
-    if (error) {
-        return next({ status: 400, message: error.details[0].message });
-    }
+        // Validate with joi
+        const { error } = rsvpValidation.validate(req.body);
+        if (error) {
+            return next({ status: 400, message: error.details[0].message });
+        }
 
     // avoid duplicates
     let fetchedRSVP = await prisma.rSVP.findFirst({
@@ -447,7 +476,7 @@ server.get(
         return res.json([]);
     }
 
-    res.json(fetchedRSVP);
+        res.json(fetchedRSVP);
     }
 );
 
@@ -497,7 +526,7 @@ server.get(
         include: { user: { select: { profile: true } } },
     });
 
-    res.json(fetchedRSVP);
+        res.json(fetchedRSVP);
     }
 );
 
