@@ -8,9 +8,10 @@ import { useNavigate } from "react-router";
 import { reverseCreateDateWithOffset } from "../utils/createDateWithOffset";
 
 const CreatePage = () => {
+    const MENLO_PARK_COORDS = [-122.1486120978705,37.4845092388847]
     const formInputs = {
-        longitudeProps: useFormInput(-122.1486120978705),
-        latitudeProps: useFormInput(37.4845092388847),
+        longitudeProps: useFormInput(MENLO_PARK_COORDS[0]),
+        latitudeProps: useFormInput(MENLO_PARK_COORDS[1]),
         nameProps: useFormInput(""),
         imageProps: useFormInput(""),
         startDateProps: useFormInput(""),

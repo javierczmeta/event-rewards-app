@@ -11,7 +11,7 @@ const CreateMap = ({formInputs}) => {
         mapboxgl.accessToken = mapboxToken;
         mapRef.current = new mapboxgl.Map({
             container: mapContainerRef.current,
-            center: [-122.150436, 37.48187], // starting position [lng, lat]
+            center: [formInputs.longitudeProps.value, formInputs.latitudeProps.value], // starting position [lng, lat]
             zoom: 15, // starting zoom
         });
 
