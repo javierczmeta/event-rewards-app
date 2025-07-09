@@ -27,7 +27,7 @@ const newEventSchema = Joi.object({
     end_time: Joi.date().required().min(Joi.ref('start_time')),
     price: Joi.string().required(), 
     description: Joi.string().required(),
-    tags: Joi.array().items(Joi.string()),
+    category: Joi.string(),
 }).required();
 
 // Authentication Verification

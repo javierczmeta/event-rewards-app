@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Event from "./Event";
+import {GalleryVerticalEnd, DiamondPlus} from 'lucide-react';
 
 const RootPage = () => {
     const { user } = useUser();
@@ -30,7 +31,7 @@ const RootPage = () => {
                         navigate("/feed");
                     }}
                 >
-                    Browse Events
+                    <GalleryVerticalEnd/> Browse Events
                 </button>
                 <button
                     className="root-button"
@@ -38,7 +39,7 @@ const RootPage = () => {
                         navigate("/create");
                     }}
                 >
-                    Create Event
+                    <DiamondPlus/>Create Event
                 </button>
             </div>
             <div>
