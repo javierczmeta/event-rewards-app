@@ -101,6 +101,22 @@ describe("POST /events/:id/rsvp", () => {
             status: "going",
         });
     });
+    it("should return 400 if already checked in", async () => {
+        prisma.rSVP.findMany.mockResolvedValueOnce([{
+            id: 1,
+            user_id: 1,
+            event_id: 1,
+            status: "Going",
+            check_in_time: new Date(Date.now())
+        }]);
+        prisma.event.findUnique.mockResolvedValueOnce({ id: 1 });
+        const response = await agent
+            .post("/events/1/rsvp")
+            .send({ status: "Going" });
+            console.log(response.body)
+        expect(response.status).toBe(400);
+        expect(response.body.message).toContain("already checked in");
+    });
 });
 
 describe("GET /events/:id/rsvp", () => {
