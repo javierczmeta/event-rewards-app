@@ -30,15 +30,22 @@ async function verifyPassword(plainPassword, hash) {
     }
 }
 
-
 /**
  * Gives a point calue to an event
- *  Utilizes a logarithmic function for rsvps and a linear factor depending on event duration
+ * @param rsvpCount Integer number of current rsvps
+ * @param event Object
  */
-async function calculateRewards(rsvpCount, event) {
-    const rsvpReward = 2500 * Math.log10(rsvpCount + 1) + 1000 
-    const timeFactor = 1/2 * 1/3600 * ((new Date(event.end_time)).getTime() - (new Date(event.start_time)).getTime()) * 1/1000
-    return Math.round(rsvpReward * timeFactor)
+function calculateRewards(rsvpCount, event) {
+    const rsvpReward = 1000 / (rsvpCount + 20) + 50;
+    const miliseconds =
+        new Date(event.end_time).getTime() -
+        new Date(event.start_time).getTime();
+    const timeFactor = (Math.log(((miliseconds)/1000 * 1/60))+1)/(Math.log(60)) // Log_60(minutes + 1)
+    return Math.round(rsvpReward * timeFactor);
 }
 
-module.exports = { hashPassword, verifyPassword, calculateRewards };
+module.exports = {
+    hashPassword,
+    verifyPassword,
+    calculateRewards,
+};
