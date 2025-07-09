@@ -10,7 +10,6 @@ const Event = ({ event }) => {
 
     const {user} = useUser()
 
-
     const getEventLocation = useReverseGeocoding(event.id, event.longitude, event.latitude)
 
     return (

@@ -25,6 +25,10 @@
     --div-border: #CED4DA;
     --feed-bg: #F8F9FA;
     --feed-border: #E9ECEF;
+
+    --root-button-bg: #E04F4F;
+    --root-button-bg-hover: #c1121f;
+    --root-button-border: #780000;
 }
 
 button {
