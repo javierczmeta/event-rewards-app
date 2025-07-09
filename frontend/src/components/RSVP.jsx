@@ -26,19 +26,10 @@ const RSVP = () => {
 
     const setRSVPMutation = useMutation({
         mutationFn: (status) => {
-            if (!getRSVP.isSuccess) {throw new Error("Did not fetch data.")}
             const url = import.meta.env.VITE_SERVER_API;
-            
-            if (getRSVP.data.data.length === 0) {
                 return axios.post(`${url}/events/${eventID}/rsvp`, {status} , {
                 withCredentials: true,
             });
-            } else {
-                return axios.patch(`${url}/events/${eventID}/rsvp`, {status} , {
-                withCredentials: true,
-            });
-            }
-            
         },
         onSuccess: () => {
             toast.success("Success");
