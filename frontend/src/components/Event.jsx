@@ -1,13 +1,16 @@
 import "../styles/Event.css";
+import { createDateWithOffset } from "../utils/createDateWithOffset";
 import { useReverseGeocoding } from "../utils/useReverseGeocoding";
+import { useNavigate } from "react-router";
 
 const Event = ({ event }) => {
-    const date = new Date(event.start_time).toLocaleString();
+    const date = createDateWithOffset(event.start_time).toLocaleString();
+    const navigate = useNavigate()
 
     const getEventLocation = useReverseGeocoding(event.id, event.longitude, event.latitude)
 
     return (
-        <div className="event-card">
+        <div className="event-card" onClick={() => {navigate(`/feed/${event.id}`)}}>
             <div className="event-image">
                {event.image ? <img src={event.image} alt={`Image for the event: ${event.name}`}></img> : <img src='./event_placeholder.svg' alt={`Placeholder Image`}></img>}
             </div>

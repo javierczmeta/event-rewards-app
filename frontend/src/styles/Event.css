@@ -15,6 +15,17 @@
     gap: 20px;
 
     box-shadow: 0 0 2px rgb(0, 0, 0, 0.1);
+
+    cursor: pointer;
+}
+
+.event-card:hover{
+    transform: scale(1.01);
+    box-shadow: 0 0 4px rgb(0, 0, 0, 0.3);
+}
+
+.event-card:active{
+    transform: scale(0.99);
 }
 
 .event-image {

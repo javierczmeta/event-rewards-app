@@ -31,7 +31,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Register />} />
                 </Route>
-                <Route path="/feed" element={<ProtectedFeed searchFieldProps={searchFieldProps} sortState={sortState}/>}/>
+                <Route path="/feed/*" element={<ProtectedFeed searchFieldProps={searchFieldProps} sortState={sortState}/>}/>
             </Routes>
             <Footer />
         </>
