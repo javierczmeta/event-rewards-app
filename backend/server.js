@@ -395,7 +395,7 @@ server.post(
 
     // avoid duplicates
     let fetchedRSVP = await prisma.rSVP.findFirst({
-        where: { event_id: parseInt(eventId), user_id: sessionID },
+        where: { event_id: req.params.eventId, user_id: sessionID },
     });
 
 
@@ -408,10 +408,11 @@ server.post(
     };
 
     // Already one
+    let update
     if (fetchedRSVP) {
-        if (fetchedRSVP.check_in_time) {next({status: 400, message: "You have already checked in to this event!"});}
+        if (fetchedRSVP.check_in_time) {return next({status: 400, message: "You have already checked in to this event!"});}
 
-        const updateRSVP = await prisma.rSVP.update({
+        update = await prisma.rSVP.update({
             where: { id: fetchedRSVP.id },
             data: newRsvp,
         });
