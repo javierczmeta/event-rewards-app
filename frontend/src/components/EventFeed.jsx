@@ -19,6 +19,8 @@ const EventFeed = ({searchFieldProps, sortState}) => {
         refetchInterval: 1000 * 60 * 5
     });
 
+
+
     return (
         <main className="feed-main">
             <div className="events-container">
