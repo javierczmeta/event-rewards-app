@@ -35,7 +35,7 @@ async function calculateCategoryWeights(userId) {
 
     const countsByCategoryTotal = fetchedEventsN.reduce((acc, event) => {
         const category = event.event.category;
-        acc[category]--;
+        acc[category] = Math.max(0, acc[category] - 1);
         return acc;
     }, countsByCategoryG);
 
