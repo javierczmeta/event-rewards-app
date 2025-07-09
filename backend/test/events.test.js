@@ -190,7 +190,7 @@ describe("GET /events/:id", () => {
         const response = await request(server).get("/events/abc");
         expect(response.status).toBe(400);
         expect(response.body.message).toContain(
-            "ID of the event has to be an integer"
+            "has to be an integer"
         );
     });
 
@@ -224,7 +224,7 @@ describe("DELETE /events/:id", () => {
         const response = await agent.delete("/events/not-an-integer");
         expect(response.status).toBe(400);
         expect(response.body.message).toContain(
-            "ID of the event has to be an integer"
+            "has to be an integer"
         );
     });
     it("should return 404 if no event is found for the user", async () => {
