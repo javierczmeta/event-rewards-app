@@ -373,6 +373,8 @@ server.post("/events/:id/rsvp", isAuthenticated, async (req, res, next) => {
 
     // Already one
     if (fetchedRSVP.length !== 0) {
+        if (fetchedRSVP[0].check_in_time) {next({status: 400, message: "You have already checked in to this event!"});}
+
         const updateRSVP = await prisma.rSVP.update({
             where: { id: fetchedRSVP[0].id },
             data: newRsvp,
@@ -469,7 +471,7 @@ server.patch("/events/:eventid/checkin/:userid", isAuthenticated, async (req, re
 
     const updateRSVP = await prisma.rSVP.update({
         where: {id: fetchedRSVP.id},
-        data: {check_in_time: new Date(Date.now())}
+        data: {status: "Going", check_in_time: new Date(Date.now())}
     });
 
     res.json(updateRSVP);
