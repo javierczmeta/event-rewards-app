@@ -15,6 +15,10 @@ jest.mock("../generated/prisma", () => {
             findUnique: jest.fn(),
             update: jest.fn()
         },
+        profile: {
+            findUnique: jest.fn(),
+            update: jest.fn()
+        }
     };
     return { PrismaClient: jest.fn(() => mPrismaClient) };
 });
@@ -24,6 +28,7 @@ jest.mock("../utils", () => ({
 }));
 
 const { PrismaClient } = require("../generated/prisma");
+const { updatePoints } = require("../prismaMiddleware");
 const prisma = new PrismaClient(); // Use the mocked PrismaClient
 
 // Mock setting userID
@@ -123,7 +128,7 @@ describe("POST /events/:id/rsvp", () => {
         const response = await agent
             .post("/events/1/rsvp")
             .send({ status: "Going" });
-
+            
         expect(response.status).toBe(400);
         expect(response.body.message).toContain("already checked in");
     });
@@ -171,7 +176,7 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
     beforeEach(async () => {
         agent = request.agent(server);
         await agent.get("/set"); // Simulate setting session
-        jest.resetAllMocks()
+        jest.resetAllMocks();
     });
 
     it("should return 400 if event ID is not an integer", async () => {
@@ -222,6 +227,39 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
         );
     });
 
+    it("should return 400 if user status is 'Not Going'", async () => {
+        prisma.event.findUnique.mockResolvedValueOnce({
+            id: 1,
+            organizer_id: 1, // Same as session user ID
+        });
+        prisma.rSVP.findMany.mockResolvedValueOnce([{
+            id: 1,
+            status: "Not Going",
+        }]);
+        const response = await agent.patch("/events/1/checkin/1");
+        expect(response.status).toBe(400);
+        expect(response.body.message).toContain(
+            "User has to change status before checking in."
+        );
+    });
+
+    it("should return 409 if user is already checked in", async () => {
+        prisma.event.findUnique.mockResolvedValueOnce({
+            id: 1,
+            organizer_id: 1, // Same as session user ID
+        });
+        prisma.rSVP.findMany.mockResolvedValueOnce([{
+            id: 1,
+            status: "Going",
+            check_in_time: new Date(Date.now()),
+        }]);
+        const response = await agent.patch("/events/1/checkin/1");
+        expect(response.status).toBe(409);
+        expect(response.body.message).toContain(
+            "User already checked in!"
+        );
+    });
+
     it("should update the RSVP with check-in time and return it", async () => {
         const mockRSVP = {
             id: 1,
@@ -241,7 +279,15 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
         prisma.rSVP.findFirst.mockResolvedValueOnce(mockRSVP);
         prisma.rSVP.update.mockResolvedValueOnce(updatedRSVP);
 
+        prisma.rSVP.count.mockResolvedValueOnce(1);
+        prisma.event.findUnique.mockResolvedValueOnce({ id: 1 });
+        prisma.event.update.mockResolvedValueOnce({ id: 1, rewards: 1000 });
+
+        prisma.profile.findUnique.mockResolvedValueOnce({ id: 1, points: 0 });
+        prisma.profile.update.mockResolvedValueOnce({ id: 1, points: 1000 });
+
         const response = await agent.patch("/events/1/checkin/1");
+
         expect(response.status).toBe(200);
         expect(response.body).toEqual(
             expect.objectContaining({
