@@ -6,6 +6,7 @@ import axios from "axios";
 import Event from "./Event";
 import {GalleryVerticalEnd, DiamondPlus} from 'lucide-react';
 import UserImage from "./UserImage";
+import LoaderEvent from "./LoaderEvent";
 
 const RootPage = () => {
     const { user } = useUser();
@@ -52,6 +53,13 @@ const RootPage = () => {
             <div>
                 <h4>My Events</h4>
                 <div className="organized-container">
+                    {getOrganizedEvents.isPending && 
+                    <>
+                        <LoaderEvent/>
+                        <LoaderEvent/>
+                        <LoaderEvent/>
+                        <LoaderEvent/>
+                    </>}
                     {getOrganizedEvents.data &&
                         getOrganizedEvents.data.data.map((event) => (
                             <Event key={event.id} event={event} />

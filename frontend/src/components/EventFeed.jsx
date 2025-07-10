@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import EventModal from "./EventModal";
 import { Routes, Route } from "react-router";
+import LoaderEvent from "./LoaderEvent";
 
 const EventFeed = ({ searchFieldProps, sortState, isRecommending }) => {
     const getEvents = useQuery({
@@ -42,9 +43,12 @@ const EventFeed = ({ searchFieldProps, sortState, isRecommending }) => {
             {isRecommending ? (
                 <div className="events-container">
                     {getRecommended.isPending && (
-                        <div>
-                            <p>Loading...</p>
-                        </div>
+                        <>
+                            <LoaderEvent/>
+                            <LoaderEvent/>
+                            <LoaderEvent/>
+                            <LoaderEvent/>
+                        </>
                     )}
                     {getRecommended.isError && <div>{getEvents.error}</div>}
                     {getRecommended.isSuccess &&
@@ -59,9 +63,12 @@ const EventFeed = ({ searchFieldProps, sortState, isRecommending }) => {
             ) : (
                 <div className="events-container">
                     {getEvents.isPending && (
-                        <div>
-                            <p>Loading...</p>
-                        </div>
+                        <>
+                            <LoaderEvent/>
+                            <LoaderEvent/>
+                            <LoaderEvent/>
+                            <LoaderEvent/>
+                        </>
                     )}
                     {getEvents.isError && <div>{getEvents.error}</div>}
                     {getEvents.isSuccess &&
