@@ -5,14 +5,15 @@ import { useEffect } from "react";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import { useUser } from "../contexts/UserContext";
 import { useNavigate } from "react-router";
+import LoadingGif from "./LoadingGif";
 
 const Login = () => {
     const usernameProps = useFormInput("");
     const passProps = useFormInput("");
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
-    const {user, refetch} = useUser()
+    const { user, refetch } = useUser();
 
     const loginMutation = useMutation({
         mutationFn: (user) => {
@@ -35,8 +36,10 @@ const Login = () => {
 
         loginMutation.mutate(user);
     };
-    
+
     useEffect(() => {
+        if (loginMutation.isPending) {
+        }
         if (loginMutation.isError) {
             if (loginMutation.error.response) {
                 toast.error(loginMutation.error.response.data.message);
@@ -46,7 +49,7 @@ const Login = () => {
         }
         if (loginMutation.isSuccess) {
             toast.success("⭐ Success! Redirecting...");
-            refetch()
+            refetch();
         }
     }, [loginMutation.status]);
 
@@ -68,9 +71,13 @@ const Login = () => {
                         required
                     ></input>
                 </div>
-                <button className="action-button" type="submit">
-                    Log In
-                </button>
+                {loginMutation.isPending || loginMutation.isSuccess ? (
+                    <LoadingGif />
+                ) : (
+                    <button className="action-button" type="submit">
+                        Log In
+                    </button>
+                )}
             </form>
             <ToastContainer
                 position="top-right"

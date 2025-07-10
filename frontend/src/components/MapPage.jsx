@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useState, useRef } from "react";
 import MapEventCard from "./MapEventCard";
+import LoadingGif from "./LoadingGif";
 
 const MapPage = () => {
     const [mapEvents, setMapEvents] = useState([]);
@@ -32,8 +33,9 @@ const MapPage = () => {
     return (
         <main className="map-main">
             <div className="map-events-container">
-                {getEventsInMapMutation.isPending ? <h2>Loading...</h2> : mapEvents.map((event) => (
+                {getEventsInMapMutation.isPending ? <LoadingGif/> : mapEvents.map((event) => (
                     <MapEventCard key={event.id} event={event} mapRef={mapRef}/>))}
+                {getEventsInMapMutation.isSuccess && mapEvents.length === 0 && <h2>Nothing to show...</h2>}
             </div>
             <GeneralMap
                 className="page-map"

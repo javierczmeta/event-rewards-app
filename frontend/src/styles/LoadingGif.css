@@ -1,0 +1,17 @@
+.loading-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    height: 100px;
+
+    gap: 10px
+}
+
+.loading-gif {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+
+    width: 30px;
+}
