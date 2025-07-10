@@ -506,7 +506,7 @@ server.get(
     }
 );
 
-/* [PATCH] events/id/checkin
+/* [PATCH] events/id/checkin/id
     Adds current time to rsvp
     */
 server.patch(
@@ -542,11 +542,16 @@ server.patch(
 
         // Update it
         const updateRSVP = await prisma.rSVP.update({
-            where: {id: fetchedRSVP.id},
+            where: {id: req.rsvp.id},
             data: {status: "Going", check_in_time: new Date(Date.now())}
         });
 
-        await updatePoints(prisma, req.params.eventId);
+        const updatedEvent = await updatePoints(prisma, req.params.eventId); 
+
+        // Reward points to user
+        let profile = await prisma.profile.findUnique({where: {user_id: req.params.userId}})
+        let addPoints = await prisma.profile.update({where: {id: profile.id}, data: {points: profile.points + updatedEvent.rewards}})
+
         res.json(updateRSVP);
     }
 );
