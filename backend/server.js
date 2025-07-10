@@ -348,7 +348,7 @@ server.post("/events/:id/rsvp", isAuthenticated, async (req, res, next) => {
     }
 
     // avoid duplicates
-    let fetchedRSVP = await prisma.rSVP.findMany({
+    let fetchedRSVP = await prisma.rSVP.findFirst({
         where: { event_id: parseInt(eventId), user_id: sessionID },
     });
 
@@ -372,11 +372,11 @@ server.post("/events/:id/rsvp", isAuthenticated, async (req, res, next) => {
     };
 
     // Already one
-    if (fetchedRSVP.length !== 0) {
-        if (fetchedRSVP[0].check_in_time) {next({status: 400, message: "You have already checked in to this event!"});}
+    if (fetchedRSVP) {
+        if (fetchedRSVP.check_in_time) {next({status: 400, message: "You have already checked in to this event!"});}
 
         const updateRSVP = await prisma.rSVP.update({
-            where: { id: fetchedRSVP[0].id },
+            where: { id: fetchedRSVP.id },
             data: newRsvp,
         });
         res.json(updateRSVP);
@@ -403,14 +403,12 @@ server.get("/events/:id/rsvp", isAuthenticated, async (req, res, next) => {
 
     eventId = parseInt(eventId)
 
-    let fetchedRSVP = await prisma.rSVP.findMany({
+    let fetchedRSVP = await prisma.rSVP.findFirst({
         where: { event_id: eventId, user_id: sessionID },
     });
-    if (fetchedRSVP.length === 0) {
+    if (!fetchedRSVP) {
         return res.json([]);
     }
-
-    fetchedRSVP = fetchedRSVP[0]
 
     res.json(fetchedRSVP);
 });
@@ -457,17 +455,15 @@ server.patch("/events/:eventid/checkin/:userid", isAuthenticated, async (req, re
     }
 
     
-    let fetchedRSVP = await prisma.rSVP.findMany({
+    let fetchedRSVP = await prisma.rSVP.findFirst({
         where: { event_id: eventId, user_id: userId },
     });
-    if (fetchedRSVP.length === 0) {
+    if (!fetchedRSVP) {
         return next({
             message: "The rsvp with the specified IDs does not exist",
             status: 404,
         })
     }
-
-    fetchedRSVP = fetchedRSVP[0]
 
     const updateRSVP = await prisma.rSVP.update({
         where: {id: fetchedRSVP.id},
