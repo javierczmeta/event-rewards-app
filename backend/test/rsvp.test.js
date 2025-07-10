@@ -232,10 +232,10 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
             id: 1,
             organizer_id: 1, // Same as session user ID
         });
-        prisma.rSVP.findMany.mockResolvedValueOnce([{
+        prisma.rSVP.findFirst.mockResolvedValueOnce({
             id: 1,
             status: "Not Going",
-        }]);
+        });
         const response = await agent.patch("/events/1/checkin/1");
         expect(response.status).toBe(400);
         expect(response.body.message).toContain(
@@ -248,11 +248,11 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
             id: 1,
             organizer_id: 1, // Same as session user ID
         });
-        prisma.rSVP.findMany.mockResolvedValueOnce([{
+        prisma.rSVP.findFirst.mockResolvedValueOnce({
             id: 1,
             status: "Going",
             check_in_time: new Date(Date.now()),
-        }]);
+        });
         const response = await agent.patch("/events/1/checkin/1");
         expect(response.status).toBe(409);
         expect(response.body.message).toContain(
