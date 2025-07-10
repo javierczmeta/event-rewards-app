@@ -3,6 +3,7 @@ import "../styles/EventModal.css";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import SingleEventInfo from "./SingleEventInfo";
+import LoadingGif from "./LoadingGif";
 
 const EventModal = () => {
     const {eventID} = useParams()
@@ -23,7 +24,7 @@ const EventModal = () => {
         return (
             <div className="modal-overlay">
             <aside className="modal-content">
-                <h4>Loading...</h4>
+                <LoadingGif/>
             </aside>
         </div>
         )

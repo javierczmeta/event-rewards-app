@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect } from "react";
 import { ToastContainer, toast, Slide } from "react-toastify";
+import LoadingGif from "./LoadingGif";
 
 const Register = () => {
     const nameInput = useFormInput("");
@@ -87,13 +88,13 @@ const Register = () => {
                 ></input>
                 <label>Date of Birth:</label>
                 <input type="date" {...dobInput} required></input>
-                <button
-                    className="action-button"
-                    type="submit"
-                    disabled={signUpMutation.isPending}
-                >
-                    {signUpMutation.isPending ? "Saving..." : "Sign Up"}
-                </button>
+                {signUpMutation.isPending || signUpMutation.isSuccess ? (
+                    <LoadingGif />
+                ) : (
+                    <button className="action-button" type="submit">
+                        Sign Up
+                    </button>
+                )}
             </form>
             <ToastContainer
                 position="top-right"
