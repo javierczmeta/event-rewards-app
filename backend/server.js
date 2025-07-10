@@ -526,6 +526,20 @@ server.patch(
             });
         }
 
+        if (req.rsvp.status === "Not Going") {
+            return next({
+                message: "User has to change status before checking in.",
+                status: 400,
+            });
+        }
+
+        if (req.rsvp.check_in_time) {
+            return next({
+                message: "User already checked in!",
+                status: 409,
+            });
+        }
+
         // Update it
         const updateRSVP = await prisma.rSVP.update({
             where: {id: fetchedRSVP.id},
