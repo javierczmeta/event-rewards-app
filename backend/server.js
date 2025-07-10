@@ -312,6 +312,33 @@ server.get(
     }
 );
 
+/* [GET] /users/id
+    Returns profile info for the requested id
+*/
+server.get("/users/:id", verifyParamstoInt, async (req, res, next) => {
+    let userId = req.params.id;
+
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+            username: true,
+            id: true,
+            rsvps: true,
+            profile: {
+                select: {
+                    display_name: true,
+                    display_badges: true,
+                    image: true,
+                    points: true,
+                },
+            },
+        },
+    });
+
+    res.json(user);
+});
+
+
 /* [GET] /users/id/events
     Returns events organized by the userID
 */
