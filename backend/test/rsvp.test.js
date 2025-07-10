@@ -6,7 +6,7 @@ jest.mock("../generated/prisma", () => {
     const mPrismaClient = {
         rSVP: {
             create: jest.fn(),
-            findMany: jest.fn(),
+            findFirst: jest.fn(),
             update: jest.fn(),
         },
         event: {
@@ -51,7 +51,7 @@ describe("POST /events/:id/rsvp", () => {
         );
     });
     it("should return 404 if event does not exist", async () => {
-        prisma.rSVP.findMany.mockResolvedValueOnce([]);
+        prisma.rSVP.findFirst.mockResolvedValueOnce(null);
         prisma.event.findUnique.mockResolvedValueOnce(null);
         const response = await agent
             .post("/events/1/rsvp")
@@ -62,7 +62,7 @@ describe("POST /events/:id/rsvp", () => {
         );
     });
     it("should update the RSVP and return it", async () => {
-        prisma.rSVP.findMany.mockResolvedValueOnce([{ id: 1 }]);
+        prisma.rSVP.findFirst.mockResolvedValueOnce({ id: 1 });
         prisma.event.findUnique.mockResolvedValueOnce({ id: 1 });
         prisma.rSVP.update.mockResolvedValueOnce({
             id: 1,
@@ -82,7 +82,7 @@ describe("POST /events/:id/rsvp", () => {
         });
     });
     it("should create a new RSVP and return it", async () => {
-        prisma.rSVP.findMany.mockResolvedValueOnce([]);
+        prisma.rSVP.findFirst.mockResolvedValueOnce(null);
         prisma.event.findUnique.mockResolvedValueOnce({ id: 1 });
         prisma.rSVP.create.mockResolvedValueOnce({
             id: 1,
@@ -102,13 +102,13 @@ describe("POST /events/:id/rsvp", () => {
         });
     });
     it("should return 400 if already checked in", async () => {
-        prisma.rSVP.findMany.mockResolvedValueOnce([{
+        prisma.rSVP.findFirst.mockResolvedValueOnce({
             id: 1,
             user_id: 1,
             event_id: 1,
             status: "Going",
             check_in_time: new Date(Date.now())
-        }]);
+        });
         prisma.event.findUnique.mockResolvedValueOnce({ id: 1 });
         const response = await agent
             .post("/events/1/rsvp")
@@ -135,7 +135,7 @@ describe("GET /events/:id/rsvp", () => {
     });
 
     it("should return an empty array if RSVP does not exist", async () => {
-        prisma.rSVP.findMany.mockResolvedValueOnce([]);
+        prisma.rSVP.findFirst.mockResolvedValueOnce(null);
         const response = await agent.get("/events/1/rsvp");
         expect(response.status).toBe(200);
         expect(response.body).toEqual([]);
@@ -148,7 +148,7 @@ describe("GET /events/:id/rsvp", () => {
             event_id: 1,
             status: "going",
         };
-        prisma.rSVP.findMany.mockResolvedValueOnce([mockRSVP]);
+        prisma.rSVP.findFirst.mockResolvedValueOnce(mockRSVP);
         const response = await agent.get("/events/1/rsvp");
         expect(response.status).toBe(200);
         expect(response.body).toEqual(mockRSVP);
@@ -204,7 +204,7 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
             id: 1,
             organizer_id: 1, // Same as session user ID
         });
-        prisma.rSVP.findMany.mockResolvedValueOnce([]);
+        prisma.rSVP.findFirst.mockResolvedValueOnce(null);
         const response = await agent.patch("/events/1/checkin/1");
         expect(response.status).toBe(404);
         expect(response.body.message).toContain(
@@ -228,7 +228,7 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
             id: 1,
             organizer_id: 1, // Same as session user ID
         });
-        prisma.rSVP.findMany.mockResolvedValueOnce([mockRSVP]);
+        prisma.rSVP.findFirst.mockResolvedValueOnce(mockRSVP);
         prisma.rSVP.update.mockResolvedValueOnce(updatedRSVP);
 
         const response = await agent.patch("/events/1/checkin/1");
