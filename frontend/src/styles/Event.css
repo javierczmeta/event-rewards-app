@@ -86,3 +86,8 @@
 .tag.mine {
     background-color: #dbb42c;
 }
+
+.event-card.loading {
+    display: block;
+    height: 250px;
+}
