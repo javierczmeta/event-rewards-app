@@ -335,6 +335,10 @@ server.get("/users/:id", verifyParamstoInt, async (req, res, next) => {
         },
     });
 
+    if (user === null) {
+        return next({status: 404, message: "User not found"})
+    }
+
     res.json(user);
 });
 
