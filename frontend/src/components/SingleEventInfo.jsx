@@ -9,6 +9,7 @@ import axios from "axios";
 import UserImage from "./UserImage";
 import UserBadge from "./UserBadge";
 import EventImage from "./EventImage";
+import { useState, useEffect } from "react";
 
 const SingleEventInfo = ({ chosenEvent }) => {
     const startDate = createDateWithOffset(chosenEvent.start_time);
@@ -30,7 +31,22 @@ const SingleEventInfo = ({ chosenEvent }) => {
             const url = import.meta.env.VITE_SERVER_API;
             return axios.get(`${url}/events/${chosenEvent.id}/attendees/`);
         },
+        staleTime: 1000 * 60 * 5
     });
+
+    const [mousePosition, setMousePosition] = useState({x:0, y:0});
+
+    useEffect(() => {
+        const updateMosePosition = (e) => {
+            setMousePosition({x: e.clientX, y: e.clientY});
+        }
+
+        window.addEventListener('mousemove', updateMosePosition)
+
+        return () => {
+            window.removeEventListener('mousemove', updateMosePosition)
+        }
+    },[]);
 
     return (
         <aside
@@ -92,6 +108,8 @@ const SingleEventInfo = ({ chosenEvent }) => {
                             <UserBadge
                                 key={rsvp.user_id}
                                 profile={rsvp.user.profile}
+                                mousePosition={mousePosition}
+                                badgeClass='badge'
                             />
                         );
                     })}
