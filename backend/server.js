@@ -325,7 +325,7 @@ server.get("/users/:id", verifyParamstoInt, async (req, res, next) => {
         select: {
             username: true,
             id: true,
-            rsvps: true,
+            rsvps: {include: {event: true}},
             profile: {
                 select: {
                     display_name: true,
