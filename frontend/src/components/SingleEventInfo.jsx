@@ -1,13 +1,15 @@
 import { createDateWithOffset } from "../utils/createDateWithOffset";
 import { useReverseGeocoding } from "../utils/useReverseGeocoding";
-import {useUser} from "../contexts/UserContext"
+import { useUser } from "../contexts/UserContext";
 import EventDeleteButton from "./EventDeleteButton";
+import RSVP from "./RSVP";
+import CheckIn from "./CheckIn";
 
-const SingleEventInfo = ({chosenEvent}) => {
+const SingleEventInfo = ({ chosenEvent }) => {
     const startDate = createDateWithOffset(chosenEvent.start_time);
     const endDate = createDateWithOffset(chosenEvent.end_time);
 
-    const {user} = useUser()
+    const { user } = useUser();
 
     const getEventLocation = useReverseGeocoding(
         chosenEvent.id,
@@ -16,7 +18,12 @@ const SingleEventInfo = ({chosenEvent}) => {
     );
 
     return (
-        <aside className="modal-content" onClick={(e) => {e.stopPropagation()}}>
+        <aside
+            className="modal-content"
+            onClick={(e) => {
+                e.stopPropagation();
+            }}
+        >
             <img
                 src={chosenEvent.image}
                 alt={"Image for " + chosenEvent.name}
@@ -36,8 +43,7 @@ const SingleEventInfo = ({chosenEvent}) => {
                         <span>Where? </span>
                         {getEventLocation.data.data.features[0] &&
                             getEventLocation.data.data.features[0].properties
-                                .full_address
-                        }
+                                .full_address}
                     </p>
                 )}
                 <p>
@@ -72,17 +78,22 @@ const SingleEventInfo = ({chosenEvent}) => {
                         {chosenEvent.organizer.profile.display_name}
                     </p>
                 </div>
-                
             </div>
             <p className="span-grid">Description: {chosenEvent.description}</p>
             <p className="span-grid">
                 <span>People Going: </span>
             </p>
-            <p className="span-grid">
-                <span>Your status:</span>
-                {user.id === chosenEvent.organizer_id ? " Organizer" : <></>}
-            </p>
-            {user.id === chosenEvent.organizer_id ? <EventDeleteButton eventId={chosenEvent.id}/> : <></>}
+            <div className="span-grid status-container">
+                <p>
+                    <span>Your status:</span>
+                </p>
+                {user.id === chosenEvent.organizer_id ? <><p> Organizer: </p> <CheckIn/> </> : <RSVP />}
+            </div>
+            {user.id === chosenEvent.organizer_id ? (
+                <EventDeleteButton eventId={chosenEvent.id} />
+            ) : (
+                <></>
+            )}
         </aside>
     );
 };

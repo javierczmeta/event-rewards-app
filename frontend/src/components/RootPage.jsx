@@ -22,8 +22,14 @@ const RootPage = () => {
 
     return (
         <main className="root-main">
-            <h2>Welcome {user.profile.display_name}!</h2>
-            <h3>{user.profile.points} points</h3>
+            <div className="welcome-container">
+                {user.profile.image ? <img className="profile-img"  src={user.profile.image} alt={`Profile picture for ${user.profile.display_name}`}></img> : <img className="profile-img"  src="./pfp_placeholder.jpg" alt={`Profile picture for ${user.profile.display_name}`}></img>}
+                <div>
+                    <h2>Welcome {user.profile.display_name}!</h2>
+                    <h3>{user.profile.points} points</h3>
+                </div>
+            </div>
+            
             <div className="root-buttons">
                 <button
                     className="root-button"

@@ -46,3 +46,22 @@
     align-items: center;
     gap: 3px;
 }
+
+.profile-img {
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 50%;
+    width: 100px;
+}
+
+.welcome-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.status-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
