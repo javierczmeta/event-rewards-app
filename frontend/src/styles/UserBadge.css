@@ -5,3 +5,31 @@
 
     width: 40px;
 }
+
+.hover-user {
+    position: fixed;
+    background-color: white;
+    pointer-events: none;
+
+    padding: 15px;
+
+    border-radius: 30px;
+
+    border-bottom-left-radius: 0;
+
+    box-shadow: 0 0 4px rgb(0, 0, 0, 0.2);
+
+    height: 250px;
+}
+
+.badge-container {
+    cursor: pointer;
+}
+
+.hover-user-image {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 15px;
+
+    width: 150px;
+}
