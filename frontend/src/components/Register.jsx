@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import LoadingGif from "./LoadingGif";
+import ImagePicker from "./ImagePicker";
 
 const Register = () => {
     const nameInput = useFormInput("");
@@ -79,13 +80,7 @@ const Register = () => {
                     pattern={`${passInput.value}`}
                     title="Match password"
                 ></input>
-                <input
-                    type="text"
-                    placeholder="Image URL"
-                    {...imageInput}
-                    pattern="^https?:\/\/.*\.(jpg|jpeg|png|gif|bmp|webp)$"
-                    title="Submit valid image link."
-                ></input>
+                <ImagePicker imageInput={imageInput}/>
                 <label>Date of Birth:</label>
                 <input type="date" {...dobInput} required></input>
                 {signUpMutation.isPending || signUpMutation.isSuccess ? (
