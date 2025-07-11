@@ -503,9 +503,6 @@ server.get("/events/:id/attendees", async (req, res, next) => {
         where: { event_id: eventId, status: "Going" },
         include: {user: {select: {profile: true}}}
     });
-    if (fetchedRSVP.length === 0) {
-        return res.json([]);
-    }
 
     res.json(fetchedRSVP);
 });
