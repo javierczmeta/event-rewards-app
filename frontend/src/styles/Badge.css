@@ -24,3 +24,32 @@
 .badge-info {
     font-weight: 700;
 }
+
+.user-page-badge {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+
+    height: 40px;
+    width: max-content;
+
+    padding: 5px;
+
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 10px;
+
+    box-shadow: 0 0 4px rgb(0,0,0,0.2);
+}
+
+.milestone-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-content: start;
+}
+
+.user-history-feed {
+    background-color: white;
+}
