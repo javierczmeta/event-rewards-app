@@ -1,0 +1,26 @@
+.badge {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+
+    height: 30px;
+    width: max-content;
+
+    padding: 5px;
+
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 10px;
+
+    box-shadow: 0 0 4px rgb(0,0,0,0.2);
+}
+
+.badge-icon {
+    aspect-ratio: 1/ 1;
+    height: 100%;
+}
+
+.badge-info {
+    font-weight: 700;
+}
