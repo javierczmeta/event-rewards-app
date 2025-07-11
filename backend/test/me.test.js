@@ -40,7 +40,6 @@ describe("GET /me", () => {
         await agent.get("/set");
         const response = await agent.get("/me");
         expect(response.status).toBe(200);
-        console.log(response.body)
         expect(response.body).toEqual({ id: 1, username: "testuser" });
     });
 });
