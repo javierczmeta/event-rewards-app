@@ -33,8 +33,6 @@ const UserPage = () => {
         return;
     }
 
-    console.log(getUser.data.data);
-
     return (
         <main className="user-main">
             <div className="profile-info-container">
