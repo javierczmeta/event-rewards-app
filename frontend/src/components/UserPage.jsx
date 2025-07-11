@@ -33,6 +33,9 @@ const UserPage = () => {
         return;
     }
 
+    const rsvps = getUser.data.data.rsvps
+    rsvps.sort((a,b) => {return b.updated_at - a.updated_at})
+
     return (
         <main className="user-main">
             <div className="profile-info-container">
@@ -49,7 +52,6 @@ const UserPage = () => {
                             {getUser.data.data.profile.display_badges.length ? (
                                 getUser.data.data.profile.display_badges.map(
                                     (badge) => {
-                                        console.log(badge)
                                         return <Badge key={badge.id} badge={badge} className='user-page-badge'/>;
                                     }
                                 )
@@ -63,7 +65,12 @@ const UserPage = () => {
                     <h3>Next Milestone</h3>
                     <div className="bar"></div>
                 </div>
-                <div className="user-history-feed"></div>
+                <div className="user-history-feed">
+                    {rsvps.map(rsvp => {
+
+                        return <div>{rsvp.updated_at}</div>
+                    })}
+                </div>
             </div>
         </main>
     );
