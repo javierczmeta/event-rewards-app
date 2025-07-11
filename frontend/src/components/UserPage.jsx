@@ -5,6 +5,7 @@ import LoadingGif from "./LoadingGif";
 import UserImage from "./UserImage";
 import "../styles/UserPage.css";
 import Badge from "./Badge";
+import HistoryEvent from "./HistoryEvent";
 
 const UserPage = () => {
     const { userId } = useParams();
@@ -34,7 +35,7 @@ const UserPage = () => {
     }
 
     const rsvps = getUser.data.data.rsvps
-    rsvps.sort((a,b) => {return b.updated_at - a.updated_at})
+    rsvps.sort((b,a) => {return (new Date(a.updated_at)) - (new Date(b.updated_at))})
 
     return (
         <main className="user-main">
@@ -67,8 +68,7 @@ const UserPage = () => {
                 </div>
                 <div className="user-history-feed">
                     {rsvps.map(rsvp => {
-
-                        return <div>{rsvp.updated_at}</div>
+                        return <HistoryEvent key={rsvp.id} name={getUser.data.data.profile.display_name} rsvp={rsvp}/>
                     })}
                 </div>
             </div>
