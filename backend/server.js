@@ -172,6 +172,7 @@ server.get("/events", async (req, res, next) => {
     fetchedEvents = await prisma.event.findMany({
         where: {
             name: { contains: requestQueries.search, mode: "insensitive" },
+            end_time: { gte: new Date(Date.now()) },
         },
         include: { organizer: { include: { profile: true } } },
     });
@@ -245,6 +246,9 @@ server.get("/users/:id/events", async (req, res, next) => {
 
     let fetchedEvents = await prisma.event.findMany({
         where: { organizer_id: parseInt(userId) },
+        orderBy: {
+            start_time: "asc",
+        },
     });
 
     res.json(fetchedEvents);
@@ -401,7 +405,7 @@ server.get("/events/:id/rsvp", isAuthenticated, async (req, res, next) => {
         return;
     }
 
-    eventId = parseInt(eventId)
+    eventId = parseInt(eventId);
 
     let fetchedRSVP = await prisma.rSVP.findFirst({
         where: { event_id: eventId, user_id: sessionID },
@@ -416,62 +420,70 @@ server.get("/events/:id/rsvp", isAuthenticated, async (req, res, next) => {
 /* [PATCH] events/id/checkin
     Adds current time to rsvp
     */
-server.patch("/events/:eventid/checkin/:userid", isAuthenticated, async (req, res, next) => {
-    let eventId = req.params.eventid;
-    let userId = req.params.userid;
-    const sessionID = req.session.userId;
+server.patch(
+    "/events/:eventid/checkin/:userid",
+    isAuthenticated,
+    async (req, res, next) => {
+        let eventId = req.params.eventid;
+        let userId = req.params.userid;
+        const sessionID = req.session.userId;
 
-    // make sure id is Integer
-    if (!Number.isInteger(Number(eventId))) {
-        next({ message: "ID of the event has to be an integer", status: 400 });
-        return;
-    }
-    if (!Number.isInteger(Number(userId))) {
-        next({ message: "ID of the user has to be an integer", status: 400 });
-        return;
-    }
+        // make sure id is Integer
+        if (!Number.isInteger(Number(eventId))) {
+            next({
+                message: "ID of the event has to be an integer",
+                status: 400,
+            });
+            return;
+        }
+        if (!Number.isInteger(Number(userId))) {
+            next({
+                message: "ID of the user has to be an integer",
+                status: 400,
+            });
+            return;
+        }
 
-    eventId = parseInt(eventId)
-    userId = parseInt(userId)
+        eventId = parseInt(eventId);
+        userId = parseInt(userId);
 
-    let fetchedEvent = await prisma.event.findUnique({
-        where: { id: eventId },
-        include: { organizer: true },
-    });
-
-    if (!fetchedEvent) {
-        return next({
-            message: "The event with the specified ID does not exist",
-            status: 404,
+        let fetchedEvent = await prisma.event.findUnique({
+            where: { id: eventId },
+            include: { organizer: true },
         });
-    }
 
+        if (!fetchedEvent) {
+            return next({
+                message: "The event with the specified ID does not exist",
+                status: 404,
+            });
+        }
 
-    if (fetchedEvent.organizer_id !== sessionID) {
-        return next({
-            message: "Only the organizer can check in people.",
-            status: 401,
+        if (fetchedEvent.organizer_id !== sessionID) {
+            return next({
+                message: "Only the organizer can check in people.",
+                status: 401,
+            });
+        }
+
+        let fetchedRSVP = await prisma.rSVP.findFirst({
+            where: { event_id: eventId, user_id: userId },
         });
+        if (!fetchedRSVP) {
+            return next({
+                message: "The rsvp with the specified IDs does not exist",
+                status: 404,
+            })
+        }
+
+        const updateRSVP = await prisma.rSVP.update({
+            where: {id: fetchedRSVP.id},
+            data: {status: "Going", check_in_time: new Date(Date.now())}
+        });
+
+        res.json(updateRSVP);
     }
-
-    
-    let fetchedRSVP = await prisma.rSVP.findFirst({
-        where: { event_id: eventId, user_id: userId },
-    });
-    if (!fetchedRSVP) {
-        return next({
-            message: "The rsvp with the specified IDs does not exist",
-            status: 404,
-        })
-    }
-
-    const updateRSVP = await prisma.rSVP.update({
-        where: {id: fetchedRSVP.id},
-        data: {status: "Going", check_in_time: new Date(Date.now())}
-    });
-
-    res.json(updateRSVP);
-});
+);
 
 // Error handling middleware
 server.use((err, req, res, next) => {
