@@ -17,6 +17,8 @@
     box-shadow: 0 0 2px rgb(0, 0, 0, 0.1);
 
     cursor: pointer;
+
+    position: relative;
 }
 
 .event-card:hover{
@@ -83,4 +85,9 @@
 
 .tag.mine {
     background-color: #dbb42c;
+}
+
+.event-card.loading {
+    display: block;
+    height: 250px;
 }

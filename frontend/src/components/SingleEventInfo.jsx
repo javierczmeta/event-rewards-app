@@ -8,6 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import UserImage from "./UserImage";
 import UserBadge from "./UserBadge";
+import EventImage from "./EventImage";
+import { useState, useEffect } from "react";
 
 const SingleEventInfo = ({ chosenEvent }) => {
     const startDate = createDateWithOffset(chosenEvent.start_time);
@@ -29,7 +31,22 @@ const SingleEventInfo = ({ chosenEvent }) => {
             const url = import.meta.env.VITE_SERVER_API;
             return axios.get(`${url}/events/${chosenEvent.id}/attendees/`);
         },
+        staleTime: 1000 * 60 * 5
     });
+
+    const [mousePosition, setMousePosition] = useState({x:0, y:0});
+
+    useEffect(() => {
+        const updateMosePosition = (e) => {
+            setMousePosition({x: e.clientX, y: e.clientY});
+        }
+
+        window.addEventListener('mousemove', updateMosePosition)
+
+        return () => {
+            window.removeEventListener('mousemove', updateMosePosition)
+        }
+    },[]);
 
     return (
         <aside
@@ -38,11 +55,7 @@ const SingleEventInfo = ({ chosenEvent }) => {
                 e.stopPropagation();
             }}
         >
-            <img
-                src={chosenEvent.image}
-                alt={"Image for " + chosenEvent.name}
-                className="modal-image"
-            ></img>
+            <EventImage image={chosenEvent.image} className="modal-image" alt={`Image for the event: ${chosenEvent.name}`}/>
             <div className="modal-event-info">
                 <h2 className="modal-event-title">{chosenEvent.name}</h2>
                 <div className="time-info">
@@ -95,6 +108,8 @@ const SingleEventInfo = ({ chosenEvent }) => {
                             <UserBadge
                                 key={rsvp.user_id}
                                 profile={rsvp.user.profile}
+                                mousePosition={mousePosition}
+                                badgeClass='badge'
                             />
                         );
                     })}

@@ -3,8 +3,9 @@ import { useUser } from "../contexts/UserContext";
 import { LogOut } from "lucide-react";
 import { Route, Routes, useNavigate } from "react-router";
 import FeedSearch from "./FeedSearch";
+import MapTools from "./MapTools";
 
-const Header = ({searchFieldProps, sortState, setSortState}) => {
+const Header = ({searchFieldProps, sortState, setSortState, setIsRecommending, isRecommending}) => {
     const { user, logOut } = useUser();
 
     let navigate = useNavigate();
@@ -24,7 +25,8 @@ const Header = ({searchFieldProps, sortState, setSortState}) => {
                 <h1>Origami</h1>
             </div>
             <Routes>
-                <Route path="/feed" element={<FeedSearch searchFieldProps={searchFieldProps} sortState={sortState} setSortState={setSortState}/>} />
+                <Route path="/feed" element={<FeedSearch searchFieldProps={searchFieldProps} sortState={sortState} setSortState={setSortState} setIsRecommending={setIsRecommending} isRecommending={isRecommending}/>} />
+                <Route path="/map" element={<MapTools/>}/>
                 <Route path="*" element={<div></div>} />
             </Routes>
             {user ? (
