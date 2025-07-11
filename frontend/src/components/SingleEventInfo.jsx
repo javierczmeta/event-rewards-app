@@ -4,6 +4,10 @@ import { useUser } from "../contexts/UserContext";
 import EventDeleteButton from "./EventDeleteButton";
 import RSVP from "./RSVP";
 import CheckIn from "./CheckIn";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import UserImage from "./UserImage";
+import UserBadge from "./UserBadge";
 
 const SingleEventInfo = ({ chosenEvent }) => {
     const startDate = createDateWithOffset(chosenEvent.start_time);
@@ -11,11 +15,21 @@ const SingleEventInfo = ({ chosenEvent }) => {
 
     const { user } = useUser();
 
+    const MAX_ATTENDEES_SHOWN = 10;
+
     const getEventLocation = useReverseGeocoding(
         chosenEvent.id,
         chosenEvent.longitude,
         chosenEvent.latitude
     );
+
+    const getAttendees = useQuery({
+        queryKey: ["attendees", chosenEvent.id],
+        queryFn: () => {
+            const url = import.meta.env.VITE_SERVER_API;
+            return axios.get(`${url}/events/${chosenEvent.id}/attendees/`);
+        },
+    });
 
     return (
         <aside
@@ -53,23 +67,17 @@ const SingleEventInfo = ({ chosenEvent }) => {
                     <span>Points:</span> {chosenEvent.rewards} points
                 </p>
                 <div className="tag-container">
-                    <div className="tag">
-                        {chosenEvent.category}
-                    </div>
+                    <div className="tag">{chosenEvent.category}</div>
                 </div>
                 <p>
                     <span>Organizer: </span>
                 </p>
                 <div className="organizer-section">
                     <div className="organizer-image">
-                        {chosenEvent.organizer.profile.image ? (
-                            <img
-                                src={chosenEvent.organizer.profile.image}
-                                alt={`Profile picture for ${chosenEvent.organizer.profile.display_name}`}
-                            ></img>
-                        ) : (
-                            <img src="../pfp_placeholder.jpg" alt={`Profile picture for ${chosenEvent.organizer.profile.display_name}`}></img>
-                        )}
+                        <UserImage
+                            image={chosenEvent.organizer.profile.image}
+                            alt={`Profile picture for ${chosenEvent.organizer.profile.display_name}`}
+                        />
                     </div>
                     <p className="organizer-name">
                         {chosenEvent.organizer.profile.display_name}
@@ -77,14 +85,33 @@ const SingleEventInfo = ({ chosenEvent }) => {
                 </div>
             </div>
             <p className="span-grid">Description: {chosenEvent.description}</p>
-            <p className="span-grid">
-                <span>People Going: </span>
-            </p>
+            <div className="span-grid user-container">
+                <p>
+                    <span>People Going: </span>
+                </p>
+                {getAttendees.isSuccess ?
+                    (<>{getAttendees.data.data.slice(0,MAX_ATTENDEES_SHOWN).map((rsvp) => {
+                        return (
+                            <UserBadge
+                                key={rsvp.user_id}
+                                profile={rsvp.user.profile}
+                            />
+                        );
+                    })}
+                    {getAttendees.data.data.length > MAX_ATTENDEES_SHOWN ? <p>+ {getAttendees.data.data.length - MAX_ATTENDEES_SHOWN} other(s)</p> : <></>}
+                </>) : <></>}
+            </div>
             <div className="span-grid status-container">
                 <p>
                     <span>Your status:</span>
                 </p>
-                {user.id === chosenEvent.organizer_id ? <><p> Organizer: </p> <CheckIn/> </> : <RSVP />}
+                {user.id === chosenEvent.organizer_id ? (
+                    <>
+                        <p> Organizer: </p> <CheckIn />{" "}
+                    </>
+                ) : (
+                    <RSVP />
+                )}
             </div>
             {user.id === chosenEvent.organizer_id ? (
                 <EventDeleteButton eventId={chosenEvent.id} />
