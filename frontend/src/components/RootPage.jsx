@@ -25,7 +25,7 @@ const RootPage = () => {
     return (
         <main className="root-main">
             <div className="welcome-container">
-                <UserImage image={user.profile.image} className="profile-img" alt={`Profile picture for ${user.profile.display_name}`}/>
+                <UserImage image={user.profile.image} className="profile-img" alt={`Profile picture for ${user.profile.display_name}`} onClick={()=> {navigate(`users/${user.id}`)}}/>
                 <div>
                     <h2>Welcome {user.profile.display_name}!</h2>
                     <h3>{user.profile.points} points</h3>
