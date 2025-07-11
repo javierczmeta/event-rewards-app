@@ -15,6 +15,8 @@ const SingleEventInfo = ({ chosenEvent }) => {
 
     const { user } = useUser();
 
+    const MAX_ATTENDEES_SHOWN = 10;
+
     const getEventLocation = useReverseGeocoding(
         chosenEvent.id,
         chosenEvent.longitude,
@@ -87,8 +89,8 @@ const SingleEventInfo = ({ chosenEvent }) => {
                 <p>
                     <span>People Going: </span>
                 </p>
-                {getAttendees.isSuccess &&
-                    getAttendees.data.data.map((rsvp) => {
+                {getAttendees.isSuccess ?
+                    (<>{getAttendees.data.data.slice(0,MAX_ATTENDEES_SHOWN).map((rsvp) => {
                         return (
                             <UserBadge
                                 key={rsvp.user_id}
@@ -96,6 +98,8 @@ const SingleEventInfo = ({ chosenEvent }) => {
                             />
                         );
                     })}
+                    {getAttendees.data.data.length > MAX_ATTENDEES_SHOWN ? <p>+ {getAttendees.data.data.length - MAX_ATTENDEES_SHOWN} other(s)</p> : <></>}
+                </>) : <></>}
             </div>
             <div className="span-grid status-container">
                 <p>
