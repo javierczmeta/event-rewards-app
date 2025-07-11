@@ -573,8 +573,14 @@ server.get(
 
         let fetchedRSVP = await prisma.rSVP.findMany({
             where: { event_id: eventId, status: "Going" },
-            include: { user: { select: { profile: true } } },
-        });
+            include: { user: { select: { profile: {select: {
+                user_id: true, 
+                display_name: true, 
+                display_badges: true, 
+                points: true, 
+                image: true } 
+            }}},
+        }});
         if (fetchedRSVP.length === 0) {
             return res.json([]);
         }
