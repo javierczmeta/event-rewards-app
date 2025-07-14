@@ -589,6 +589,7 @@ server.get(
                 user_id: true, 
                 display_name: true, 
                 display_badges: true, 
+                badge_order: true,
                 points: true, 
                 image: true } 
             }}},
