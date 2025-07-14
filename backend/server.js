@@ -334,6 +334,7 @@ server.get("/users/:id", verifyParamstoInt, async (req, res, next) => {
                     badges: true,
                     image: true,
                     points: true,
+                    badge_order: true
                 },
             },
         },
