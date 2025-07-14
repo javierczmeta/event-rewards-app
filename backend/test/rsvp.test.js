@@ -18,6 +18,9 @@ jest.mock("../generated/prisma", () => {
         profile: {
             findUnique: jest.fn(),
             update: jest.fn()
+        },
+        badge: {
+            findMany: jest.fn()
         }
     };
     return { PrismaClient: jest.fn(() => mPrismaClient) };
@@ -284,6 +287,7 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
         prisma.event.update.mockResolvedValueOnce({ id: 1, rewards: 1000 });
 
         prisma.profile.findUnique.mockResolvedValueOnce({ id: 1, points: 0 });
+        prisma.badge.findMany.mockResolvedValueOnce([{id:2}])
         prisma.profile.update.mockResolvedValueOnce({ id: 1, points: 1000 });
 
         const response = await agent.patch("/events/1/checkin/1");

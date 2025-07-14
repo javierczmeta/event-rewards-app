@@ -34,6 +34,11 @@ const newEventSchema = Joi.object({
     category: Joi.string(),
 }).required();
 
+// Will allow max 3 badge_ids
+const displayBadgeSchema = Joi.object({
+    badges: Joi.array().items(Joi.number()).max(3).required()
+}).required()
+
 const rsvpValidation = Joi.object({
     status: Joi.string()
         .pattern(/^(Going|Maybe|Not Going)?$/)
@@ -73,5 +78,6 @@ module.exports = {
     newEventSchema,
     rsvpValidation,
     isAuthenticated,
-    verifyParamstoInt
+    verifyParamstoInt,
+    displayBadgeSchema
 };
