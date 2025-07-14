@@ -83,7 +83,6 @@ describe("POST /events/:id/rsvp", () => {
             .post("/events/1/rsvp")
             .send({ status: "Going" });
 
-
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
             id: 1,
@@ -124,7 +123,7 @@ describe("POST /events/:id/rsvp", () => {
         const response = await agent
             .post("/events/1/rsvp")
             .send({ status: "Going" });
-            console.log(response.body)
+
         expect(response.status).toBe(400);
         expect(response.body.message).toContain("already checked in");
     });

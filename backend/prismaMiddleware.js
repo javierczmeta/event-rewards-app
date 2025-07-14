@@ -8,7 +8,6 @@ const {prisma} = require("./prismaClient")
  * @returns updated event
  */
 async function updatePoints(prisma, eventID) {
-
     try {
         const goingCount = await prisma.rSVP.count({
             where: { event_id: eventID, status: "Going" },
@@ -18,18 +17,18 @@ async function updatePoints(prisma, eventID) {
             where: { id: eventID },
             include: { organizer: { include: { profile: true } } },
         });
+
+        const rewards = calculateRewards(goingCount, fetchedEvent);
+
+        const updated = await prisma.event.update({
+            where: { id: eventID },
+            data: { rewards: rewards },
+        });
+
+        return updated;
     } catch (e) {
         throw e
     }
-
-    const rewards = calculateRewards(goingCount, fetchedEvent);
-
-    const updated = await prisma.event.update({
-        where: { id: eventID },
-        data: { rewards: rewards },
-    });
-
-    return updated;
 }
 
 async function verifyEventExistance(req, res, next) {
