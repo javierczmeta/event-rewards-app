@@ -33,3 +33,9 @@
 
     width: 150px;
 }
+
+.user-mini-badges {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+}

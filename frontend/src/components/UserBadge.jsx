@@ -26,8 +26,8 @@ const UserBadge = ({ profile, mousePosition, badgeClass}) => {
                     <UserImage className="hover-user-image" image={profile.image} />
                     <h4>{profile.display_name}</h4>
                     <p>{profile.points} points</p>
-                    <div>
-                        {profile.display_badges.map(badge => {return <Badge key={badge.id} badge={badge} className={badgeClass}/>})}
+                    <div className="user-mini-badges">
+                        {profile.display_badges.map(badge => {return <Badge key={badge.id} badge={badge} className={badgeClass} onlyIcons={true}/>})}
                     </div>
                 </div>) : <></>
             }
