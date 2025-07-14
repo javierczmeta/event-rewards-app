@@ -7,7 +7,7 @@ import "../styles/UserPage.css";
 import Badge from "./Badge";
 import HistoryEvent from "./HistoryEvent";
 import { useUser } from "../contexts/UserContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BadgeSelector from "./BadgeSelector";
 import { orderLike } from "../utils/sortObjectsWithList";
 
@@ -26,6 +26,20 @@ const UserPage = () => {
         },
         refetchOnWindowFocus: false,
     });
+
+    const [mousePosition, setMousePosition] = useState({x:0, y:0});
+
+    useEffect(() => {
+        const updateMosePosition = (e) => {
+            setMousePosition({x: e.clientX, y: e.clientY});
+        }
+
+        window.addEventListener('mousemove', updateMosePosition)
+
+        return () => {
+            window.removeEventListener('mousemove', updateMosePosition)
+        }
+    },[]);
 
     if (getUser.isPending) {
         return (
@@ -64,7 +78,7 @@ const UserPage = () => {
                             {displayedBadges.length ? (
                                 displayedBadges.map(
                                     (badge) => {
-                                        return <Badge key={badge.id} badge={badge} className='user-page-badge'/>;
+                                        return <Badge key={badge.id} badge={badge} className='user-page-badge' mousePosition={mousePosition}/>;
                                     }
                                 )
                             ) : (
