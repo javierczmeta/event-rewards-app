@@ -331,6 +331,7 @@ server.get("/users/:id", verifyParamstoInt, async (req, res, next) => {
                 select: {
                     display_name: true,
                     display_badges: true,
+                    badges: true,
                     image: true,
                     points: true,
                 },
@@ -621,7 +622,7 @@ server.patch('/badges', isAuthenticated, async (req,res,next) => {
         newDisplay.push({id: badgeID})
     }
 
-    const updated = await prisma.profile.update({where: {id: userProfile.id}, data: {display_badges: {connect: newDisplay}}})
+    const updated = await prisma.profile.update({where: {id: userProfile.id}, data: {display_badges: {set: newDisplay}}})
 
     res.json(updated)
 })
