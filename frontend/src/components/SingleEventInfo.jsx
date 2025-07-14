@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import UserImage from "./UserImage";
 import UserBadge from "./UserBadge";
+import EventImage from "./EventImage";
 
 const SingleEventInfo = ({ chosenEvent }) => {
     const startDate = createDateWithOffset(chosenEvent.start_time);
@@ -38,11 +39,7 @@ const SingleEventInfo = ({ chosenEvent }) => {
                 e.stopPropagation();
             }}
         >
-            <img
-                src={chosenEvent.image}
-                alt={"Image for " + chosenEvent.name}
-                className="modal-image"
-            ></img>
+            <EventImage image={chosenEvent.image} className="modal-image" alt={`Image for the event: ${chosenEvent.name}`}/>
             <div className="modal-event-info">
                 <h2 className="modal-event-title">{chosenEvent.name}</h2>
                 <div className="time-info">

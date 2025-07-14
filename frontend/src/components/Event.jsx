@@ -3,6 +3,7 @@ import { createDateWithOffset } from "../utils/createDateWithOffset";
 import { useReverseGeocoding } from "../utils/useReverseGeocoding";
 import { useNavigate } from "react-router";
 import { useUser } from "../contexts/UserContext";
+import EventImage from "./EventImage";
 
 const Event = ({ event }) => {
     const date = createDateWithOffset(event.start_time).toLocaleString();
@@ -24,17 +25,7 @@ const Event = ({ event }) => {
             }}
         >
             <div className="event-image">
-                {event.image ? (
-                    <img
-                        src={event.image}
-                        alt={`Image for the event: ${event.name}`}
-                    ></img>
-                ) : (
-                    <img
-                        src="./event_placeholder.svg"
-                        alt={`Placeholder Image`}
-                    ></img>
-                )}
+                <EventImage image={event.image} alt={`Image for the event: ${event.name}`}/>
             </div>
             <div className="event-info">
                 <h2>{event.name}</h2>

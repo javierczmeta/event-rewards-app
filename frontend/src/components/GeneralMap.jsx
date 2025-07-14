@@ -1,10 +1,22 @@
 import React, { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import Marker from "./Marker";
 
-const GeneralMap = ({ className, fetchEvents }) => {
+const GeneralMap = ({ className, fetchEvents, mapEvents }) => {
     const mapContainerRef = useRef();
     const mapRef = useRef();
+    const currentMarkers = [];
+
+    const getEventsWithBounds = () => {
+        currentMarkers.forEach((marker) => mapRef.current.removeLayer(marker));
+        const bounds = mapRef.current.getBounds();
+
+        const sw = bounds.getSouthWest();
+        const ne = bounds.getNorthEast();
+
+        fetchEvents([sw.lng, sw.lat, ne.lng, ne.lat]);
+    };
 
     const mapboxToken = import.meta.env.VITE_GEOCODING_TOKEN;
     useEffect(() => {
@@ -15,13 +27,12 @@ const GeneralMap = ({ className, fetchEvents }) => {
             zoom: 15, // starting zoom
         });
 
+        mapRef.current.on("load", () => {
+            getEventsWithBounds();
+        });
+
         mapRef.current.on("moveend", () => {
-            const bounds = mapRef.current.getBounds();
-
-            const sw = bounds.getSouthWest()
-            const ne = bounds.getNorthEast()
-
-            fetchEvents([sw.lng, sw.lat, ne.lng, ne.lat])
+            getEventsWithBounds();
         });
 
         return () => {
@@ -29,7 +40,22 @@ const GeneralMap = ({ className, fetchEvents }) => {
         };
     }, []);
 
-    return <div ref={mapContainerRef} className={className}></div>;
+    return (
+        <>
+            <div ref={mapContainerRef} className={className}></div>
+            {mapRef.current &&
+                mapEvents &&
+                mapEvents.map((event) => {
+                    return (
+                        <Marker
+                            key={event.id}
+                            map={mapRef.current}
+                            event={event}
+                        />
+                    );
+                })}
+        </>
+    );
 };
 
 export default GeneralMap;
