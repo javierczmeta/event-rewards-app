@@ -18,6 +18,7 @@ const {
     newEventSchema,
     rsvpValidation,
     verifyParamstoInt,
+    displayBadgeSchema
 } = require("./validation");
 
 const { calculateCategoryWeights, probabilityGoing } = require("./recommendation");
@@ -594,6 +595,36 @@ server.get(
         res.json(fetchedRSVP);
     }
 );
+
+/** [PATCH] badges/users/id
+ * Update badges user is displaying
+ */
+server.patch('/badges', isAuthenticated, async (req,res,next) => {
+    const sessionId = req.session.userId;
+
+    // Validate body contains 'badges' array with 3 max
+    const { error } = displayBadgeSchema.validate(req.body)
+    if (error) {
+        return next({ status: 400, message: error.details[0].message });
+    }
+
+    const userProfile = await prisma.profile.findUnique({where: {user_id: sessionId}, include: {badges: true}})
+    const badgeSet = new Set(userProfile.badges.map(badge => badge.id))
+
+    const newDisplay = []
+
+    // Check each display badge and make sure user can display it
+    for (let badgeID of req.body.badges) {
+        if (!badgeSet.has(badgeID)) {
+            return next({message: `Cannot display badge ${badgeID} because user does not possess it`, status: 403})
+        }
+        newDisplay.push({id: badgeID})
+    }
+
+    const updated = await prisma.profile.update({where: {id: userProfile.id}, data: {display_badges: {connect: newDisplay}}})
+
+    res.json(updated)
+})
 
 
 
