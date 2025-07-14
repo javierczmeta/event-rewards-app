@@ -561,7 +561,10 @@ server.patch(
 
         // Reward points to user
         let profile = await prisma.profile.findUnique({where: {user_id: req.params.userId}})
-        let addPoints = await prisma.profile.update({where: {id: profile.id}, data: {points: profile.points + updatedEvent.rewards}})
+
+        // Reward badge + points to user
+        const allowedBadges = await prisma.badge.findMany({where: {requirement: {lte: profile.points + updatedEvent.rewards}}})
+        const addBadges = await prisma.profile.update({where: {id: profile.id}, data: {points: profile.points + updatedEvent.rewards, badges: {connect: allowedBadges.map(badge => {return {id: badge.id}})}}})
 
         res.json(updateRSVP);
     }
