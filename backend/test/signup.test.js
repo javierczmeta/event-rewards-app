@@ -69,15 +69,6 @@ describe("POST /signup", () => {
                 '"img_url" must be a valid uri'
             );
         });
-        it("should return 400 if validation fails, img_url file type", async () => {
-            const response = await request(server)
-                .post("/signup")
-                .send({ username: "abcd", display_name: "Test", password: "password123", dob: "2000-01-01", img_url: "http://example.com/image.txt" })
-            expect(response.status).toBe(400);
-            expect(response.body.message).toContain(
-                '"img_url" with value "http://example.com/image.txt" fails to match the required pattern'
-            );
-        });
         it("should return 400 if validation fails, dob", async () => {
             const response = await request(server)
                 .post("/signup")

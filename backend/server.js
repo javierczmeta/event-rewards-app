@@ -341,7 +341,10 @@ server.get("/users/:id", verifyParamstoInt, async (req, res, next) => {
         return next({status: 404, message: "User not found"})
     }
 
-    res.json(user);
+    // Obtain next badge for milestone count
+    const nextBadge = await prisma.badge.findFirst({where: {requirement: {gt: user.profile.points}}, orderBy: {requirement:'asc'}})
+
+    res.json({...user, nextBadge});
 });
 
 

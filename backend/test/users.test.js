@@ -6,6 +6,9 @@ jest.mock("../generated/prisma", () => {
     const mPrismaClient = {
         user: {
             findUnique: jest.fn(),
+        },
+        badge: {
+            findFirst: jest.fn()
         }
     };
     return { PrismaClient: jest.fn(() => mPrismaClient) };
@@ -49,8 +52,10 @@ describe("GET /users/:id", () => {
         };
 
         prisma.user.findUnique.mockResolvedValueOnce(mockUser);
+        prisma.badge.findFirst.mockResolvedValueOnce({id:1})
 
         const response = await agent.get("/users/1");
+
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual(
