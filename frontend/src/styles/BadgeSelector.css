@@ -1,0 +1,18 @@
+.badge-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    background-color: white;
+    padding: 20px;
+    border-radius: 25px;
+    box-shadow: 0 0 4px rgb(0,0,0, 0.2);
+
+    width: 500px;
+}
+
+.badge-select-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
