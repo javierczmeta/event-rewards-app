@@ -8,14 +8,19 @@ const {prisma} = require("./prismaClient")
  * @returns updated event
  */
 async function updatePoints(prisma, eventID) {
-    const goingCount = await prisma.rSVP.count({
-        where: { event_id: eventID, status: "Going" },
-    });
 
-    const fetchedEvent = await prisma.event.findUnique({
-        where: { id: eventID },
-        include: { organizer: { include: { profile: true } } },
-    });
+    try {
+        const goingCount = await prisma.rSVP.count({
+            where: { event_id: eventID, status: "Going" },
+        });
+
+        const fetchedEvent = await prisma.event.findUnique({
+            where: { id: eventID },
+            include: { organizer: { include: { profile: true } } },
+        });
+    } catch (e) {
+        throw e
+    }
 
     const rewards = calculateRewards(goingCount, fetchedEvent);
 
@@ -30,21 +35,17 @@ async function updatePoints(prisma, eventID) {
 async function verifyEventExistance(req, res, next) {
     const eventId = req.params.eventId;
 
-    try {
-        const event = await prisma.event.findUnique({
-            where: { id: eventId },
-            include: { organizer: { include: { profile: true } } },
-        });
+    const event = await prisma.event.findUnique({
+        where: { id: eventId },
+        include: { organizer: { include: { profile: true } } },
+    });
 
-        if (!event) {
-            return res.status(404).send({ message: "The event with the specified ID does not exist" });
-        }
-
-        req.event = event;
-        next();
-    } catch (error) {
-        next(error);
+    if (!event) {
+        return res.status(404).send({ message: "The event with the specified ID does not exist" });
     }
+
+    req.event = event;
+    next();
 }
 
 async function verifyRsvpExistance(req, res, next) {
@@ -55,7 +56,7 @@ async function verifyRsvpExistance(req, res, next) {
         userId = req.params.userId
     }
 
-    let fetchedRSVP = await prisma.rSVP.findFirst({
+    const fetchedRSVP = await prisma.rSVP.findFirst({
         where: { event_id: req.params.eventId, user_id: userId },
     });
     if (!fetchedRSVP) {
