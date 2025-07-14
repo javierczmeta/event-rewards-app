@@ -613,6 +613,7 @@ server.patch('/badges', isAuthenticated, async (req,res,next) => {
     const badgeSet = new Set(userProfile.badges.map(badge => badge.id))
 
     const newDisplay = []
+    const badgeOrder = []
 
     // Check each display badge and make sure user can display it
     for (let badgeID of req.body.badges) {
@@ -620,9 +621,10 @@ server.patch('/badges', isAuthenticated, async (req,res,next) => {
             return next({message: `Cannot display badge ${badgeID} because user does not possess it`, status: 403})
         }
         newDisplay.push({id: badgeID})
+        badgeOrder.push(badgeID)
     }
 
-    const updated = await prisma.profile.update({where: {id: userProfile.id}, data: {display_badges: {set: newDisplay}}})
+    const updated = await prisma.profile.update({where: {id: userProfile.id}, data: {display_badges: {set: newDisplay}, badge_order: badgeOrder}})
 
     res.json(updated)
 })
