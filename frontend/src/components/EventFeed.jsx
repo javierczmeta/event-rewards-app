@@ -5,8 +5,11 @@ import axios from "axios";
 import EventModal from "./EventModal";
 import { Routes, Route } from "react-router";
 import LoaderEvent from "./LoaderEvent";
+import { useUser } from "../contexts/UserContext";
 
 const EventFeed = ({ searchFieldProps, sortState, isRecommending }) => {
+    const {user} = useUser()
+
     const getEvents = useQuery({
         queryKey: ["events", searchFieldProps.value, sortState],
         queryFn: () => {
@@ -76,9 +79,9 @@ const EventFeed = ({ searchFieldProps, sortState, isRecommending }) => {
                             <h3>No Events to show...</h3>
                         )}
                     {getEvents.isSuccess &&
-                        getEvents.data.data.map((event) => (
-                            <Event key={event.id} event={event} />
-                        ))}
+                        getEvents.data.data.map((event) => {
+                            return <Event key={event.id} event={event} saved={event.profiles_saved.filter(saved_user => saved_user.user_id === user.id).length > 0}/>
+})}
                 </div>
             )}
 
