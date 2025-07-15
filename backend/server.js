@@ -632,6 +632,30 @@ server.patch('/badges', isAuthenticated, async (req,res,next) => {
 })
 
 
+/** [PATCH] /events/saved/:eventId
+ * Toggles if an event is saved or not
+ */
+server.patch('/events/saved/:eventId', isAuthenticated, verifyParamstoInt, verifyEventExistance, async (req,res,next) => {
+    const sessionId = req.session.userId;
+
+    const userProfile = await prisma.profile.findUnique({where: {user_id: sessionId}, include: {saved_events: true}})
+    const eventSet = new Set(userProfile.saved_events.map(event => event.id))
+
+    let newEvents = []
+
+    // Toggle event is saved
+    if (eventSet.has(req.params.eventId)) {
+        newEvents = userProfile.saved_events.filter(event => event.id !== req.params.eventId).map(event => {return {id: event.id}})
+    } else {
+        newEvents = userProfile.saved_events.map(event => {return{id: event.id}}).concat({id: req.params.eventId})
+    }
+
+    const updated = await prisma.profile.update({where: {id: userProfile.id}, data: {saved_events: {set: newEvents}}})
+
+    res.json(updated)
+})
+
+
 
 // Error handling middleware
 server.use((err, req, res, next) => {
