@@ -12,7 +12,7 @@ const RootPage = () => {
     const { user } = useUser();
     const navigate = useNavigate();
 
-    const getOrganizedEvents = useQuery({
+    const getEvents = useQuery({
         queryKey: ["organized-events", user.id],
         queryFn: () => {
             const url = import.meta.env.VITE_SERVER_API;
@@ -50,18 +50,34 @@ const RootPage = () => {
                     <DiamondPlus/>Create Event
                 </button>
             </div>
-            <div>
-                <h4>My Events</h4>
+            <div className="root-events-container">
+                <h4>Saved Events</h4>
                 <div className="organized-container">
-                    {getOrganizedEvents.isPending && 
+                    {getEvents.isPending && 
                     <>
                         <LoaderEvent/>
                         <LoaderEvent/>
                         <LoaderEvent/>
                         <LoaderEvent/>
                     </>}
-                    {getOrganizedEvents.isSuccess &&
-                        getOrganizedEvents.data.data.map((event) => (
+                    {getEvents.data &&
+                        getEvents.data.data.saved_events.map((event) => (
+                            <Event key={event.id} event={event} />
+                        ))}
+                </div>
+            </div>
+            <div className="root-events-container">
+                <h4>My Events</h4>
+                <div className="organized-container">
+                    {getEvents.isPending && 
+                    <>
+                        <LoaderEvent/>
+                        <LoaderEvent/>
+                        <LoaderEvent/>
+                        <LoaderEvent/>
+                    </>}
+                    {getEvents.data &&
+                        getEvents.data.data.organized_events.map((event) => (
                             <Event key={event.id} event={event} />
                         ))}
                 </div>
