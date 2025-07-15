@@ -62,7 +62,7 @@ const RootPage = () => {
                     </>}
                     {getEvents.data &&
                         getEvents.data.data.saved_events.map((event) => (
-                            <Event key={event.id} event={event} />
+                            <Event key={event.id} event={event} saved={true}/>
                         ))}
                 </div>
             </div>
@@ -78,7 +78,7 @@ const RootPage = () => {
                     </>}
                     {getEvents.data &&
                         getEvents.data.data.organized_events.map((event) => (
-                            <Event key={event.id} event={event} />
+                            <Event key={event.id} event={event}/>
                         ))}
                 </div>
             </div>
