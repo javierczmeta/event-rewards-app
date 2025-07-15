@@ -5,8 +5,9 @@ import { useNavigate } from "react-router";
 import { useUser } from "../contexts/UserContext";
 import EventImage from "./EventImage";
 import interpolate from "color-interpolate"
+import SaveButton from "./SaveButton";
 
-const Event = ({ event }) => {
+const Event = ({ event, saved  }) => {
     const date = createDateWithOffset(event.start_time).toLocaleString();
     const navigate = useNavigate();
 
@@ -69,6 +70,7 @@ const Event = ({ event }) => {
                 </div>
                 <p>{event.description}</p>
             </div>
+                <SaveButton saved={saved} eventId={event.id}/>
         </div>
     );
 };
