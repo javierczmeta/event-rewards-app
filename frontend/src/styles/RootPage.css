@@ -70,3 +70,10 @@
     align-items: center;
     gap: 5px;
 }
+
+.root-events-container {
+    background-color: #e9ecef;
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
