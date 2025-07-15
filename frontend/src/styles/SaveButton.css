@@ -1,0 +1,13 @@
+.save-button {
+    position: absolute;
+    right: 10px;
+    top: -10px;
+}
+
+.save-button:hover {
+    transform: scale(1.2);
+}
+
+.save-button:active {
+    transform: scale(0.95);
+}
