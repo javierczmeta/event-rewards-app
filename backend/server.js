@@ -352,19 +352,21 @@ server.get("/users/:id", verifyParamstoInt, async (req, res, next) => {
 
 
 /* [GET] /users/id/events
-    Returns events organized by the userID
+    Returns saved events and organized events by the userID
 */
 server.get("/users/:id/events", verifyParamstoInt, async (req, res, next) => {
     let userId = req.params.id;
 
-    let fetchedEvents = await prisma.event.findMany({
+    let organizedEvents = await prisma.event.findMany({
         where: { organizer_id: userId },
         orderBy: {
             start_time: "asc",
         },
     });
 
-    res.json(fetchedEvents);
+    let savedEvents = await prisma.profile.findUnique({where: {user_id: userId}, select: {saved_events: true}})
+
+    res.json({organized_events: organizedEvents, ...savedEvents});
 });
 
 /* [DELETE] /events/id
