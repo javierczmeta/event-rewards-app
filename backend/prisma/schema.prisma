@@ -31,6 +31,7 @@ model Event {
   organizer   User       @relation("UserOrganizedEvents", fields: [organizer_id], references: [id])
   organizer_id Int
   rsvps RSVP[]
+  profiles_saved  Profile[] @relation("SavedEvents")
 }
 
 // User model
@@ -55,6 +56,7 @@ model Profile {
   image           String?
   dob             DateTime
   badge_order     Int[]
+  saved_events    Event[]   @relation("SavedEvents")
 }
 
 // RSVP model
