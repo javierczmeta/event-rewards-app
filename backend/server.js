@@ -185,7 +185,7 @@ server.get("/events", async (req, res, next) => {
             name: { contains: requestQueries.search, mode: "insensitive" },
             end_time: { gte: new Date(Date.now()) },
         },
-        include: { organizer: { include: { profile: true } } },
+        include: { organizer: { include: { profile: true } }, profiles_saved: true },
     });
 
     switch (requestQueries.sort) {
