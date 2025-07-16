@@ -2,9 +2,11 @@ import React, { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Marker from "./Marker";
+import { useUser } from "../contexts/UserContext";
 
 const GeneralMap = ({ className, fetchEvents, mapEvents, mapRef }) => {
     const mapContainerRef = useRef();
+    const {location} = useUser()
     
     const currentMarkers = [];
 
@@ -23,7 +25,7 @@ const GeneralMap = ({ className, fetchEvents, mapEvents, mapRef }) => {
         mapboxgl.accessToken = mapboxToken;
         mapRef.current = new mapboxgl.Map({
             container: mapContainerRef.current,
-            center: [-122.150436, 37.48187], // starting position [lng, lat]
+            center: [location.lng, location.lat], // starting position [lng, lat]
             zoom: 15, // starting zoom
         });
 
