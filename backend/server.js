@@ -222,13 +222,13 @@ server.get("/events/recommended", isAuthenticated, async (req, res, next) => {
     const sessionID = req.session.userId;
     let lng = req.query.lng;
     let lat = req.query.lat;
-    const withDistance = lng && lat
+    const withDistance = lng !== undefined && lat !== undefined
 
     // make sure corners are numbers
     if (
         withDistance &&
-        !Number.isFinite(Number(lng)) ||
-        !Number.isFinite(Number(lat))
+        (!Number.isFinite(Number(lng)) ||
+        !Number.isFinite(Number(lat)))
     ) {
         next({
             message: "Coordinates are not numbers",
