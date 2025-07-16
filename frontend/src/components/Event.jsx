@@ -57,18 +57,14 @@ const Event = ({ event }) => {
             </div>
             <div className="event-description">
                 <div className="tag-container">
-                    {user.id === event.organizer_id ? (
+                    {user.id === event.organizer_id && (
                         <div className="tag mine">My Event</div>
-                    ) : (
-                        <></>
                     )}
                     <div className="tag">{event.category}</div>
-                    {similarity ? (
+                    {similarity && (
                         <div className="tag" style={style}>
                             <h4>{similarity}% Similarity</h4>
                         </div>
-                    ) : (
-                        <></>
                     )}
                 </div>
                 <p>{event.description}</p>
