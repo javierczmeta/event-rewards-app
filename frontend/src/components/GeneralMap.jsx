@@ -3,9 +3,9 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Marker from "./Marker";
 
-const GeneralMap = ({ className, fetchEvents, mapEvents }) => {
+const GeneralMap = ({ className, fetchEvents, mapEvents, mapRef }) => {
     const mapContainerRef = useRef();
-    const mapRef = useRef();
+    
     const currentMarkers = [];
 
     const getEventsWithBounds = () => {

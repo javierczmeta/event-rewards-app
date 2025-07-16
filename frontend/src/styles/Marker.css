@@ -1,0 +1,44 @@
+.map-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 70px;
+
+    padding: 5px;
+    background-color: #fff;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+    font-family: "Raleway", sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+
+    border-radius: 5px;
+}
+
+.map-marker-image {
+    aspect-ratio: 1/1;
+    object-fit: cover;
+}
+
+.map-marker:hover .map-marker-image {
+    aspect-ratio: 1/1;
+    object-fit: cover;
+
+    border-radius: 15px;
+}
+
+.map-marker:hover{
+    width: 150px;
+
+    border-radius: 20px;
+}
+
+.more-info {
+    display: none;
+}
+
+.map-marker:hover .more-info{
+    display: block;
+}
