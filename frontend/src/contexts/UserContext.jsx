@@ -22,7 +22,7 @@ export const UserProvider = ({ children }) => {
     const [user, setUser] = useLocalStorage("user", null);
 
     const MENLO_PARK_COORDS = {lng: -122.1486120978705, lat: 37.4845092388847}
-    const [userLocation, setUserLocation] = useState(MENLO_PARK_COORDS)
+    const [userLocation, setUserLocation] = useState(null)
 
     const logOut = () => {
         const url = import.meta.env.VITE_SERVER_API;
@@ -53,17 +53,17 @@ export const UserProvider = ({ children }) => {
                 },
                 (error) => {
                     console.error('Error getting location:', error);
-                    setUserLocation(MENLO_PARK_COORDS);
+                    setUserLocation(null);
                 }
             );
         } else {
-            setUserLocation(MENLO_PARK_COORDS);
+            setUserLocation(null);
         }
     }, []);
 
 
     return (
-        <UserContext.Provider value={{ user, refetch: getUserProfile.refetch, logOut, location: userLocation}}>
+        <UserContext.Provider value={{ user, refetch: getUserProfile.refetch, logOut, location: userLocation, MENLO_PARK_COORDS}}>
             {children}
         </UserContext.Provider>
     );
