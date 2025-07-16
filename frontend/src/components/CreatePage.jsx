@@ -10,11 +10,12 @@ import LoadingGif from "./LoadingGif";
 import { useUser } from "../contexts/UserContext";
 
 const CreatePage = () => {
-    const {location} = useUser()
+    const {location, MENLO_PARK_COORDS} = useUser()
+    let mapStartPos = location ? location : MENLO_PARK_COORDS
 
     const formInputs = {
-        longitudeProps: useFormInput(location.lng),
-        latitudeProps: useFormInput(location.lat),
+        longitudeProps: useFormInput(mapStartPos.lng),
+        latitudeProps: useFormInput(mapStartPos.lat),
         nameProps: useFormInput(""),
         imageProps: useFormInput(""),
         startDateProps: useFormInput(""),
