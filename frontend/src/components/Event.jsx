@@ -4,6 +4,7 @@ import { useReverseGeocoding } from "../utils/useReverseGeocoding";
 import { useNavigate } from "react-router";
 import { useUser } from "../contexts/UserContext";
 import EventImage from "./EventImage";
+import interpolate from "color-interpolate"
 
 const Event = ({ event }) => {
     const date = createDateWithOffset(event.start_time).toLocaleString();
@@ -17,6 +18,16 @@ const Event = ({ event }) => {
         event.latitude
     );
 
+    let similarity;
+    let style;
+    if (event.multiplier) {
+        similarity = Math.round(((event.multiplier + 1) / 2) * 10000) / 100;
+
+        let colormap = interpolate(['#4B04A1', '#238C8D', '#47BD6F'])
+        let bg_color = colormap((event.multiplier + 1)/2)
+        style = {backgroundColor: bg_color}
+    }
+
     return (
         <div
             className="event-card"
@@ -25,7 +36,10 @@ const Event = ({ event }) => {
             }}
         >
             <div className="event-image">
-                <EventImage image={event.image} alt={`Image for the event: ${event.name}`}/>
+                <EventImage
+                    image={event.image}
+                    alt={`Image for the event: ${event.name}`}
+                />
             </div>
             <div className="event-info">
                 <h2>{event.name}</h2>
@@ -43,14 +57,15 @@ const Event = ({ event }) => {
             </div>
             <div className="event-description">
                 <div className="tag-container">
-                    {user.id === event.organizer_id ? (
+                    {user.id === event.organizer_id && (
                         <div className="tag mine">My Event</div>
-                    ) : (
-                        <></>
                     )}
-                    <div className="tag">
-                        {event.category}
-                    </div>
+                    <div className="tag">{event.category}</div>
+                    {similarity && (
+                        <div className="tag" style={style}>
+                            <h4>{similarity}% Similarity</h4>
+                        </div>
+                    )}
                 </div>
                 <p>{event.description}</p>
             </div>
