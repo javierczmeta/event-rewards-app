@@ -6,6 +6,36 @@ const {prisma} = require("./prismaClient")
  * @returns {object} Weight object with categorues and their relative weights
  */
 async function calculateCategoryWeights(userId) {
+
+    const {fetchedEventsG, fetchedEventsN} = await getSetsForUserID(userId)
+
+    const countsByCategoryTotal = countEvents(fetchedEventsG, fetchedEventsN)
+
+    const keys = Object.keys(countsByCategoryTotal)
+    const numCategories = keys.length
+    const logged = []
+    let sum = 0
+
+    for (let i = 0; i < numCategories; i++) {
+        log = Math.log10(countsByCategoryTotal[keys[i]] + 2);
+        sum += log
+        logged.push(log)
+    }
+
+    const weights = {}
+    for (let i = 0; i < numCategories; i++) {
+        weights[keys[i]] = logged[i] / sum
+    }
+
+    return weights
+}
+
+/**
+ * Returns two lists of events the user is going to and events the user is not going to
+ * @param {number} userId user identifier
+ * @returns an object {fetchedEventsG, fetchedEventsN}
+ */
+async function getSetsForUserID(userId) {
     const fetchedEventsG = await prisma.rSVP.findMany({
         where: { user_id: userId, status: "Going" },
         include: { event: true },
@@ -16,7 +46,17 @@ async function calculateCategoryWeights(userId) {
         include: { event: true },
     });
 
-    let initialCounts = {
+    return {fetchedEventsG, fetchedEventsN}
+}
+
+/**
+ * Counts the number of events in each category
+ * @param {Array} fetchedEventsG Events user is going to
+ * @param {Array} fetchedEventsN Events user is not going to
+ * @returns An object of categories with their respective count
+ */
+function countEvents(fetchedEventsG, fetchedEventsN) {
+        let initialCounts = {
         Miscellaneous: 0,
         "Music and Arts": 0,
         "Sports and Fitness": 0,
@@ -27,35 +67,21 @@ async function calculateCategoryWeights(userId) {
         "Charity and Fundraising": 0,
     };
 
+    // Add 1 for each "Going" RSVP
     const countsByCategoryG = fetchedEventsG.reduce((acc, event) => {
         const category = event.event.category;
         acc[category]++;
         return acc;
     }, initialCounts);
 
+    // Remove 1 for each "Not Going" RSVP. Cap at 0
     const countsByCategoryTotal = fetchedEventsN.reduce((acc, event) => {
         const category = event.event.category;
         acc[category] = Math.max(0, acc[category] - 1);
         return acc;
     }, countsByCategoryG);
 
-    keys = Object.keys(countsByCategoryTotal)
-    n = keys.length
-    logged = []
-    sum = 0
-
-    for (let i = 0; i < n; i++) {
-        log = Math.log10(countsByCategoryTotal[keys[i]] + 2);
-        sum += log
-        logged.push(log)
-    }
-
-    weights = {}
-    for (let i = 0; i < n; i++) {
-        weights[keys[i]] = logged[i] / sum
-    }
-
-    return weights
+    return countsByCategoryTotal
 }
 
 /**
