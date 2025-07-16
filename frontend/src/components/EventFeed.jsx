@@ -8,7 +8,7 @@ import LoaderEvent from "./LoaderEvent";
 import { useUser } from "../contexts/UserContext";
 
 const EventFeed = ({ searchFieldProps, sortState, isRecommending }) => {
-    const {user} = useUser()
+    const {user, location} = useUser()
 
     const getEvents = useQuery({
         queryKey: ["events", searchFieldProps.value, sortState],
@@ -29,8 +29,9 @@ const EventFeed = ({ searchFieldProps, sortState, isRecommending }) => {
         queryKey: ["recommended-events"],
         queryFn: () => {
             const url = import.meta.env.VITE_SERVER_API;
+            const endpoint = location ? `${url}/events/recommended?lng=${location.lng}&lat=${location.lat}` : `${url}/events/recommended`
             return axios.get(
-                `${url}/events/recommended`,
+                endpoint,
                 {
                     withCredentials: true,
                 }

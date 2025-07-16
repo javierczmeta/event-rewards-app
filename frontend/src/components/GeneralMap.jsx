@@ -6,8 +6,10 @@ import { useUser } from "../contexts/UserContext";
 
 const GeneralMap = ({ className, fetchEvents, mapEvents, mapRef }) => {
     const mapContainerRef = useRef();
-    const {location} = useUser()
-    
+    const {location, MENLO_PARK_COORDS} = useUser()
+
+    let mapStartPos = location ? location : MENLO_PARK_COORDS
+
     const currentMarkers = [];
 
     const getEventsWithBounds = () => {
@@ -25,7 +27,7 @@ const GeneralMap = ({ className, fetchEvents, mapEvents, mapRef }) => {
         mapboxgl.accessToken = mapboxToken;
         mapRef.current = new mapboxgl.Map({
             container: mapContainerRef.current,
-            center: [location.lng, location.lat], // starting position [lng, lat]
+            center: [mapStartPos.lng, mapStartPos.lat], // starting position [lng, lat]
             zoom: 15, // starting zoom
         });
 
