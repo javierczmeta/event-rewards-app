@@ -6,6 +6,7 @@ import CreateMap from "./CreateMap";
 import "../styles/CreatePage.css";
 import { useNavigate } from "react-router";
 import { reverseCreateDateWithOffset } from "../utils/createDateWithOffset";
+import LoadingGif from "./LoadingGif";
 
 const CreatePage = () => {
     const MENLO_PARK_COORDS = [-122.1486120978705,37.4845092388847]
@@ -143,7 +144,7 @@ const CreatePage = () => {
                         </option>
                     </select>
                 </div>
-                <button type="submit">Create</button>
+                {createEventMutation.isPending || createEventMutation.isSuccess ? <LoadingGif/> : (<button type="submit">Create</button>)}
             </form>
 
             <ToastContainer
