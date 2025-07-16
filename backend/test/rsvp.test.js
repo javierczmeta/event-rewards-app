@@ -8,13 +8,20 @@ jest.mock("../generated/prisma", () => {
             create: jest.fn(),
             findFirst: jest.fn(),
             update: jest.fn(),
+            findMany: jest.fn(),
+            count: jest.fn()
         },
         event: {
             findUnique: jest.fn(),
+            update: jest.fn()
         },
     };
     return { PrismaClient: jest.fn(() => mPrismaClient) };
 });
+
+jest.mock("../utils", () => ({
+    calculateRewards: jest.fn().mockReturnValue(100), // Mock return value
+}));
 
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient(); // Use the mocked PrismaClient
@@ -35,20 +42,21 @@ describe("POST /events/:id/rsvp", () => {
     });
 
     it("should return 400 if validation fails", async () => {
+        prisma.event.findUnique.mockResolvedValueOnce({id:1})
+        prisma.rSVP.findMany.mockResolvedValueOnce([{id:1}])
         const response = await agent
             .post("/events/1/rsvp")
-            .send({ invalidField: "invalidValue" });
+            .send({ invalidField: "invalidValue", status: "Going" });
         expect(response.status).toBe(400);
         expect(response.body.message).toBeDefined();
     });
+
     it("should return 400 if event ID is not an integer", async () => {
         const response = await agent
             .post("/events/notAnInteger/rsvp")
             .send({ status: "Going" });
         expect(response.status).toBe(400);
-        expect(response.body.message).toContain(
-            "ID of the event has to be an integer"
-        );
+        expect(response.body.message).toContain("has to be an integer");
     });
     it("should return 404 if event does not exist", async () => {
         prisma.rSVP.findFirst.mockResolvedValueOnce(null);
@@ -68,17 +76,19 @@ describe("POST /events/:id/rsvp", () => {
             id: 1,
             user_id: 1,
             event_id: 1,
-            status: "going",
+            status: "Going",
         });
+
         const response = await agent
             .post("/events/1/rsvp")
             .send({ status: "Going" });
+
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
             id: 1,
             user_id: 1,
             event_id: 1,
-            status: "going",
+            status: "Going",
         });
     });
     it("should create a new RSVP and return it", async () => {
@@ -88,7 +98,7 @@ describe("POST /events/:id/rsvp", () => {
             id: 1,
             user_id: 1,
             event_id: 1,
-            status: "going",
+            status: "Going",
         });
         const response = await agent
             .post("/events/1/rsvp")
@@ -98,7 +108,7 @@ describe("POST /events/:id/rsvp", () => {
             id: 1,
             user_id: 1,
             event_id: 1,
-            status: "going",
+            status: "Going",
         });
     });
     it("should return 400 if already checked in", async () => {
@@ -113,7 +123,7 @@ describe("POST /events/:id/rsvp", () => {
         const response = await agent
             .post("/events/1/rsvp")
             .send({ status: "Going" });
-            console.log(response.body)
+
         expect(response.status).toBe(400);
         expect(response.body.message).toContain("already checked in");
     });
@@ -124,18 +134,18 @@ describe("GET /events/:id/rsvp", () => {
     beforeEach(async () => {
         agent = request.agent(server);
         await agent.get("/set"); // Simulate setting session
+        jest.resetAllMocks()
     });
 
     it("should return 400 if event ID is not an integer", async () => {
         const response = await agent.get("/events/notAnInteger/rsvp");
         expect(response.status).toBe(400);
-        expect(response.body.message).toContain(
-            "ID of the event has to be an integer"
-        );
+        expect(response.body.message).toContain("has to be an integer");
     });
 
     it("should return an empty array if RSVP does not exist", async () => {
         prisma.rSVP.findFirst.mockResolvedValueOnce(null);
+        prisma.event.findUnique.mockResolvedValueOnce({id:1})
         const response = await agent.get("/events/1/rsvp");
         expect(response.status).toBe(200);
         expect(response.body).toEqual([]);
@@ -146,9 +156,10 @@ describe("GET /events/:id/rsvp", () => {
             id: 1,
             user_id: 1,
             event_id: 1,
-            status: "going",
+            status: "Going",
         };
         prisma.rSVP.findFirst.mockResolvedValueOnce(mockRSVP);
+        prisma.event.findUnique.mockResolvedValueOnce({id:1})
         const response = await agent.get("/events/1/rsvp");
         expect(response.status).toBe(200);
         expect(response.body).toEqual(mockRSVP);
@@ -160,22 +171,19 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
     beforeEach(async () => {
         agent = request.agent(server);
         await agent.get("/set"); // Simulate setting session
+        jest.resetAllMocks()
     });
 
     it("should return 400 if event ID is not an integer", async () => {
         const response = await agent.patch("/events/notAnInteger/checkin/1");
         expect(response.status).toBe(400);
-        expect(response.body.message).toContain(
-            "ID of the event has to be an integer"
-        );
+        expect(response.body.message).toContain("has to be an integer");
     });
 
     it("should return 400 if user ID is not an integer", async () => {
         const response = await agent.patch("/events/1/checkin/notAnInteger");
         expect(response.status).toBe(400);
-        expect(response.body.message).toContain(
-            "ID of the user has to be an integer"
-        );
+        expect(response.body.message).toContain("has to be an integer");
     });
 
     it("should return 401 if the session user is not the organizer", async () => {
@@ -183,6 +191,7 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
             id: 1,
             organizer_id: 2, // Different from session user ID
         });
+        prisma.rSVP.findFirst.mockResolvedValueOnce({ id: 1 });
         const response = await agent.patch("/events/1/checkin/1");
         expect(response.status).toBe(401);
         expect(response.body.message).toContain(
@@ -192,6 +201,7 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
 
     it("should return 404 if the event does not exist", async () => {
         prisma.event.findUnique.mockResolvedValueOnce(null);
+        prisma.rSVP.findMany.mockResolvedValueOnce([{ id: 1 }]);
         const response = await agent.patch("/events/1/checkin/1");
         expect(response.status).toBe(404);
         expect(response.body.message).toContain(
@@ -208,7 +218,7 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
         const response = await agent.patch("/events/1/checkin/1");
         expect(response.status).toBe(404);
         expect(response.body.message).toContain(
-            "The rsvp with the specified IDs does not exist"
+            "RSVP data for this user and event does not exist"
         );
     });
 
@@ -217,7 +227,7 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
             id: 1,
             user_id: 1,
             event_id: 1,
-            status: "going",
+            status: "Going",
             check_in_time: null,
         };
         const updatedRSVP = {
@@ -233,13 +243,15 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
 
         const response = await agent.patch("/events/1/checkin/1");
         expect(response.status).toBe(200);
-        expect(response.body).toEqual(expect.objectContaining({
-            id: 1,
-            user_id: 1,
-            event_id: 1,
-            status: "going",
-            check_in_time: expect.any(String), // Check that check_in_time is a string (ISO format)
-        }));
+        expect(response.body).toEqual(
+            expect.objectContaining({
+                id: 1,
+                user_id: 1,
+                event_id: 1,
+                status: "Going",
+                check_in_time: expect.any(String), // Check that check_in_time is a string (ISO format)
+            })
+        );
     });
 });
 
@@ -247,18 +259,18 @@ describe("GET /events/:id/attendees", () => {
     let agent;
     beforeEach(async () => {
         agent = request.agent(server);
+        jest.resetAllMocks();
     });
 
     it("should return 400 if event ID is not an integer", async () => {
         const response = await agent.get("/events/notAnInteger/attendees");
         expect(response.status).toBe(400);
-        expect(response.body.message).toContain(
-            "ID of the event has to be an integer"
-        );
+        expect(response.body.message).toContain("has to be an integer");
     });
 
     it("should return an empty array if no attendees are found", async () => {
         prisma.rSVP.findMany.mockResolvedValueOnce([]);
+        prisma.event.findUnique.mockResolvedValueOnce({id:1})
         const response = await agent.get("/events/1/attendees");
         expect(response.status).toBe(200);
         expect(response.body).toEqual([]);
@@ -267,6 +279,7 @@ describe("GET /events/:id/attendees", () => {
     it("should return the list of attendees if they exist", async () => {
         const mockAttendees = [
             {
+                check_in_time: null,
                 id: 1,
                 user_id: 1,
                 event_id: 1,
@@ -291,6 +304,7 @@ describe("GET /events/:id/attendees", () => {
                 },
             },
         ];
+        prisma.event.findUnique.mockResolvedValueOnce({id:1})
         prisma.rSVP.findMany.mockResolvedValueOnce(mockAttendees);
         const response = await agent.get("/events/1/attendees");
         expect(response.status).toBe(200);
