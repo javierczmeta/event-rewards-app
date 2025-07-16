@@ -27,10 +27,11 @@ const UserPage = () => {
     }
 
     if (getUser.isError) {
-        <main className="modal-content">
-            <h2>User Not Found</h2>
-        </main>;
-        return;
+        console.log(getUser.error)
+        return (<main className="user-error-main">
+            <h2>Error: {getUser.error.message}</h2>
+            <p>{getUser.error.response.data.message}</p>
+        </main>)
     }
 
     const rsvps = getUser.data.data.rsvps
