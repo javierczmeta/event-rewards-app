@@ -571,10 +571,16 @@ server.get(
     async (req, res, next) => {
         let eventId = req.params.eventId;
 
-    let fetchedRSVP = await prisma.rSVP.findMany({
-        where: { event_id: eventId, status: "Going" },
-        include: { user: { select: { profile: true } } },
-    });
+        let fetchedRSVP = await prisma.rSVP.findMany({
+            where: { event_id: eventId, status: "Going" },
+            include: { user: { select: { profile: {select: {
+                user_id: true, 
+                display_name: true, 
+                display_badges: true, 
+                points: true, 
+                image: true } 
+            }}},
+        }});
 
         res.json(fetchedRSVP);
     }
