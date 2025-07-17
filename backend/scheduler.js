@@ -186,10 +186,11 @@ function getProfitByPoints(events) {
 function getProfitByDistance(events, userLocation) {
     for (let i = 0; i < events.length; i++) {
         // 100 so that events farther than 100km are negative (ignored)
+        const distanceKM = haversine({lon: events[i].longitude, lat: events[i].latitude}, {lon: userLocation.lng, lat: userLocation.lat}).km
         if (events[i].profit) {
-            events[i].profit = 100 - haversine({lon: events[i].longitude, lat: events[i].latitude}, {lon: userLocation.lng, lat: userLocation.lat})
+            events[i].profit += 100 - distanceKM
         } else {
-            events[i].profit += 100 - haversine({lon: events[i].longitude, lat: events[i].latitude}, {lon: userLocation.lng, lat: userLocation.lat})
+            events[i].profit = 100 - distanceKM
         }
     }
     return events
