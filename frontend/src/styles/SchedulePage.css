@@ -1,0 +1,104 @@
+.schedule-main {
+    padding: 20px;
+    padding-bottom: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 15px;
+
+    overflow-y: auto;
+
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+.schedule-desc {
+    font-style: italic;
+    font-weight: 600;
+    color: #6c757d;
+}
+
+.schedule-button {
+    padding: 10px;
+    border-style: solid;
+    width: max-content;
+    border-radius: 5px;
+    font-weight: 700;
+    background-color: var(--root-button-bg);
+    border-color: var(--root-button-border);
+    color: white;
+    border-radius: 40px;
+    box-shadow: 0 0 4px rgb(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.schedule-button.gray {
+    background-color: #adb5bd;
+    border-color: #6c757d;
+}
+
+.schedule-button:hover {
+    background-color: var(--root-button-bg-hover);
+}
+.schedule-button:focus {
+    background-color: var(--root-button-bg);
+}
+
+.schedule-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    justify-content: center;
+}
+
+.schedule-events-container {
+    display: flex;
+    flex-direction: column;
+
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.scheduling-settings-container {
+    display: flex;
+    gap: 20px;
+}
+
+.profit-modes-container {
+    display: flex;
+    border-radius: 50px;
+    overflow: hidden;
+
+    align-items: center;
+
+    border-style: solid;
+    border-color: black;
+}
+
+.profit-mode {
+    color: white;
+    font-weight: 700;
+
+    background-color: #adb5bd;
+
+    padding: 10px;
+    cursor: pointer;
+}
+
+.profit-mode:hover, .profit-mode.active:hover {
+    background-color: var(--root-button-bg-hover);
+}
+
+.profit-mode.active {
+    background-color: var(--root-button-bg);
+}
+
+.profit-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
