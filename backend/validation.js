@@ -45,6 +45,12 @@ const rsvpValidation = Joi.object({
         .required(),
 }).required();
 
+const schedulerValidation = Joi.object({
+    events: Joi.array().items(Joi.object()).min(1).required(),
+    userLocation: Joi.object(),
+    profitModes: Joi.array().items(Joi.string()).min(1).required()
+}).required();
+
 // Authentication Verification
 const isAuthenticated = (req, res, next) => {
     if (!req.session.userId) {
@@ -79,5 +85,6 @@ module.exports = {
     rsvpValidation,
     isAuthenticated,
     verifyParamstoInt,
-    displayBadgeSchema
+    displayBadgeSchema,
+    schedulerValidation
 };
