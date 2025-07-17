@@ -37,6 +37,7 @@ let sessionConfig = {
 };
 
 const server = express();
+server.set('trust proxy', true)
 server.use(
     cors({
         origin: process.env.FRONTEND_URL,
