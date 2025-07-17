@@ -18,11 +18,13 @@ const {
     newEventSchema,
     rsvpValidation,
     verifyParamstoInt,
-    displayBadgeSchema
+    displayBadgeSchema,
+    schedulerValidation
 } = require("./validation");
 
 const { calculateCategoryWeights, probabilityGoing, distancePenalty } = require("./recommendation");
 const { prisma } = require("./prismaClient");
+const { getProfitByPoints, getProfitByDistance, schedule, scheduleWithCommutes } = require("./scheduler");
 
 let sessionConfig = {
     name: "sessionId",
@@ -279,6 +281,46 @@ server.get("/events/recommended", isAuthenticated, async (req, res, next) => {
     res.json(allEvents.slice(0,5));
 });
 
+/* [POST] events/schedule
+    Finds the best schedule from a list of events
+    Expects a list of events in the body
+    Expects array of profit modes
+ */
+server.post('/events/schedule', async (req,res,next) => {
+    const withCommute = req.query.commute === "true"
+
+    // Validate body contains list if events and list of modes
+    const { error } = schedulerValidation.validate(req.body)
+    if (error) {
+        return next({ status: 400, message: error.details[0].message });
+    }
+
+    let {events, userLocation, profitModes} = req.body
+    profitModes = new Set(profitModes)
+
+
+    if (profitModes.has("points")) {
+        events = getProfitByPoints(events)
+    }
+
+    if (profitModes.has("distance")) {
+        if (userLocation === undefined) {
+            return next({status: 400, message: "Cannot get distance profit without user location"})
+        }
+        else {
+            events = getProfitByDistance(events, userLocation)
+        }
+    }
+
+    let result;
+    if (withCommute) {
+        result = await scheduleWithCommutes(events)
+    } else {
+        result = await schedule(events)
+    }
+
+    res.json(result)
+})
 
 /* [GET] /events/within-bounds
     Returns events inside the requested area
