@@ -13,6 +13,7 @@ import { useFormInput } from "./utils/useFormInput";
 import CreatePage from "./components/CreatePage";
 import MapPage from "./components/MapPage";
 import UserPage from "./components/UserPage";
+import SchedulePage from "./components/SchedulePage";
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
     let ProtectedCreate = WithAuth(CreatePage)
     let ProtectedMap = WithAuth(MapPage)
     let ProtectedUser = WithAuth(UserPage)
+    let ProtectedSchedule = WithAuth(SchedulePage)
 
     // Search states
     const searchFieldProps = useFormInput("")
@@ -42,6 +44,7 @@ function App() {
                 <Route path="/create" element={<ProtectedCreate/>}/>
                 <Route path="/feed/*" element={<ProtectedFeed searchFieldProps={searchFieldProps} sortState={sortState} isRecommending={isRecommending}/>}/>
                 <Route path="/map" element={<ProtectedMap/>}/>
+                <Route path="/schedule" element={<ProtectedSchedule/>}/>
                 <Route path="/users/:userId" element={<ProtectedUser/>}/>
             </Routes>
             <Footer />

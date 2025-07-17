@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Event from "./Event";
-import {GalleryVerticalEnd, DiamondPlus} from 'lucide-react';
+import {GalleryVerticalEnd, DiamondPlus, Clock} from 'lucide-react';
 import UserImage from "./UserImage";
 import LoaderEvent from "./LoaderEvent";
 
@@ -48,6 +48,14 @@ const RootPage = () => {
                     }}
                 >
                     <DiamondPlus/>Create Event
+                </button>
+                <button
+                    className="root-button"
+                    onClick={() => {
+                        navigate("/schedule");
+                    }}
+                >
+                    <Clock/>Schedule
                 </button>
             </div>
             <div className="root-events-container">
