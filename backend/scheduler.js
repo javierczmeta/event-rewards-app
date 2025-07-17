@@ -93,9 +93,11 @@ async function scheduleWithCommutes(events) {
     // Initialize dp arrays
     const maxProfitMemo = [];
     const goOrSkip = [];
+    const commutes = []
     for (let _ of eventList) {
         maxProfitMemo.push(null);
         goOrSkip.push(null);
+        commutes.push(null)
     }
 
     const commuteMemo = new Map()
@@ -112,6 +114,7 @@ async function scheduleWithCommutes(events) {
         // Going, cannot only check first event that fits, will check every event and add commute penalty
         let nextIndex = null;
         let profitGoing = eventList[i].profit;
+        let goingCommuteTime = 0;
         for (let j = i + 1; j < eventList.length; j++) {
 
             // Create a string key to memoize commute results
@@ -126,6 +129,7 @@ async function scheduleWithCommutes(events) {
             if (eventList[j].start_time > eventList[i].end_time + commuteTime) {
                 profitGoing = (eventList[i]["profit"] + await maxProfit(j)) * commutePenalty(commuteTime)
                 nextIndex = j
+                goingCommuteTime = commuteTime
             }
         }
 
@@ -137,6 +141,7 @@ async function scheduleWithCommutes(events) {
         if (profitGoing >= profitSkip) {
             maxProfitMemo[i] = profitGoing;
             goOrSkip[i] = nextIndex;
+            commutes[i] = goingCommuteTime;
         } else {
             maxProfitMemo[i] = profitSkip;
             goOrSkip[i] = "SKIP";
@@ -147,17 +152,19 @@ async function scheduleWithCommutes(events) {
     await maxProfit(0);
 
     const result = [];
+    const finalCommutes = []
     let i = 0;
     while (i !== null && i < eventList.length) {
         if (goOrSkip[i] !== "SKIP") {
             result.push(eventList[i].id);
+            finalCommutes.push(commutes[i])
             i = goOrSkip[i];
         } else {
             i++;
         }
     }
 
-    return { selectedEventIds: result, totalProfit: maxProfitMemo[0] };
+    return { selectedEventIds: result, totalProfit: maxProfitMemo[0], finalCommutes };
 }
 
 /**
