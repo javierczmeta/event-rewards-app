@@ -30,6 +30,7 @@ let sessionConfig = {
         maxAge: 1000 * 60 * 60 * 24,
         secure: process.env.RENDER ? true : false,
         httpOnly: false,
+        sameSite: process.env.RENDER ? 'None' : 'Lax'
     },
     resave: false,
     saveUninitialized: false,
