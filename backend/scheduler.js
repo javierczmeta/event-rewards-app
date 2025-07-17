@@ -98,6 +98,8 @@ async function scheduleWithCommutes(events) {
         goOrSkip.push(null);
     }
 
+    const commuteMemo = new Map()
+
     const maxProfit = async (i) => {
         if (i >= eventList.length) {
             return 0;
@@ -109,10 +111,13 @@ async function scheduleWithCommutes(events) {
         // Going, cannot only check first event that fits, will check every event and add commute penalty
         const nextProfits = [];
         for (let j = i + 1; j < eventList.length; j++) {
-            const commuteTime = await calculateCommute(
+            // Create a string key to memoize commute results
+            const key = JSON.stringify([eventList[i].id, eventList[j].id].sort((a,b) => {return a - b}))
+            const commuteTime = commuteMemo.has(key) ? commuteMemo.get(key) : await calculateCommute(
                 eventList[i],
                 eventList[j]
             );
+            commuteMemo.set(key, commuteTime)
             if (eventList[j].start_time > eventList[i].end_time + commuteTime) {
                 nextProfits.push(
                     [j,
