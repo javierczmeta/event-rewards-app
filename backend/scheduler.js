@@ -93,9 +93,11 @@ async function scheduleWithCommutes(events) {
     // Initialize dp arrays
     const maxProfitMemo = [];
     const goOrSkip = [];
+    const commutes = []
     for (let _ of eventList) {
         maxProfitMemo.push(null);
         goOrSkip.push(null);
+        commutes.push(null)
     }
 
     const commuteMemo = new Map()
@@ -122,7 +124,7 @@ async function scheduleWithCommutes(events) {
                 nextProfits.push(
                     [j,
                     (eventList[i]["profit"] + await maxProfit(j)) *
-                        commutePenalty(commuteTime)]
+                        commutePenalty(commuteTime), commuteTime]
                 );
             }
         }
@@ -146,6 +148,7 @@ async function scheduleWithCommutes(events) {
         if (profitGoing[1] >= profitSkip) {
             maxProfitMemo[i] = profitGoing[1];
             goOrSkip[i] = profitGoing[0];
+            commutes[i] = profitGoing[2]
         } else {
             maxProfitMemo[i] = profitSkip;
             goOrSkip[i] = "SKIP";
@@ -155,17 +158,19 @@ async function scheduleWithCommutes(events) {
     await maxProfit(0);
 
     const result = [];
+    const finalCommutes = []
     let i = 0;
     while (i !== null && i < eventList.length) {
         if (goOrSkip[i] !== "SKIP") {
             result.push(eventList[i].id);
+            finalCommutes.push(commutes[i])
             i = goOrSkip[i];
         } else {
             i++;
         }
     }
 
-    return { selectedEventIds: result, totalProfit: maxProfitMemo[0] };
+    return { selectedEventIds: result, totalProfit: maxProfitMemo[0], finalCommutes };
 }
 
 /**
