@@ -198,7 +198,7 @@ server.get("/events", async (req, res, next) => {
             break;
         case "start":
             fetchedEvents.sort((a, b) => {
-                return new Date(b.start_time) - new Date(a.start_time);
+                return new Date(a.start_time) - new Date(b.start_time);
             });
             break;
         case "posting":
