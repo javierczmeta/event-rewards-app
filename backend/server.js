@@ -325,7 +325,7 @@ server.get("/users/:id", verifyParamstoInt, async (req, res, next) => {
         select: {
             username: true,
             id: true,
-            rsvps: true,
+            rsvps: {include: {event: true}},
             profile: {
                 select: {
                     display_name: true,
@@ -467,6 +467,7 @@ server.post(
         user_id: sessionID,
         event_id: req.params.eventId,
         status,
+        updated_at: new Date(Date.now()),
     };
 
     // Already one
@@ -550,7 +551,7 @@ server.patch(
         // Update it
         const updateRSVP = await prisma.rSVP.update({
             where: {id: req.rsvp.id},
-            data: {status: "Going", check_in_time: new Date(Date.now())}
+            data: {status: "Going", check_in_time: new Date(Date.now()), updated_at: new Date(Date.now()),}
         });
 
         const updatedEvent = await updatePoints(prisma, req.params.eventId); 
