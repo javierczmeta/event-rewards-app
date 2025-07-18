@@ -1,4 +1,3 @@
-import Timeline from 'react-timelines'
 import Event from './Event';
 import { createDateWithOffset } from '../utils/createDateWithOffset';
 
@@ -24,7 +23,7 @@ const Itinerary = ({ setShowItinerary, events, selectedEventIds, commutes }) => 
                     return (
                     <> 
                         <p>➡️ Go to <span className='bold'>{event.name}</span> from {startTime.toLocaleTimeString()} to {endTime.toLocaleTimeString()}</p>
-                        <Event key={id} event={event}/>
+                        <Event key={id} event={event} navigatePage={"/schedule"}/>
                         {commutes && index < selectedEventIds.length - 1 && <p>🚗 Drive for <span className='bold'>{Math.round(commutes[index])} minute(s)</span> to the next event.</p>}
                     </>
                     )

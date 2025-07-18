@@ -81,13 +81,13 @@ const EventFeed = ({ searchFieldProps, sortState, isRecommending }) => {
                         )}
                     {getEvents.isSuccess &&
                         getEvents.data.data.map((event) => {
-                            return <Event key={event.id} event={event} saved={event.profiles_saved.filter(saved_user => saved_user.user_id === user.id).length > 0}/>
+                            return <Event key={event.id} event={event} saved={event.profiles_saved.filter(saved_user => saved_user.user_id === user.id).length > 0} navigatePage={"/feed"}/>
 })}
                 </div>
             )}
 
             <Routes>
-                <Route path=":eventID" element={<EventModal />} />
+                <Route path=":eventID" element={<EventModal returnPage={'/feed'}/>} />
                 <Route path="*" element={<></>} />
             </Routes>
         </main>
