@@ -1,0 +1,9 @@
+.calendar-main {
+    position: relative;
+    overflow-y: scroll;
+    position: relative;
+}
+
+.calendar-container {
+    padding: 30px;
+}
