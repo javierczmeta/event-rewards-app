@@ -9,12 +9,17 @@ import LoadingGif from "./LoadingGif";
 import { useState } from "react";
 import SchedulingOptions from "./SchedulingOptions";
 import { ToastContainer, toast, Slide } from "react-toastify";
+import Itinerary from "./Itinerary";
 
 
 const SchedulePage = () => {
     const { user, location } = useUser();
     const [withCommute, setWithCommute] = useState(false);
     const [profitModes, setProfitModes] = useState(["points"]);
+
+    const [showItinerary, setShowItinerary] = useState(false);
+    const [selectedEventIds, setSelectedEventIds] = useState([])
+    const [commutes, setCommutes] = useState([])
 
     const getEvents = useQuery({
         queryKey: ["organized-events", user.id],
@@ -45,7 +50,10 @@ const SchedulePage = () => {
             );
         },
         onSuccess: (data) => {
-            toast.success("⭐ Success! Events to go: " + data.data.selectedEventIds + ". Total Profit: " + data.data.totalProfit);
+            toast.success("⭐ Success!");
+            setSelectedEventIds(data.data.selectedEventIds)
+            setCommutes(data.data.finalCommutes)
+            setShowItinerary(true)
         },
         onError: (error) => {
             toast.error(error.response.data.message);
@@ -87,7 +95,7 @@ const SchedulePage = () => {
                         </>
                     )}
                     {getEvents.data &&
-                        getEvents.data.data.saved_events.map((event) => (
+                        getEvents.data.data.saved_events.toSorted((a,b) => {return (new Date(a.start_time)) - (new Date(b.start_time))}).map((event) => (
                             <Event key={event.id} event={event} saved={true} />
                         ))}
                 </div>
@@ -133,6 +141,7 @@ const SchedulePage = () => {
                 theme="light"
                 transition={Slide}
             />
+            {showItinerary && <Itinerary setShowItinerary={setShowItinerary} events={getEvents.data.data.saved_events} selectedEventIds={selectedEventIds} commutes={commutes}/>}
         </main>
     );
 };
