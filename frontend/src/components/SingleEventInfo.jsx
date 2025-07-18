@@ -110,6 +110,7 @@ const SingleEventInfo = ({ chosenEvent }) => {
                                 profile={rsvp.user.profile}
                                 mousePosition={mousePosition}
                                 badgeClass='badge'
+                                checkedIn={rsvp.check_in_time !== null}
                             />
                         );
                     })}

@@ -93,16 +93,16 @@ describe("GET /events", () => {
         expect(response.status).toBe(200);
         expect(response.body).toEqual([
             {
-                name: "Event B",
-                start_time: "2023-10-02",
-                created_at: "2023-09-02",
-                rewards: 20,
-            },
-            {
                 name: "Event A",
                 start_time: "2023-10-01",
                 created_at: "2023-09-01",
                 rewards: 10,
+            },
+                        {
+                name: "Event B",
+                start_time: "2023-10-02",
+                created_at: "2023-09-02",
+                rewards: 20,
             },
         ]);
     });

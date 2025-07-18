@@ -5,9 +5,11 @@ import Badge from "./Badge";
 import { useNavigate } from "react-router";
 import { orderLike } from "../utils/sortObjectsWithList";
 
-const UserBadge = ({ profile, mousePosition, badgeClass}) => {
+const UserBadge = ({ profile, mousePosition, badgeClass, checkedIn}) => {
     const [hovered, setHovered] = useState(false);
     const navigate = useNavigate();
+
+    const containerClass = "badge-container" + (checkedIn ? " checked" : "")
     return (
         <>
             <div
@@ -17,7 +19,7 @@ const UserBadge = ({ profile, mousePosition, badgeClass}) => {
                 onMouseLeave={() => {
                     setHovered(false);
                 }}
-                className="badge-container"
+                className={containerClass}
                 onClick={() => {navigate(`/users/${profile.user_id}`)}}
             >
                 <UserImage className="user-badge-image" image={profile.image} />
