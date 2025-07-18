@@ -36,15 +36,15 @@ function App() {
         <>
             <Header searchFieldProps={searchFieldProps} sortState={sortState} setSortState={setSortState} setIsRecommending={setIsRecommending} isRecommending={isRecommending}/>
             <Routes>
-                <Route path="/" element={<ProtectedRoot/>} />
+                <Route path="/*" element={<ProtectedRoot/>} />
                 <Route element={<UserAuthPage />}>
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Register />} />
                 </Route>
                 <Route path="/create" element={<ProtectedCreate/>}/>
                 <Route path="/feed/*" element={<ProtectedFeed searchFieldProps={searchFieldProps} sortState={sortState} isRecommending={isRecommending}/>}/>
-                <Route path="/map" element={<ProtectedMap/>}/>
-                <Route path="/schedule" element={<ProtectedSchedule/>}/>
+                <Route path="/map/*" element={<ProtectedMap/>}/>
+                <Route path="/schedule/*" element={<ProtectedSchedule/>}/>
                 <Route path="/users/:userId" element={<ProtectedUser/>}/>
             </Routes>
             <Footer />
