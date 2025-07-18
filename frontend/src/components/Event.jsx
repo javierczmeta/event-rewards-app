@@ -7,7 +7,7 @@ import EventImage from "./EventImage";
 import interpolate from "color-interpolate"
 import SaveButton from "./SaveButton";
 
-const Event = ({ event, saved  }) => {
+const Event = ({ event, saved, navigatePage  }) => {
     const date = createDateWithOffset(event.start_time).toLocaleString();
     const navigate = useNavigate();
 
@@ -33,7 +33,7 @@ const Event = ({ event, saved  }) => {
         <div
             className="event-card"
             onClick={() => {
-                navigate(`/feed/${event.id}`);
+                navigate(`${navigatePage}/${event.id}`);
             }}
         >
             <div className="event-image">

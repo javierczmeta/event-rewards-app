@@ -7,6 +7,8 @@ import Event from "./Event";
 import {GalleryVerticalEnd, DiamondPlus, Clock} from 'lucide-react';
 import UserImage from "./UserImage";
 import LoaderEvent from "./LoaderEvent";
+import { Routes, Route } from "react-router";
+import EventModal from "./EventModal";
 
 const RootPage = () => {
     const { user } = useUser();
@@ -24,6 +26,7 @@ const RootPage = () => {
 
     return (
         <main className="root-main">
+            <div className="root-inner-container">
             <div className="welcome-container">
                 <UserImage image={user.profile.image} className="profile-img" alt={`Profile picture for ${user.profile.display_name}`} onClick={()=> {navigate(`users/${user.id}`)}}/>
                 <div>
@@ -70,7 +73,7 @@ const RootPage = () => {
                     </>}
                     {getEvents.data &&
                         getEvents.data.data.saved_events.map((event) => (
-                            <Event key={event.id} event={event} saved={true}/>
+                                <Event key={event.id} event={event} saved={true} navigatePage={''}/>
                         ))}
                 </div>
             </div>
@@ -86,10 +89,18 @@ const RootPage = () => {
                     </>}
                     {getEvents.data &&
                         getEvents.data.data.organized_events.map((event) => (
-                            <Event key={event.id} event={event}/>
+                                <Event key={event.id} event={event} navigatePage={''}/>
                         ))}
                 </div>
             </div>
+            </div>
+            <Routes>
+                <Route
+                    path=":eventID"
+                    element={<EventModal returnPage={"/"} />}
+                />
+                <Route path="*" element={<></>} />
+            </Routes>
         </main>
     );
 };
