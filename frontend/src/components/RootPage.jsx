@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Event from "./Event";
-import {GalleryVerticalEnd, DiamondPlus, Clock} from 'lucide-react';
+import {GalleryVerticalEnd, DiamondPlus, Clock, Calendar} from 'lucide-react';
 import UserImage from "./UserImage";
 import LoaderEvent from "./LoaderEvent";
 import { Routes, Route } from "react-router";
@@ -27,72 +27,80 @@ const RootPage = () => {
     return (
         <main className="root-main">
             <div className="root-inner-container">
-            <div className="welcome-container">
-                <UserImage image={user.profile.image} className="profile-img" alt={`Profile picture for ${user.profile.display_name}`} onClick={()=> {navigate(`users/${user.id}`)}}/>
-                <div>
-                    <h2>Welcome {user.profile.display_name}!</h2>
-                    <h3>{user.profile.points} points</h3>
+                <div className="welcome-container">
+                    <UserImage image={user.profile.image} className="profile-img" alt={`Profile picture for ${user.profile.display_name}`} onClick={()=> {navigate(`users/${user.id}`)}}/>
+                    <div>
+                        <h2>Welcome {user.profile.display_name}!</h2>
+                        <h3>{user.profile.points} points</h3>
+                    </div>
                 </div>
-            </div>
-            
-            <div className="root-buttons">
-                <button
-                    className="root-button"
-                    onClick={() => {
-                        navigate("/feed");
-                    }}
-                >
-                    <GalleryVerticalEnd/> Browse Events
-                </button>
-                <button
-                    className="root-button"
-                    onClick={() => {
-                        navigate("/create");
-                    }}
-                >
-                    <DiamondPlus/>Create Event
-                </button>
-                <button
-                    className="root-button"
-                    onClick={() => {
-                        navigate("/schedule");
-                    }}
-                >
-                    <Clock/>Schedule
-                </button>
-            </div>
-            <div className="root-events-container">
-                <h4>Saved Events</h4>
-                <div className="organized-container">
-                    {getEvents.isPending && 
-                    <>
-                        <LoaderEvent/>
-                        <LoaderEvent/>
-                        <LoaderEvent/>
-                        <LoaderEvent/>
-                    </>}
-                    {getEvents.data &&
-                        getEvents.data.data.saved_events.map((event) => (
+                
+                <div className="root-buttons">
+                    <button
+                        className="root-button"
+                        onClick={() => {
+                            navigate("/feed");
+                        }}
+                    >
+                        <GalleryVerticalEnd/> Browse Events
+                    </button>
+                    <button
+                        className="root-button"
+                        onClick={() => {
+                            navigate("/create");
+                        }}
+                    >
+                        <DiamondPlus/>Create Event
+                    </button>
+                    <button
+                        className="root-button"
+                        onClick={() => {
+                            navigate("/schedule");
+                        }}
+                    >
+                        <Clock/>Schedule
+                    </button>
+                    <button
+                        className="root-button"
+                        onClick={() => {
+                            navigate("/calendar");
+                        }}
+                    >
+                        <Calendar/>Calendar View
+                    </button>
+                </div>
+                <div className="root-events-container">
+                    <h4>Saved Events</h4>
+                    <div className="organized-container">
+                        {getEvents.isPending &&
+                        <>
+                            <LoaderEvent/>
+                            <LoaderEvent/>
+                            <LoaderEvent/>
+                            <LoaderEvent/>
+                        </>}
+                        {getEvents.data &&
+                            getEvents.data.data.saved_events.map((event) => (
                                 <Event key={event.id} event={event} saved={true} navigatePage={''}/>
-                        ))}
+                            ))}
+                    </div>
                 </div>
-            </div>
-            <div className="root-events-container">
-                <h4>My Events</h4>
-                <div className="organized-container">
-                    {getEvents.isPending && 
-                    <>
-                        <LoaderEvent/>
-                        <LoaderEvent/>
-                        <LoaderEvent/>
-                        <LoaderEvent/>
-                    </>}
-                    {getEvents.data &&
-                        getEvents.data.data.organized_events.map((event) => (
+                <div className="root-events-container">
+                    <h4>My Events</h4>
+                    <div className="organized-container">
+                        {getEvents.isPending &&
+                        <>
+                            <LoaderEvent/>
+                            <LoaderEvent/>
+                            <LoaderEvent/>
+                            <LoaderEvent/>
+                        </>}
+                        {getEvents.data &&
+                            getEvents.data.data.organized_events.map((event) => (
                                 <Event key={event.id} event={event} navigatePage={''}/>
-                        ))}
+                            ))}
+                    </div>
                 </div>
-            </div>
             </div>
             <Routes>
                 <Route
