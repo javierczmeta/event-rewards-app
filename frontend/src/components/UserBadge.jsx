@@ -9,7 +9,6 @@ const UserBadge = ({ profile, mousePosition, badgeClass, checkedIn}) => {
     const [hovered, setHovered] = useState(false);
     const navigate = useNavigate();
 
-    console.log(checkedIn)
     const containerClass = "badge-container" + (checkedIn ? " checked" : "")
     return (
         <>
