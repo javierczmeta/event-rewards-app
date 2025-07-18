@@ -326,6 +326,14 @@ server.post('/events/schedule', async (req,res,next) => {
     res.json(result)
 })
 
+/*  [GET] /users/:userId/going
+    Reutrns the events a user is going to
+*/
+server.get("/users/:userId/going", verifyParamstoInt, async (req,res,next) => {
+    const fetchedRSVPS = await prisma.rSVP.findMany({where: {user_id: req.params.userId, status: "Going"}, select: {event: true}})
+    res.json(fetchedRSVPS)
+})
+
 /* [GET] /events/within-bounds
     Returns events inside the requested area
     Recieves 2 queries sw corned and ne corner
