@@ -14,6 +14,7 @@ import CreatePage from "./components/CreatePage";
 import MapPage from "./components/MapPage";
 import UserPage from "./components/UserPage";
 import SchedulePage from "./components/SchedulePage";
+import CalendarPage from "./components/CalendarPage";
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
     let ProtectedMap = WithAuth(MapPage)
     let ProtectedUser = WithAuth(UserPage)
     let ProtectedSchedule = WithAuth(SchedulePage)
+    let ProtectedCalendar = WithAuth(CalendarPage)
 
     // Search states
     const searchFieldProps = useFormInput("")
@@ -45,6 +47,7 @@ function App() {
                 <Route path="/feed/*" element={<ProtectedFeed searchFieldProps={searchFieldProps} sortState={sortState} isRecommending={isRecommending}/>}/>
                 <Route path="/map/*" element={<ProtectedMap/>}/>
                 <Route path="/schedule/*" element={<ProtectedSchedule/>}/>
+                <Route path="/calendar/*" element={<CalendarPage/>}/>
                 <Route path="/users/:userId" element={<ProtectedUser/>}/>
             </Routes>
             <Footer />
