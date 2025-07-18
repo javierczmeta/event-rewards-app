@@ -21,7 +21,7 @@ const {
     displayBadgeSchema
 } = require("./validation");
 
-const { calculateCategoryWeights, probabilityGoing } = require("./recommendation");
+const { calculateCategoryWeights, probabilityGoing, distancePenalty } = require("./recommendation");
 const { prisma } = require("./prismaClient");
 
 let sessionConfig = {
@@ -220,6 +220,41 @@ server.get("/events", async (req, res, next) => {
 */
 server.get("/events/recommended", isAuthenticated, async (req, res, next) => {
     const sessionID = req.session.userId;
+    let lng = req.query.lng;
+    let lat = req.query.lat;
+    const withDistance = lng !== undefined && lat !== undefined
+
+    // make sure corners are numbers
+    if (
+        withDistance &&
+        (!Number.isFinite(Number(lng)) ||
+        !Number.isFinite(Number(lat)))
+    ) {
+        next({
+            message: "Coordinates are not numbers",
+            status: 400,
+        });
+        return;
+    }
+
+    lng = parseFloat(lng);
+    lat = parseFloat(lat);
+
+    // make sure corners are valid coordinates
+    if (withDistance &&
+        !(
+            -180 <= lng &&
+            lng <= 180 &&
+            -90 <= lat &&
+            lat <= 90 
+        )
+    ) {
+        next({
+            message: "Coordinates out of range",
+            status: 400,
+        });
+        return;
+    }
 
     // Get events that have not happened, user is not organizer, and user status is not "Going"
     const allEvents = await prisma.event.findMany({
@@ -233,8 +268,10 @@ server.get("/events/recommended", isAuthenticated, async (req, res, next) => {
 
         const multiplier = (weights[allEvents[i].category] + probabilityDueToSimilarity)
 
-        allEvents[i].score = allEvents[i].rewards * multiplier
-        allEvents[i].multiplier = multiplier
+        const penalty = withDistance ? distancePenalty({lon: lng, lat},{lon: allEvents[i].longitude, lat: allEvents[i].latitude}) : 1
+
+        allEvents[i].score = allEvents[i].rewards * multiplier * penalty
+        allEvents[i].multiplier = multiplier * penalty
     }
 
     allEvents.sort((a, b) => {return b.score - a.score})
