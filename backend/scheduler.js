@@ -191,11 +191,40 @@ function getProfitByPoints(events, weight) {
  * Updates the events to include profit field by distance
  * @param {Array} events array of events
  * @param {object} userLocation {lng, lat}
+ * @param {number} weight number between 0 and 1
  */
-function getProfitByDistance(events, userLocation) {
+function getProfitByDistance(events, userLocation, weight) {
+    // Get max score -> median of event rewards
+    const MAX_SCORE = getMedianRewards(events)
+    const distances = []
+    let min_distance = Infinity
+    let max_distance = -Infinity
     for (let i = 0; i < events.length; i++) {
-        // 100 so that events farther than 100km are negative (ignored)
+        // reverse profit, closer = higher profit
         const distanceKM = haversine({lon: events[i].longitude, lat: events[i].latitude}, {lon: userLocation.lng, lat: userLocation.lat}).km
+        distances.push(distanceKM)
+        if (distanceKM < min_distance) {
+            min_distance = distanceKM
+        }
+        if (distanceKM > max_distance) {
+            max_distance = distanceKM
+        }
+    }
+    
+    for (let i = 0; i < events.length; i++) {
+        // Score is linear decrease between min distance and max distance
+        let score = (MAX_SCORE/(min_distance - max_distance)) * distances[i] - ((MAX_SCORE * max_distance) / (min_distance - max_distance))
+        if (Number.isNaN(score)) {
+            score = 0
+        }
+        if (events[i].profit) {
+            events[i].profit += score * weight
+        } else {
+            events[i].profit = score * weight
+        }
+    }
+    return events
+}
         if (events[i].profit) {
             events[i].profit += 100 - distanceKM
         } else {
