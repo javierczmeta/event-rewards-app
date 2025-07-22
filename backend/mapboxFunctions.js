@@ -2,7 +2,7 @@
  * Calculates driving commute time between two locations using mapbox api
  * @param {object} eventA
  * @param {object} eventB
- * @returns {number} commute time
+ * @returns {object} commute time, route
  */
 async function calculateCommute(eventA, eventB) {
     // Placeholder function
@@ -14,10 +14,10 @@ async function calculateCommute(eventA, eventB) {
     }
     const jsonData = await response.json();
     if (jsonData.routes.length === 0) {
-        return Infinity
+        return {time: Infinity, route: null}
     }
     const duration = jsonData.routes[0].duration / 60;
-    return duration;
+    return {time: duration, route: jsonData.routes[0]};
 }
 
 module.exports = { calculateCommute } 
