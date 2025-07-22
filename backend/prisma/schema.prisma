@@ -24,7 +24,7 @@ model Event {
   start_time  DateTime
   end_time    DateTime
   created_at  DateTime   @default(now())
-  price       String
+  price       Int        @default(0)
   rewards     Int       @default(0)
   description String
   category    String    @default("Miscellaneous")
