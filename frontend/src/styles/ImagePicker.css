@@ -1,0 +1,10 @@
+.image-picker-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.image-picker-image {
+    aspect-ratio: 1 / 1;
+    width: 50px;
+}

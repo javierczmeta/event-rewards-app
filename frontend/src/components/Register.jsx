@@ -4,6 +4,8 @@ import axios from "axios";
 import { useEffect } from "react";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import LoadingGif from "./LoadingGif";
+import ImagePicker from "./ImagePicker";
+import { useNavigate } from "react-router";
 
 const Register = () => {
     const nameInput = useFormInput("");
@@ -19,6 +21,8 @@ const Register = () => {
             return axios.post(`${url}/signup`, newUser);
         },
     });
+
+    const navigate = useNavigate();
 
     const handleSignUpSubmit = (e) => {
         e.preventDefault();
@@ -43,6 +47,7 @@ const Register = () => {
         }
         if (signUpMutation.isSuccess) {
             toast.success("⭐ Success creating new user!");
+            navigate('/login');
         }
     }, [signUpMutation.status]);
 
@@ -79,17 +84,11 @@ const Register = () => {
                     pattern={`${passInput.value}`}
                     title="Match password"
                 ></input>
-                <input
-                    type="text"
-                    placeholder="Image URL"
-                    {...imageInput}
-                    pattern="^https?:\/\/.*\.(jpg|jpeg|png|gif|bmp|webp)$"
-                    title="Submit valid image link."
-                ></input>
+                <ImagePicker imageInput={imageInput}/>
                 <label>Date of Birth:</label>
                 <input type="date" {...dobInput} required></input>
                 {signUpMutation.isPending || signUpMutation.isSuccess ? (
-                    <LoadingGif />
+                    <LoadingGif className='loading-container-image'/>
                 ) : (
                     <button className="action-button" type="submit">
                         Sign Up
