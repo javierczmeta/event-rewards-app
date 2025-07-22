@@ -29,11 +29,9 @@ describe("scheduleWithCommutes", () => {
                 profit: 70,
                 location: { lng: 0, lat: 0 },
             },
-            // Add more events as needed
         ];
-        calculateCommute.mockResolvedValue({time: 30, route: null})
+        calculateCommute.mockResolvedValue({time: 3, route: null})
         const result = await scheduleWithCommutes(events);
-        expect(result.selectedEventIds).toEqual([3]); // Expected event IDs
+        expect(result.selectedEventIds).toEqual([1,2,3]); 
     });
-    // Add more test cases as needed
 });
