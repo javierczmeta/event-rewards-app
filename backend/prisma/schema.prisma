@@ -64,6 +64,7 @@ model RSVP {
   event_id      Int
   status        String
   check_in_time DateTime?
+  updated_at    DateTime @default(now())
 }
 
 
@@ -76,4 +77,5 @@ model Badge {
   icon        String
   profiles    Profile[] @relation("ProfileBadges")
   displayProfiles Profile[] @relation("ProfileDisplayBadges")
+  color       String    @default("red")
 }

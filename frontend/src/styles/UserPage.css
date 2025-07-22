@@ -50,4 +50,14 @@
 
 .user-error-main{
     padding: 30px;
+.user-history-feed {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    height: 100%;
+    padding: 20px;
+    overflow-y: auto;
+    gap: 20px;
+
+    box-shadow: 0 0 4px rgb(0,0,0,0.2);
 }
