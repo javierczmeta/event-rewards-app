@@ -54,7 +54,9 @@ model Profile {
   display_badges  Badge[]   @relation("ProfileDisplayBadges")
   image           String?
   dob             DateTime
+  badge_order     Int[]
 }
+
 // RSVP model
 model RSVP {
   id            Int       @id @default(autoincrement())
