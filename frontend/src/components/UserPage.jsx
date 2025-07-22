@@ -7,9 +7,17 @@ import "../styles/UserPage.css";
 import Badge from "./Badge";
 import { useMemo } from "react";
 import HistoryEvent from "./HistoryEvent";
+import { useUser } from "../contexts/UserContext";
+import { useState, useEffect } from "react";
+import BadgeSelector from "./BadgeSelector";
+import { orderLike } from "../utils/sortObjectsWithList";
+
 
 const UserPage = () => {
     const { userId } = useParams();
+    const {user} = useUser()
+
+    const [isEditing, setIsEditing] = useState(false)
 
     const getUser = useQuery({
         queryKey: ["user", userId],
@@ -21,6 +29,19 @@ const UserPage = () => {
     });
 
     const rsvps = useMemo(() => { if (getUser.isSuccess) {return getUser.data.data.rsvps} else {return []}}, [getUser.data])
+    const [mousePosition, setMousePosition] = useState({x:0, y:0});
+
+    useEffect(() => {
+        const updateMousePosition = (e) => {
+            setMousePosition({x: e.clientX, y: e.clientY});
+        }
+
+        window.addEventListener('mousemove', updateMousePosition)
+
+        return () => {
+            window.removeEventListener('mousemove', updateMousePosition)
+        }
+    },[]);
 
     if (getUser.isPending) {
         return (
@@ -39,7 +60,9 @@ const UserPage = () => {
     }
 
 
-    return (
+    const displayedBadges = orderLike(getUser.data.data.profile.display_badges, getUser.data.data.profile.badge_order)
+
+    return (<>
         <main className="user-main">
             <div className="profile-info-container">
                 <div className="user-page-info-main">
@@ -51,22 +74,26 @@ const UserPage = () => {
                         <h2>{getUser.data.data.profile.display_name}</h2>
                         <p>{getUser.data.data.profile.points} points</p>
                         <h4>Badges:</h4>
-                        <div>
-                            {getUser.data.data.profile.display_badges.length ? (
-                                getUser.data.data.profile.display_badges.map(
+                        <div className="badge-display">
+                            {displayedBadges.length ? (
+                                displayedBadges.map(
                                     (badge) => {
-                                        return <Badge key={badge.id} badge={badge} className='user-page-badge'/>;
+                                        return <Badge key={badge.id} badge={badge} className='user-page-badge' mousePosition={mousePosition}/>;
                                     }
                                 )
                             ) : (
                                 <p>No badges displayed...</p>
                             )}
                         </div>
+                        {user.id == userId ? <button className="edit-badge-button" onClick={() => {setIsEditing(true)}}>Edit Badges</button> : <></>}
                     </div>
                 </div>
                 <div className="milestone-container">
                     <h3>Next Milestone</h3>
-                    <div className="bar"></div>
+                    <div className="bar-container">
+                        <p className="milestone-text">Next badge <span>{getUser.data.data.nextBadge.name}</span>{` at ${getUser.data.data.nextBadge.requirement} point(s)`}</p>
+                        <progress className="progress-bar" value={getUser.data.data.profile.points} max={getUser.data.data.nextBadge.requirement}></progress>
+                    </div>
                 </div>
                 <div className="user-history-feed">
                     {rsvps.map(rsvp => {
@@ -74,7 +101,10 @@ const UserPage = () => {
                     })}
                 </div>
             </div>
+            {isEditing && <BadgeSelector badges={getUser.data.data.profile.badges} setIsEditing={setIsEditing} display_badges={displayedBadges}/>}
         </main>
+        
+            </>
     );
 };
 
