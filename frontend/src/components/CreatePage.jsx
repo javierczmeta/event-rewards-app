@@ -7,12 +7,15 @@ import "../styles/CreatePage.css";
 import { useNavigate } from "react-router";
 import { reverseCreateDateWithOffset } from "../utils/createDateWithOffset";
 import LoadingGif from "./LoadingGif";
+import { useUser } from "../contexts/UserContext";
 
 const CreatePage = () => {
-    const MENLO_PARK_COORDS = [-122.1486120978705,37.4845092388847]
+    const {location, MENLO_PARK_COORDS} = useUser()
+    let mapStartPos = location ? location : MENLO_PARK_COORDS
+
     const formInputs = {
-        longitudeProps: useFormInput(MENLO_PARK_COORDS[0]),
-        latitudeProps: useFormInput(MENLO_PARK_COORDS[1]),
+        longitudeProps: useFormInput(mapStartPos.lng),
+        latitudeProps: useFormInput(mapStartPos.lat),
         nameProps: useFormInput(""),
         imageProps: useFormInput(""),
         startDateProps: useFormInput(""),

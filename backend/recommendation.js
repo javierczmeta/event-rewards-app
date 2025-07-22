@@ -1,3 +1,4 @@
+const { haversine } = require("./haversine");
 const {prisma} = require("./prismaClient")
 
 /**
@@ -147,4 +148,10 @@ async function probabilityGoing(userId, eventId) {
     return numerator / denominator
 }
 
-module.exports = { calculateCategoryWeights, probabilityGoing }
+function distancePenalty(userCoords, eventCoords) {
+    const {km} = haversine(userCoords, eventCoords)
+
+    return Math.min(1, 50/km)
+} 
+
+module.exports = { calculateCategoryWeights, probabilityGoing, distancePenalty }
