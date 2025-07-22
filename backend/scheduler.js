@@ -225,10 +225,40 @@ function getProfitByDistance(events, userLocation, weight) {
     }
     return events
 }
+
+/**
+ * Updates the events to include profit field by price, same logic as distance
+ * @param {Array} events array of events
+ * @param {number} weight number between 0 and 1
+ */
+function getProfitByPrice(events, weight) {
+    // Get max score -> median of event rewards
+    const MAX_SCORE = getMedianRewards(events)
+    const prices = []
+    let min_price = Infinity
+    let max_price = -Infinity
+    for (let i = 0; i < events.length; i++) {
+        // reverse profit, closer = higher profit
+        prices.push(events[i].price)
+        if (events[i].price < min_price) {
+            min_price = events[i].price
+        }
+        if (events[i].price > max_price) {
+            max_price = events[i].price
+        }
+    }
+
+    
+    for (let i = 0; i < events.length; i++) {
+        // Score is linear decrease between min price and max price
+        let score = (MAX_SCORE/(min_price - max_price)) * prices[i] - ((MAX_SCORE * max_price) / (min_price - max_price))
+        if (Number.isNaN(score)) {
+            score = 0
+        }
         if (events[i].profit) {
-            events[i].profit += 100 - distanceKM
+            events[i].profit += score * weight
         } else {
-            events[i].profit = 100 - distanceKM
+            events[i].profit = score * weight
         }
     }
     return events
@@ -259,3 +289,5 @@ function getMedianRewards(events) {
         return rewards[middleIndex]
     }
 }
+
+module.exports = { schedule, scheduleWithCommutes, getProfitByPoints, getProfitByDistance, getProfitByPrice };
