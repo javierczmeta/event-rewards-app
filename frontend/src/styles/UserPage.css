@@ -44,12 +44,10 @@
     gap: 5px;
 }
 
-.user-page-badge {
-    
-}
-
 .user-error-main{
     padding: 30px;
+}
+
 .user-history-feed {
     display: flex;
     flex-direction: column;
