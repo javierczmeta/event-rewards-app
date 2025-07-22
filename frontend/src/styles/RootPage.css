@@ -55,6 +55,8 @@
     object-fit: cover;
     border-radius: 50%;
     width: 100px;
+
+    cursor: pointer;
 }
 
 .welcome-container {

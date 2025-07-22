@@ -25,7 +25,7 @@ const RootPage = () => {
     return (
         <main className="root-main">
             <div className="welcome-container">
-                <UserImage image={user.profile.image} className="profile-img" alt={`Profile picture for ${user.profile.display_name}`}/>
+                <UserImage image={user.profile.image} className="profile-img" alt={`Profile picture for ${user.profile.display_name}`} onClick={()=> {navigate(`users/${user.id}`)}}/>
                 <div>
                     <h2>Welcome {user.profile.display_name}!</h2>
                     <h3>{user.profile.points} points</h3>
@@ -60,7 +60,7 @@ const RootPage = () => {
                         <LoaderEvent/>
                         <LoaderEvent/>
                     </>}
-                    {getOrganizedEvents.data &&
+                    {getOrganizedEvents.isSuccess &&
                         getOrganizedEvents.data.data.map((event) => (
                             <Event key={event.id} event={event} />
                         ))}
