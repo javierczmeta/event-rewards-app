@@ -205,4 +205,28 @@ function getProfitByDistance(events, userLocation) {
     return events
 }
 
-module.exports = { schedule, scheduleWithCommutes, getProfitByPoints, getProfitByDistance };
+/**
+ * Returns the median rewards value from an event list
+ * @param {object} events must have rewards property 
+ * @returns {number} median
+ */
+function getMedianRewards(events) {
+    if (events.length === 0) {
+        return 0
+    }
+
+    const rewards = []
+    for (let i = 0; i < events.length; i++) {
+        rewards.push(events[i].rewards)
+    }
+    
+    rewards.sort((a, b) => a - b);
+
+    const middleIndex = Math.floor(rewards.length / 2)
+
+    if (rewards.length % 2 === 0) {
+        return (rewards[middleIndex - 1] + rewards[middleIndex]) / 2
+    } else {
+        return rewards[middleIndex]
+    }
+}
