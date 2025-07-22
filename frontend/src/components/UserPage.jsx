@@ -5,6 +5,7 @@ import LoadingGif from "./LoadingGif";
 import UserImage from "./UserImage";
 import "../styles/UserPage.css";
 import Badge from "./Badge";
+import { useMemo } from "react";
 
 const UserPage = () => {
     const { userId } = useParams();
@@ -17,6 +18,8 @@ const UserPage = () => {
         },
         refetchOnWindowFocus: false,
     });
+
+    const rsvps = useMemo(() => { if (getUser.isSuccess) {return getUser.data.data.rsvps}}, [getUser.data])
 
     if (getUser.isPending) {
         return (
@@ -34,8 +37,6 @@ const UserPage = () => {
         </main>)
     }
 
-    const rsvps = getUser.data.data.rsvps
-    rsvps.sort((a,b) => {return b.updated_at - a.updated_at})
 
     return (
         <main className="user-main">
@@ -67,8 +68,7 @@ const UserPage = () => {
                     <div className="bar"></div>
                 </div>
                 <div className="user-history-feed">
-                    {rsvps.map(rsvp => {
-
+                    {rsvps && rsvps.map(rsvp => {
                         return <div>{rsvp.updated_at}</div>
                     })}
                 </div>

@@ -60,7 +60,7 @@ const RootPage = () => {
                         <LoaderEvent/>
                         <LoaderEvent/>
                     </>}
-                    {getOrganizedEvents.data &&
+                    {getOrganizedEvents.isSuccess &&
                         getOrganizedEvents.data.data.map((event) => (
                             <Event key={event.id} event={event} />
                         ))}
