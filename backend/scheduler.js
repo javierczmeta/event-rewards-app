@@ -75,8 +75,9 @@ function schedule(events) {
  * @param {number} commuteTime in minutes
  * @returns float between 0 and 1
  */
-function commutePenalty(commuteTime) {
-    return Math.min(1, 2.1718 ** (-0.02 * (commuteTime - 30)));
+function commutePenalty(commuteTime, timeBetween) {
+    timeBetween = timeBetween - 10 // 10 minute buffer 
+    return Math.min(1, 2.1718 ** (-0.02 * (commuteTime - timeBetween)));
 }
 
 /**
