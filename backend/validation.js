@@ -48,7 +48,10 @@ const rsvpValidation = Joi.object({
 const schedulerValidation = Joi.object({
     events: Joi.array().items(Joi.object()).min(1).required(),
     userLocation: Joi.object(),
-    profitModes: Joi.array().items(Joi.string()).min(1).required()
+    profitModes: Joi.array().items(Joi.object({
+        name: Joi.string().required(),
+        weight: Joi.number().max(1).min(0)
+    })).min(1).required()
 }).required();
 
 // Authentication Verification
