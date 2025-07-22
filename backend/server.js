@@ -185,7 +185,7 @@ server.get("/events", async (req, res, next) => {
             name: { contains: requestQueries.search, mode: "insensitive" },
             end_time: { gte: new Date(Date.now()) },
         },
-        include: { organizer: { include: { profile: true } } },
+        include: { organizer: { include: { profile: true } }, profiles_saved: true },
     });
 
     switch (requestQueries.sort) {
@@ -352,19 +352,21 @@ server.get("/users/:id", verifyParamstoInt, async (req, res, next) => {
 
 
 /* [GET] /users/id/events
-    Returns events organized by the userID
+    Returns saved events and organized events by the userID
 */
 server.get("/users/:id/events", verifyParamstoInt, async (req, res, next) => {
     let userId = req.params.id;
 
-    let fetchedEvents = await prisma.event.findMany({
+    let organizedEvents = await prisma.event.findMany({
         where: { organizer_id: userId },
         orderBy: {
             start_time: "asc",
         },
     });
 
-    res.json(fetchedEvents);
+    let savedEvents = await prisma.profile.findUnique({where: {user_id: userId}, select: {saved_events: true}})
+
+    res.json({organized_events: organizedEvents, ...savedEvents});
 });
 
 /* [DELETE] /events/id
@@ -627,6 +629,30 @@ server.patch('/badges', isAuthenticated, async (req,res,next) => {
     }
 
     const updated = await prisma.profile.update({where: {id: userProfile.id}, data: {display_badges: {set: newDisplay}, badge_order: badgeOrder}})
+
+    res.json(updated)
+})
+
+
+/** [PATCH] /events/saved/:eventId
+ * Toggles if an event is saved or not
+ */
+server.patch('/events/saved/:eventId', isAuthenticated, verifyParamstoInt, verifyEventExistance, async (req,res,next) => {
+    const sessionId = req.session.userId;
+
+    const userProfile = await prisma.profile.findUnique({where: {user_id: sessionId}, include: {saved_events: true}})
+    const eventSet = new Set(userProfile.saved_events.map(event => event.id))
+
+    let newEvents = []
+
+    // Toggle event is saved
+    if (eventSet.has(req.params.eventId)) {
+        newEvents = userProfile.saved_events.filter(event => event.id !== req.params.eventId).map(event => {return {id: event.id}})
+    } else {
+        newEvents = userProfile.saved_events.map(event => {return{id: event.id}}).concat({id: req.params.eventId})
+    }
+
+    const updated = await prisma.profile.update({where: {id: userProfile.id}, data: {saved_events: {set: newEvents}}})
 
     res.json(updated)
 })
