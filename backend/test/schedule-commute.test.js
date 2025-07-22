@@ -31,6 +31,7 @@ describe("scheduleWithCommutes", () => {
             },
             // Add more events as needed
         ];
+        calculateCommute.mockResolvedValue({time: 30, route: null})
         const result = await scheduleWithCommutes(events);
         expect(result.selectedEventIds).toEqual([3]); // Expected event IDs
     });

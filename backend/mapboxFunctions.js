@@ -5,7 +5,6 @@
  * @returns {object} commute time, route
  */
 async function calculateCommute(eventA, eventB) {
-    // Placeholder function
     const api_key = process.env.MAPBOX_TOKEN;
     const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${eventA.longitude},${eventA.latitude};${eventB.longitude},${eventB.latitude}?access_token=${api_key}`;
     const response = await fetch(url);

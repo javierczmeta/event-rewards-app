@@ -116,21 +116,26 @@ async function scheduleWithCommutes(events) {
         let nextIndex = null;
         let profitGoing = eventList[i].profit;
         let goingCommuteTime = 0;
+        let goingTimeBetween = 0;
         for (let j = i + 1; j < eventList.length; j++) {
 
             // Create a string key to memoize commute results
             const key = JSON.stringify([eventList[i].id, eventList[j].id].sort((a,b) => {return a - b}))
-            const commuteTime = commuteMemo.has(key) ? commuteMemo.get(key) : await calculateCommute(
+            const commuteObj = commuteMemo.has(key) ? commuteMemo.get(key) : await calculateCommute(
                 eventList[i],
                 eventList[j]
             );
-            commuteMemo.set(key, commuteTime)
+            commuteMemo.set(key, commuteObj)
+
+            const commuteTime = commuteObj.time
 
             // Compare to find max
-            if (eventList[j].start_time > eventList[i].end_time + commuteTime) {
+            if (eventList[j].start_time > eventList[i].end_time) {
+                const timeBetween = ((new Date(eventList[j].start_time)) - (new Date(eventList[i].end_time))) / (1000 * 60) // Time between in minutes
                 profitGoing = (eventList[i]["profit"] + await maxProfit(j)) * commutePenalty(commuteTime)
                 nextIndex = j
                 goingCommuteTime = commuteTime
+                goingTimeBetween = timeBetween
             }
         }
 
@@ -142,7 +147,7 @@ async function scheduleWithCommutes(events) {
         if (profitGoing >= profitSkip) {
             maxProfitMemo[i] = profitGoing;
             goOrSkip[i] = nextIndex;
-            commutes[i] = goingCommuteTime;
+            commutes[i] = [goingCommuteTime, goingTimeBetween];
         } else {
             maxProfitMemo[i] = profitSkip;
             goOrSkip[i] = "SKIP";
