@@ -6,12 +6,19 @@ const SchedulingOptions = ({
 }) => {
 
     const handleProfitClick = (property) => {
-        if (profitModes.includes(property)) {
-            setProfitModes(profitModes.filter(x => x != property))
-        } else{
-            setProfitModes(profitModes.concat(property))
-        }
+        const newProfits = {...profitModes}
+        newProfits[property].on = !profitModes[property].on
+        setProfitModes(newProfits)
     }
+
+    const handleSliderMove = (e, property) => {
+        e.stopPropagation()
+        const newProfits = {...profitModes}
+        newProfits[property].weight = e.target.value
+        setProfitModes(newProfits)
+    }
+
+
 
     return (
         <div className="scheduling-settings-container">
@@ -22,7 +29,7 @@ const SchedulingOptions = ({
                         setWithCommute(true);
                     }}
                 >
-                    Without Commute Times
+                    <p>Without Commute Times</p>
                 </div>
             ) : (
                 <div
@@ -31,7 +38,7 @@ const SchedulingOptions = ({
                         setWithCommute(false);
                     }}
                 >
-                    With Commute Times
+                    <p>With Commute Times</p>
                 </div>
             )}
 
@@ -41,20 +48,56 @@ const SchedulingOptions = ({
                     <div
                         className={
                             "profit-mode " +
-                            (profitModes.includes("points") ? "active" : "")
+                            (profitModes.points.on ? "active" : "")
                         }
                         onClick={() => {handleProfitClick('points')}}
                     >
-                        Points
+                        <p>Points ({profitModes.points.weight})</p>
+                        <input 
+                            type="range" 
+                            min={0.05} 
+                            max={1} 
+                            step={0.05} 
+                            value={profitModes.points.weight} 
+                            onChange={(e) => {handleSliderMove(e, 'points')}}
+                            onClick={(e) => {e.stopPropagation()}}
+                            ></input>
                     </div>
                     <div
                         className={
                             "profit-mode " +
-                            (profitModes.includes("distance") ? "active" : "")
+                            (profitModes.distance.on ? "active" : "")
                         }
                         onClick={() => {handleProfitClick('distance')}}
                     >
-                        Distance
+                        <p>Distance ({profitModes.distance.weight})</p>
+                        <input 
+                            type="range" 
+                            min={0.05} 
+                            max={1} 
+                            step={0.05} 
+                            value={profitModes.distance.weight} 
+                            onChange={(e) => {handleSliderMove(e, 'distance')}}
+                            onClick={(e) => {e.stopPropagation()}}
+                        ></input>
+                    </div>
+                    <div
+                        className={
+                            "profit-mode " +
+                            (profitModes.price.on ? "active" : "")
+                        }
+                        onClick={() => {handleProfitClick('price')}}
+                    >
+                        <p>Price ({profitModes.price.weight})</p>
+                        <input 
+                            type="range" 
+                            min={0.05} 
+                            max={1} 
+                            step={0.05} 
+                            value={profitModes.price.weight} 
+                            onChange={(e) => {handleSliderMove(e, 'price')}}
+                            onClick={(e) => {e.stopPropagation()}}
+                            ></input>
                     </div>
                 </div>
             </div>
