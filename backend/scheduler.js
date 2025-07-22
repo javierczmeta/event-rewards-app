@@ -174,13 +174,14 @@ async function scheduleWithCommutes(events) {
 /**
  * Updates the events to include profit field by rewards
  * @param {Array} events array of events
+ * @param {number} weight number between 0 and 1
  */
-function getProfitByPoints(events) {
+function getProfitByPoints(events, weight) {
     for (let i = 0; i < events.length; i++) {
         if (events[i].profit === undefined) {
-            events[i].profit = events[i].rewards
+            events[i].profit = events[i].rewards * weight
         } else {
-            events[i].profit += events[i].rewards
+            events[i].profit += events[i].rewards * weight
         }
     }
     return events
