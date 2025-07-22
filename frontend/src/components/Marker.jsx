@@ -26,7 +26,7 @@ const Marker = ({ map, event }) => {
         <>
             {createPortal(
                 <div className="map-marker" onClick={() => {
-                navigate(`/feed/${event.id}`);
+                navigate(`/map/${event.id}`);
             }}>
                     <EventImage image={event.image} alt={event.name} className="map-marker-image"/>
                     <h4 className="more-info">{event.name}</h4>

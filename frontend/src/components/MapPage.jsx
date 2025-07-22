@@ -5,6 +5,8 @@ import axios from "axios";
 import { useState, useRef } from "react";
 import MapEventCard from "./MapEventCard";
 import LoadingGif from "./LoadingGif";
+import { Route, Routes } from "react-router";
+import EventModal from "./EventModal";
 
 const MapPage = () => {
     const [mapEvents, setMapEvents] = useState([]);
@@ -43,6 +45,13 @@ const MapPage = () => {
                 mapEvents={mapEvents}
                 mapRef={mapRef}
             />
+            <Routes>
+                <Route
+                    path=":eventID"
+                    element={<EventModal returnPage={"/map"} />}
+                />
+                <Route path="*" element={<></>} />
+            </Routes>
         </main>
     );
 };
