@@ -3,6 +3,7 @@ import "../styles/BadgeSelector.css";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import LoadingGif from "./LoadingGif";
 
 
 const BadgeSelector = ({ badges, setIsEditing, display_badges }) => {
@@ -11,12 +12,12 @@ const BadgeSelector = ({ badges, setIsEditing, display_badges }) => {
     const [shown, setShown] = useState(display_badges);
 
     const toggleBadge = (badge) => {
-        const isShown = shown.find((x) => x.id === badge.id) !== undefined;
-        // Add to list
+        const isShown = shown.some((x) => x.id === badge.id);
+        // Add badge to list
         if (!isShown && shown.length < 3) {
             setShown((prev) => prev.concat(badge));
         }
-        // Remove
+        // Remove badge from display list
         if (isShown) {
             setShown((prev) => prev.filter((x) => x.id !== badge.id));
         }
@@ -81,7 +82,10 @@ const BadgeSelector = ({ badges, setIsEditing, display_badges }) => {
                             })}
                         </div>
                     </div>
-                    <button
+                    {badgeMutation.isPending ? (
+                        <LoadingGif/>
+                    ) : (
+                        <button
                         className="edit-badge-button"
                         onClick={() =>
                             badgeMutation.mutate(shown.map((badge) => badge.id))
@@ -89,6 +93,8 @@ const BadgeSelector = ({ badges, setIsEditing, display_badges }) => {
                     >
                         Save
                     </button>
+                    )}
+                    
                 </aside>
             </div>
         </>

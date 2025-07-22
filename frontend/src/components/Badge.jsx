@@ -24,7 +24,7 @@ const Badge = ({ badge, className, onClick, onlyIcons, mousePosition }) => {
                 {!onlyIcons && <p className="badge-info">{badge.name}</p>}
             </div>
 
-            {mousePosition && hovered ? (
+            {mousePosition && hovered && (
                 <div
                     className={`hover-badge ${badge.color}`}
                     style={{
@@ -37,8 +37,6 @@ const Badge = ({ badge, className, onClick, onlyIcons, mousePosition }) => {
                     <p>{badge.description}</p>
 
                 </div>
-            ) : (
-                <></>
             )}
         </>
     );

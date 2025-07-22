@@ -32,14 +32,14 @@ const UserPage = () => {
     const [mousePosition, setMousePosition] = useState({x:0, y:0});
 
     useEffect(() => {
-        const updateMosePosition = (e) => {
+        const updateMousePosition = (e) => {
             setMousePosition({x: e.clientX, y: e.clientY});
         }
 
-        window.addEventListener('mousemove', updateMosePosition)
+        window.addEventListener('mousemove', updateMousePosition)
 
         return () => {
-            window.removeEventListener('mousemove', updateMosePosition)
+            window.removeEventListener('mousemove', updateMousePosition)
         }
     },[]);
 
