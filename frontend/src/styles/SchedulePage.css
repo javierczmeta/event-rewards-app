@@ -1,16 +1,8 @@
 .schedule-main {
-    padding: 20px;
-    padding-bottom: 0;
-
     display: flex;
-    flex-direction: column;
-
-    gap: 15px;
-
-    overflow-y: auto;
-
-    padding-left: 10%;
-    padding-right: 10%;
+    justify-content: center;
+    position: relative;
+    overflow-y: hidden;
 }
 
 .schedule-desc {
@@ -53,6 +45,7 @@
     flex-direction: row;
     gap: 5px;
     justify-content: center;
+    padding: 20px 0;
 }
 
 .schedule-events-container {
@@ -61,6 +54,10 @@
 
     gap: 20px;
     margin-bottom: 20px;
+
+    padding: 10px 10px;
+
+    overflow-y: scroll;
 }
 
 .scheduling-settings-container {
@@ -101,4 +98,24 @@
     display: flex;
     align-items: center;
     gap: 5px;
+}
+
+.schedule-modal {
+    background-color: white;
+    padding: 10px;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    border-style: solid;
+    border-color: white;
+    border-width: 20px;
+
+    max-height: 700px;
+    overflow-y: scroll;
+}
+
+.bold {
+    font-weight: 900;
 }
