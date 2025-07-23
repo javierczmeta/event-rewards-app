@@ -52,7 +52,8 @@ const SchedulingOptions = ({
                         }
                         onClick={() => {handleProfitClick('points')}}
                     >
-                        <p>Points ({profitModes.points.weight})</p>
+                        <p>Maximize Points</p>
+                        <p>({profitModes.points.weight})</p>
                         <input 
                             type="range" 
                             min={0.05} 
@@ -70,7 +71,8 @@ const SchedulingOptions = ({
                         }
                         onClick={() => {handleProfitClick('distance')}}
                     >
-                        <p>Distance ({profitModes.distance.weight})</p>
+                        <p>Minimize Distance</p>
+                        <p>({profitModes.distance.weight})</p>
                         <input 
                             type="range" 
                             min={0.05} 
@@ -88,7 +90,8 @@ const SchedulingOptions = ({
                         }
                         onClick={() => {handleProfitClick('price')}}
                     >
-                        <p>Price ({profitModes.price.weight})</p>
+                        <p>Minimize Cost</p>
+                        <p>({profitModes.price.weight})</p>
                         <input 
                             type="range" 
                             min={0.05} 
