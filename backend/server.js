@@ -282,7 +282,7 @@ server.get("/events/recommended", isAuthenticated, async (req, res, next) => {
 
     allEvents.sort((a, b) => {return b.score - a.score})
 
-    res.json(allEvents.slice(0,5));
+    res.json(allEvents);
 });
 
 /* [POST] events/schedule
