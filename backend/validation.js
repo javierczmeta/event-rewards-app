@@ -29,7 +29,7 @@ const newEventSchema = Joi.object({
         .allow(""),
     start_time: Joi.date().required().min("now"),
     end_time: Joi.date().required().min(Joi.ref("start_time")),
-    price: Joi.string().required(),
+    price: Joi.number().required(),
     description: Joi.string().required(),
     category: Joi.string(),
 }).required();

@@ -60,7 +60,7 @@ const CreatePage = () => {
             image: formInputs.imageProps.value,
             start_time: reverseCreateDateWithOffset(formInputs.startDateProps.value),
             end_time: reverseCreateDateWithOffset(formInputs.endDateProps.value),
-            price: formInputs.priceProps.value,
+            price: parseInt(formInputs.priceProps.value),
             description: formInputs.descProps.value,
             category: formInputs.catProps.value,
         };
