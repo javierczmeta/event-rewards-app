@@ -6,9 +6,13 @@ import EventModal from "./EventModal";
 import { Routes, Route } from "react-router";
 import LoaderEvent from "./LoaderEvent";
 import { useUser } from "../contexts/UserContext";
+import { useEffect, useState } from "react";
+import { filter } from "../utils/filter";
 
 const EventFeed = ({ searchFieldProps, sortState, isRecommending, checkboxData, filterOptions }) => {
     const {user, location} = useUser()
+
+    const [shownEvents, setShownEvents] = useState([]);
 
     const getEvents = useQuery({
         queryKey: ["events", searchFieldProps.value, sortState],
@@ -42,6 +46,14 @@ const EventFeed = ({ searchFieldProps, sortState, isRecommending, checkboxData, 
         staleTime: 0,
     });
 
+
+
+    useEffect(() => {
+        if (getEvents.isSuccess) {
+                setShownEvents(filter(getEvents.data.data, checkboxData, filterOptions, location))
+        }
+    }, [getEvents.isSuccess])
+
     return (
         <main className="feed-main">
             {isRecommending ? (
@@ -61,7 +73,7 @@ const EventFeed = ({ searchFieldProps, sortState, isRecommending, checkboxData, 
                         )}
                     {getRecommended.isSuccess &&
                         getRecommended.data.data.map((event) => (
-                            <Event key={event.id} event={event} />
+                            <Event key={event.id} event={event} navigatePage={"/feed"}/>
                         ))}
                 </div>
             ) : (
@@ -76,11 +88,11 @@ const EventFeed = ({ searchFieldProps, sortState, isRecommending, checkboxData, 
                     )}
                     {getEvents.isError && <div>{getEvents.error}</div>}
                     {getEvents.isSuccess &&
-                        getEvents.data.data.length === 0 && (
+                        shownEvents.length === 0 && (
                             <h3>No Events to show...</h3>
                         )}
                     {getEvents.isSuccess &&
-                        getEvents.data.data.map((event) => {
+                        shownEvents.map((event) => {
                             return <Event key={event.id} event={event} saved={event.profiles_saved.filter(saved_user => saved_user.user_id === user.id).length > 0} navigatePage={"/feed"}/>
 })}
                 </div>
