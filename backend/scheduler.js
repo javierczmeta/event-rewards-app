@@ -115,7 +115,7 @@ async function scheduleWithCommutes(events) {
         // Going, cannot only check first event that fits, will check every event and add commute penalty
         let nextIndex = null;
         let profitGoing = eventList[i].profit;
-        let goingCommuteTime = 0;
+        let goingCommuteObj = null;;
         let goingTimeBetween = 0;
         for (let j = i + 1; j < eventList.length; j++) {
 
@@ -127,14 +127,12 @@ async function scheduleWithCommutes(events) {
             );
             commuteMemo.set(key, commuteObj)
 
-            const commuteTime = commuteObj.time
-
             // Compare to find max
             if (eventList[j].start_time > eventList[i].end_time) {
                 const timeBetween = ((new Date(eventList[j].start_time)) - (new Date(eventList[i].end_time))) / (1000 * 60) // Time between in minutes
-                profitGoing = (eventList[i]["profit"] + await maxProfit(j)) * commutePenalty(commuteTime)
+                profitGoing = (eventList[i]["profit"] + await maxProfit(j)) * commutePenalty(commuteObj.time)
                 nextIndex = j
-                goingCommuteTime = commuteTime
+                goingCommuteObj = commuteObj
                 goingTimeBetween = timeBetween
             }
         }
@@ -147,7 +145,7 @@ async function scheduleWithCommutes(events) {
         if (profitGoing >= profitSkip) {
             maxProfitMemo[i] = profitGoing;
             goOrSkip[i] = nextIndex;
-            commutes[i] = [goingCommuteTime, goingTimeBetween];
+            commutes[i] = [goingCommuteObj, goingTimeBetween];
         } else {
             maxProfitMemo[i] = profitSkip;
             goOrSkip[i] = "SKIP";

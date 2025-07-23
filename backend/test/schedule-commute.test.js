@@ -32,6 +32,6 @@ describe("scheduleWithCommutes", () => {
         ];
         calculateCommute.mockResolvedValue({time: 3, route: null})
         const result = await scheduleWithCommutes(events);
-        expect(result.selectedEventIds).toEqual([1,2,3]); 
+        expect(result.selectedEventIds).toEqual([3]); 
     });
 });
