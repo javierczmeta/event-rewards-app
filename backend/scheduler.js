@@ -104,13 +104,16 @@ async function scheduleWithCommutes(events) {
         if (i >= eventList.length) {
             return 0;
         }
-        if (maxProfit[i]) {
-            return maxProfit[i];
+
+        if (maxProfitMemo[i]) {
+            return maxProfitMemo[i];
         }
 
         // Going, cannot only check first event that fits, will check every event and add commute penalty
-        const nextProfits = [];
+        let nextIndex = null;
+        let profitGoing = eventList[i].profit;
         for (let j = i + 1; j < eventList.length; j++) {
+
             // Create a string key to memoize commute results
             const key = JSON.stringify([eventList[i].id, eventList[j].id].sort((a,b) => {return a - b}))
             const commuteTime = commuteMemo.has(key) ? commuteMemo.get(key) : await calculateCommute(
@@ -118,38 +121,27 @@ async function scheduleWithCommutes(events) {
                 eventList[j]
             );
             commuteMemo.set(key, commuteTime)
+
+            // Compare to find max
             if (eventList[j].start_time > eventList[i].end_time + commuteTime) {
-                nextProfits.push(
-                    [j,
-                    (eventList[i]["profit"] + await maxProfit(j)) *
-                        commutePenalty(commuteTime)]
-                );
+                profitGoing = (eventList[i]["profit"] + await maxProfit(j)) * commutePenalty(commuteTime)
+                nextIndex = j
             }
-        }
-        let profitGoing;
-        if (nextProfits.length > 0) {
-            profitGoing = nextProfits[0];
-            for (let j = 0; j < nextProfits.length; j++) {
-                if (nextProfits[j][1] > profitGoing[1]) {
-                    profitGoing = nextProfits[j];
-                }
-            }
-        } else {
-            profitGoing = [null, eventList[i].profit];
         }
 
+        // Skipping event, profit is the next event
         let profitSkip = 0;
-        if (i < eventList.length - 1) {
-            profitSkip = await maxProfit(i + 1);
-        }
+        profitSkip = await maxProfit(i + 1);
 
-        if (profitGoing[1] >= profitSkip) {
-            maxProfitMemo[i] = profitGoing[1];
-            goOrSkip[i] = profitGoing[0];
+        // Compare profits, find max and record information
+        if (profitGoing >= profitSkip) {
+            maxProfitMemo[i] = profitGoing;
+            goOrSkip[i] = nextIndex;
         } else {
             maxProfitMemo[i] = profitSkip;
             goOrSkip[i] = "SKIP";
         }
+        
         return maxProfitMemo[i];
     };
     await maxProfit(0);
