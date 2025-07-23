@@ -5,7 +5,7 @@ import axios from "axios";
 import SingleEventInfo from "./SingleEventInfo";
 import LoadingGif from "./LoadingGif";
 
-const EventModal = () => {
+const EventModal = ({returnPage}) => {
     const {eventID} = useParams()
     const navigate = useNavigate()
 
@@ -31,13 +31,13 @@ const EventModal = () => {
     }
 
     if (getEvent.isError) {
-        navigate('/feed')
+        navigate(returnPage)
         return
     }
 
 
     return (
-        <div className="modal-overlay" onClick={()=>{navigate('/feed')}}>
+        <div className="modal-overlay" onClick={()=>{navigate(returnPage)}}>
             <SingleEventInfo chosenEvent={getEvent.data.data}/>
         </div>
     );

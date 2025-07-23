@@ -10,6 +10,9 @@ import { useState } from "react";
 import SchedulingOptions from "./SchedulingOptions";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import Itinerary from "./Itinerary";
+import { Routes, Route } from "react-router";
+import EventModal from "./EventModal";
+
 
 
 const SchedulePage = () => {
@@ -96,7 +99,7 @@ const SchedulePage = () => {
                     )}
                     {getEvents.data &&
                         getEvents.data.data.saved_events.toSorted((a,b) => {return (new Date(a.start_time)) - (new Date(b.start_time))}).map((event) => (
-                            <Event key={event.id} event={event} saved={true} />
+                            <Event key={event.id} event={event} saved={true} navigatePage={"/schedule"}/>
                         ))}
                 </div>
 
@@ -128,6 +131,14 @@ const SchedulePage = () => {
                         )}
                 </div>
             </div>
+            {showItinerary && <Itinerary setShowItinerary={setShowItinerary} events={getEvents.data.data.saved_events} selectedEventIds={selectedEventIds} commutes={commutes}/>}
+            <Routes>
+                <Route
+                    path=":eventID"
+                    element={<EventModal returnPage={"/schedule"} />}
+                />
+                <Route path="*" element={<></>} />
+            </Routes>
             <ToastContainer
                 position="top-right"
                 autoClose={3000}
@@ -141,7 +152,6 @@ const SchedulePage = () => {
                 theme="light"
                 transition={Slide}
             />
-            {showItinerary && <Itinerary setShowItinerary={setShowItinerary} events={getEvents.data.data.saved_events} selectedEventIds={selectedEventIds} commutes={commutes}/>}
         </main>
     );
 };

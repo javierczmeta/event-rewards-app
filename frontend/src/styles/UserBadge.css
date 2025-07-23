@@ -26,6 +26,13 @@
     cursor: pointer;
 }
 
+.badge-container.checked{
+    border-style: dashed;
+    border-color: green;
+    border-width: 4px;
+    border-radius: 50%;
+}
+
 .hover-user-image {
     aspect-ratio: 1 / 1;
     object-fit: cover;

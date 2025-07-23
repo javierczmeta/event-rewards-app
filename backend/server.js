@@ -40,7 +40,11 @@ let sessionConfig = {
 };
 
 const server = express();
-server.set('trust proxy', true)
+
+if (process.env.RENDER) {
+    server.set('trust proxy', true)
+} 
+
 server.use(
     cors({
         origin: process.env.FRONTEND_URL,
@@ -198,7 +202,7 @@ server.get("/events", async (req, res, next) => {
             break;
         case "start":
             fetchedEvents.sort((a, b) => {
-                return new Date(b.start_time) - new Date(a.start_time);
+                return new Date(a.start_time) - new Date(b.start_time);
             });
             break;
         case "posting":
