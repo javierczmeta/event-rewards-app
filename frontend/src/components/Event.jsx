@@ -53,7 +53,7 @@ const Event = ({ event, saved  }) => {
                         getEventLocation.data.data.features[0].properties
                             .place_formatted}
                 </p>
-                <p>{event.price}</p>
+                <p>${event.price}</p>
                 <p>{event.rewards} point(s)</p>
             </div>
             <div className="event-description">
