@@ -7,7 +7,7 @@ import { Routes, Route } from "react-router";
 import LoaderEvent from "./LoaderEvent";
 import { useUser } from "../contexts/UserContext";
 
-const EventFeed = ({ searchFieldProps, sortState, isRecommending }) => {
+const EventFeed = ({ searchFieldProps, sortState, isRecommending, checkboxData, filterOptions }) => {
     const {user, location} = useUser()
 
     const getEvents = useQuery({
