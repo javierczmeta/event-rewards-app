@@ -64,7 +64,7 @@ const SchedulePage = () => {
         <main className="schedule-main">
             <div className="schedule-events-container">
                 <div>
-                    <h2>Events to Shcedule:</h2>
+                    <h2>Events to Schedule:</h2>
                     <p className="schedule-desc">
                         Save events to see them here!
                     </p>
