@@ -130,10 +130,14 @@ async function scheduleWithCommutes(events) {
             // Compare to find max
             if (eventList[j].start_time > eventList[i].end_time) {
                 const timeBetween = ((new Date(eventList[j].start_time)) - (new Date(eventList[i].end_time))) / (1000 * 60) // Time between in minutes
-                profitGoing = (eventList[i]["profit"] + await maxProfit(j)) * commutePenalty(commuteObj.time)
-                nextIndex = j
-                goingCommuteObj = commuteObj
-                goingTimeBetween = timeBetween
+                const eventProfit = (eventList[i]["profit"] + await maxProfit(j)) * commutePenalty(commuteObj.time, timeBetween)
+
+                if (eventProfit > profitGoing) {
+                    profitGoing = eventProfit
+                    nextIndex = j
+                    goingCommuteObj = commuteObj
+                    goingTimeBetween = timeBetween
+                }
             }
         }
 
