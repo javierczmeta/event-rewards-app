@@ -2,8 +2,11 @@ import "../styles/Sorter.css";
 import { Funnel } from "lucide-react";
 import useComponentVisible from "../utils/useComponentVisible";
 import SortOption from "./SortOption";
+import { useFeed } from "../contexts/FeedContext";
 
-const Sorter = ({sortState, setSortState}) => {
+const Sorter = () => {
+    const {sortState, setSortState} = useFeed()
+
     const {
         ref,
         isComponentVisible: showSorters,

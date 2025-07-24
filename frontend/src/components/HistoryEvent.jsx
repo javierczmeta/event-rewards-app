@@ -1,8 +1,10 @@
 import Event from "./Event";
 import "../styles/HistoryEvent.css";
 import { createDateWithOffset } from "../utils/createDateWithOffset";
+import { useUser } from "../contexts/UserContext";
 
 const HistoryEvent = ({ name, rsvp }) => {
+    const {user} = useUser()
     const timestamp = createDateWithOffset(rsvp.updated_at);
 
     return (
@@ -14,7 +16,7 @@ const HistoryEvent = ({ name, rsvp }) => {
                     : `${name}'s status is "${rsvp.status}" for ${rsvp.event.name}.`}
             </p>
             <div className="user-page-event-container">
-                <Event event={rsvp.event} />
+                <Event event={rsvp.event} navigatePage={`/users/${user.id}`}/>
             </div>
         </div>
     );

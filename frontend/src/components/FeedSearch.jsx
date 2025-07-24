@@ -4,20 +4,22 @@ import SearchBar from "./SearchBar";
 import Sorter from "./Sorter";
 import { useNavigate } from "react-router";
 import Filters from "./Filters";
+import { useFeed } from "../contexts/FeedContext";
 
-const FeedSearch = ({ searchFieldProps, sortState, setSortState, setIsRecommending, isRecommending, checkboxData, setCheckboxData, filterOptions}) => {
+const FeedSearch = () => {
     const navigate = useNavigate();
+    const {isRecommending, setIsRecommending} = useFeed()
 
     const recommenderClass = isRecommending ? "feed-tool-container active" : "feed-tool-container"
 
     return (
         <div className="feed-options-container">
-            <SearchBar searchFieldProps={searchFieldProps} />
+            <SearchBar/>
             <div className="feed-tool-container" onClick={() => {navigate("/map")}}>
                 <Map size={20} /> Map View
             </div>
-            <Sorter sortState={sortState} setSortState={setSortState}/>
-            <Filters checkboxData={checkboxData} setCheckboxData={setCheckboxData} filterOptions={filterOptions}/>
+            <Sorter/>
+            <Filters/>
             <div className={recommenderClass} onClick={() => {setIsRecommending(prev => !prev)}}>
                 <Star size={20} /> Reccomend Me!
             </div>

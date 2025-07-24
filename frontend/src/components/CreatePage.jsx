@@ -17,13 +17,13 @@ const CreatePage = () => {
     const formInputs = {
         longitudeProps: useFormInput(mapStartPos.lng),
         latitudeProps: useFormInput(mapStartPos.lat),
-        nameProps: useFormInput(""),
-        imageProps: useFormInput(""),
-        startDateProps: useFormInput(""),
-        endDateProps: useFormInput(""),
-        priceProps: useFormInput(),
-        descProps: useFormInput(""),
-        catProps: useFormInput("Miscellaneous"),
+        nameProps: useFormInput("")[0],
+        imageProps: useFormInput("")[0],
+        startDateProps: useFormInput("")[0],
+        endDateProps: useFormInput("")[0],
+        priceProps: useFormInput()[0],
+        descProps: useFormInput("")[0],
+        catProps: useFormInput("Miscellaneous")[0],
     };
 
     const navigate = useNavigate();
@@ -55,8 +55,8 @@ const CreatePage = () => {
         e.preventDefault();
         const newEvent = {
             name: formInputs.nameProps.value,
-            longitude: formInputs.longitudeProps.value,
-            latitude: formInputs.latitudeProps.value,
+            longitude: formInputs.longitudeProps[0].value,
+            latitude: formInputs.latitudeProps[0].value,
             image: formInputs.imageProps.value,
             start_time: reverseCreateDateWithOffset(formInputs.startDateProps.value),
             end_time: reverseCreateDateWithOffset(formInputs.endDateProps.value),
@@ -74,8 +74,8 @@ const CreatePage = () => {
         <main className="create-main">
             <h2>Create a new event</h2>
             <CreateMap formInputs={formInputs} />
-            <p>Longitude: {formInputs.longitudeProps.value}</p>
-            <p>Latitude: {formInputs.latitudeProps.value}</p>
+            <p>Longitude: {formInputs.longitudeProps[0].value}</p>
+            <p>Latitude: {formInputs.latitudeProps[0].value}</p>
             <form className="create-form" onSubmit={handleFormSubmit}>
                 <div className="form-components-container">
                     <input

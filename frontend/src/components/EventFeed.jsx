@@ -8,9 +8,11 @@ import LoaderEvent from "./LoaderEvent";
 import { useUser } from "../contexts/UserContext";
 import { useEffect, useState } from "react";
 import { filter } from "../utils/filter";
+import { useFeed } from "../contexts/FeedContext";
 
-const EventFeed = ({ searchFieldProps, sortState, isRecommending, checkboxData, filterOptions }) => {
+const EventFeed = () => {
     const {user, location} = useUser()
+    const {searchFieldProps, sortState, isRecommending, checkboxData, filterOptions, needsFiltering, setNeedsFiltering} = useFeed()
 
     const [shownEvents, setShownEvents] = useState([]);
 
@@ -46,13 +48,12 @@ const EventFeed = ({ searchFieldProps, sortState, isRecommending, checkboxData, 
         staleTime: 0,
     });
 
-
-
     useEffect(() => {
         if (getEvents.isSuccess) {
-                setShownEvents(filter(getEvents.data.data, checkboxData, filterOptions, location))
+            setShownEvents(filter(getEvents.data.data, checkboxData, filterOptions, location))
+            setNeedsFiltering(false)
         }
-    }, [getEvents.isSuccess])
+    }, [getEvents.isSuccess, needsFiltering])
 
     return (
         <main className="feed-main">

@@ -11,6 +11,8 @@ import { useUser } from "../contexts/UserContext";
 import { useState, useEffect } from "react";
 import BadgeSelector from "./BadgeSelector";
 import { orderLike } from "../utils/sortObjectsWithList";
+import { Route, Routes } from "react-router";
+import EventModal from "./EventModal";
 
 
 const UserPage = () => {
@@ -102,6 +104,13 @@ const UserPage = () => {
                 </div>
             </div>
             {isEditing && <BadgeSelector badges={getUser.data.data.profile.badges} setIsEditing={setIsEditing} display_badges={displayedBadges}/>}
+            <Routes>
+                <Route
+                    path=":eventID"
+                    element={<EventModal returnPage={`/users/${user.id}`} />}
+                />
+                <Route path="*" element={<></>} />
+            </Routes>
         </main>
         
             </>

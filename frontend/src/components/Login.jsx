@@ -4,16 +4,12 @@ import axios from "axios";
 import { useEffect } from "react";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import { useUser } from "../contexts/UserContext";
-import { useNavigate } from "react-router";
 import LoadingGif from "./LoadingGif";
 
 const Login = () => {
-    const usernameProps = useFormInput("");
-    const passProps = useFormInput("");
-
-    const navigate = useNavigate();
-
-    const { user, refetch } = useUser();
+    const usernameProps = useFormInput("")[0];
+    const passProps = useFormInput("")[0];
+    const {refetch} = useUser();
 
     const loginMutation = useMutation({
         mutationFn: (user) => {

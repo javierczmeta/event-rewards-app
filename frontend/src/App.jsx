@@ -8,8 +8,6 @@ import Register from "./components/Register";
 import WithAuth from "./components/WithAuth";
 import RootPage from "./components/RootPage";
 import EventFeed from "./components/EventFeed";
-import { useState } from "react";
-import { useFormInput } from "./utils/useFormInput";
 import CreatePage from "./components/CreatePage";
 import MapPage from "./components/MapPage";
 import UserPage from "./components/UserPage";
@@ -26,34 +24,9 @@ function App() {
     let ProtectedSchedule = WithAuth(SchedulePage)
     let ProtectedCalendar = WithAuth(CalendarPage)
 
-    // Search states
-    const searchFieldProps = useFormInput("")
-
-    //Sorting states
-    const [sortState, setSortState] = useState("")
-
-    const [isRecommending,setIsRecommending] = useState(false)
-
-
-    // Filter props
-
-    const [checkboxData, setCheckboxData] = useState({
-        after: false,
-        before: false,
-        closer: false,
-        category: null,
-    });
-
-    const filterOptions = {
-        afterProps: useFormInput(null),
-        beforeProps: useFormInput(null),
-        closerProps: useFormInput(null),
-        categoryProps: useFormInput("Miscellaneous"),
-    };
-
     return (
         <>
-            <Header searchFieldProps={searchFieldProps} sortState={sortState} setSortState={setSortState} setIsRecommending={setIsRecommending} isRecommending={isRecommending} checkboxData={checkboxData} setCheckboxData={setCheckboxData} filterOptions={filterOptions}/>
+            <Header/>
             <Routes>
                 <Route path="/*" element={<ProtectedRoot/>} />
                 <Route element={<UserAuthPage />}>
@@ -61,11 +34,11 @@ function App() {
                     <Route path="/signup" element={<Register />} />
                 </Route>
                 <Route path="/create" element={<ProtectedCreate/>}/>
-                <Route path="/feed/*" element={<ProtectedFeed searchFieldProps={searchFieldProps} sortState={sortState} isRecommending={isRecommending} checkboxData={checkboxData} filterOptions={filterOptions}/>}/>
+                <Route path="/feed/*" element={<ProtectedFeed/>}/>
                 <Route path="/map/*" element={<ProtectedMap/>}/>
                 <Route path="/schedule/*" element={<ProtectedSchedule/>}/>
-                <Route path="/calendar/*" element={<CalendarPage/>}/>
-                <Route path="/users/:userId" element={<ProtectedUser/>}/>
+                <Route path="/calendar/*" element={<ProtectedCalendar/>}/>
+                <Route path="/users/:userId/*" element={<ProtectedUser/>}/>
             </Routes>
             <Footer />
         </>
