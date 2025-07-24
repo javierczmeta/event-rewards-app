@@ -8,12 +8,12 @@ import ImagePicker from "./ImagePicker";
 import { useNavigate } from "react-router";
 
 const Register = () => {
-    const nameInput = useFormInput("");
-    const usenameInput = useFormInput("");
-    const passInput = useFormInput("");
-    const repeatInput = useFormInput("");
-    const imageInput = useFormInput("");
-    const dobInput = useFormInput("");
+    const nameInput = useFormInput("")[0];
+    const usenameInput = useFormInput("")[0];
+    const passInput = useFormInput("")[0];
+    const repeatInput = useFormInput("")[0];
+    const imageInput = useFormInput("")[0];
+    const dobInput = useFormInput("")[0];
 
     const signUpMutation = useMutation({
         mutationFn: (newUser) => {

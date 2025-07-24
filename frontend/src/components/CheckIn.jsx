@@ -6,7 +6,8 @@ import { useFormInput } from "../utils/useFormInput";
 import "../styles/CheckIn.css"
 
 const CheckIn = () => {
-    const userProps = useFormInput("");
+    const userProps = useFormInput("")[0];
+
     const { eventID } = useParams();
     const setCheckInMutation = useMutation({
         mutationFn: (userID) => {

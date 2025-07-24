@@ -5,7 +5,7 @@ const FeedContext = createContext();
 
 export const FeedProvider = ({ children }) => {
     // Search states
-    const searchFieldProps = useFormInput("")
+    const searchFieldProps = useFormInput("")[0]
 
     // Sorting states
     const [sortState, setSortState] = useState("")
@@ -19,10 +19,10 @@ export const FeedProvider = ({ children }) => {
         category: null,
     });
     const filterOptions = {
-        afterProps: useFormInput(null),
-        beforeProps: useFormInput(null),
-        closerProps: useFormInput(null),
-        categoryProps: useFormInput("Miscellaneous"),
+        afterProps: useFormInput(null)[0],
+        beforeProps: useFormInput(null)[0],
+        closerProps: useFormInput(null)[0],
+        categoryProps: useFormInput("Miscellaneous")[0],
     };
     const [needsFiltering, setNeedsFiltering] = useState(false)
 

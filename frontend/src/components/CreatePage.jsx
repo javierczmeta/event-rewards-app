@@ -17,13 +17,13 @@ const CreatePage = () => {
     const formInputs = {
         longitudeProps: useFormInput(mapStartPos.lng),
         latitudeProps: useFormInput(mapStartPos.lat),
-        nameProps: useFormInput(""),
-        imageProps: useFormInput(""),
-        startDateProps: useFormInput(""),
-        endDateProps: useFormInput(""),
-        priceProps: useFormInput(),
-        descProps: useFormInput(""),
-        catProps: useFormInput("Miscellaneous"),
+        nameProps: useFormInput("")[0],
+        imageProps: useFormInput("")[0],
+        startDateProps: useFormInput("")[0],
+        endDateProps: useFormInput("")[0],
+        priceProps: useFormInput()[0],
+        descProps: useFormInput("")[0],
+        catProps: useFormInput("Miscellaneous")[0],
     };
 
     const navigate = useNavigate();
