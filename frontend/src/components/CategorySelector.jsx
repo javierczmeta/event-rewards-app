@@ -9,7 +9,7 @@ const CategorySelector = ({selectorOptions}) => {
                 --Category: Please choose an option--
             </option>
 
-            {categories.options.map(category => <option value={category}>{category}</option>)}
+            {categories.options.map((category, index) => <option key={index} value={category}>{category}</option>)}
             
         </select>
     );
