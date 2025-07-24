@@ -3,12 +3,11 @@ import "../styles/Filters.css";
 import useComponentVisible from "../utils/useComponentVisible";
 import { useUser } from "../contexts/UserContext";
 import CategorySelector from "./CategorySelector";
+import { useFeed } from "../contexts/FeedContext";
 
-const Filters = ({
-    checkboxData,
-    setCheckboxData,
-    filterOptions,
-}) => {
+const Filters = () => {
+    const {checkboxData, setCheckboxData, filterOptions, setNeedsFiltering} = useFeed()
+
     const {
         ref,
         isComponentVisible: showFilters,
@@ -37,6 +36,7 @@ const Filters = ({
                             onSubmit={(e) => {
                                 e.preventDefault();
                                 setShowFilters(false);
+                                setNeedsFiltering(true)
                             }}
                         >
                             <div className="filter-checkbox">

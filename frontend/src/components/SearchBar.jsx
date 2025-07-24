@@ -1,11 +1,12 @@
 import { Search } from "lucide-react";
-import {useState } from "react";
 import useComponentVisible from "../utils/useComponentVisible";
+import { useFeed } from "../contexts/FeedContext";
 
-const SearchBar = ({ searchFieldProps }) => {
+const SearchBar = () => {
     const {ref, isComponentVisible: expandBar, setIsComponentVisible: setExpandBar} = useComponentVisible(false);
     const searchClass = "feed-tool-container" + (expandBar ? " expanded" : "");
 
+    const {searchFieldProps} = useFeed()
 
     return (
         <div

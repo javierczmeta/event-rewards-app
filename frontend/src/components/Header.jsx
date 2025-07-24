@@ -5,7 +5,7 @@ import { Route, Routes, useNavigate } from "react-router";
 import FeedSearch from "./FeedSearch";
 import MapTools from "./MapTools";
 
-const Header = ({searchFieldProps, sortState, setSortState, setIsRecommending, isRecommending, checkboxData, setCheckboxData, filterOptions}) => {
+const Header = () => {
     const { user, logOut } = useUser();
 
     let navigate = useNavigate();
@@ -25,7 +25,7 @@ const Header = ({searchFieldProps, sortState, setSortState, setIsRecommending, i
                 <h1>Origami</h1>
             </div>
             <Routes>
-                <Route path="/feed/*" element={<FeedSearch searchFieldProps={searchFieldProps} sortState={sortState} setSortState={setSortState} setIsRecommending={setIsRecommending} isRecommending={isRecommending} checkboxData={checkboxData} setCheckboxData={setCheckboxData} filterOptions={filterOptions}/>} />
+                <Route path="/feed/*" element={<FeedSearch/>} />
                 <Route path="/map" element={<MapTools/>}/>
                 <Route path="*" element={<div></div>} />
             </Routes>
