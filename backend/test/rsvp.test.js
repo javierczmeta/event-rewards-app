@@ -174,7 +174,7 @@ describe("GET /events/:id/rsvp", () => {
     });
 });
 
-describe("PATCH /events/:eventid/checkin/:userid", () => {
+describe("PATCH /events/:eventid/checkin/:userid/:code", () => {
     let agent;
     beforeEach(async () => {
         agent = request.agent(server);
@@ -183,34 +183,21 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
     });
 
     it("should return 400 if event ID is not an integer", async () => {
-        const response = await agent.patch("/events/notAnInteger/checkin/1");
+        const response = await agent.patch("/events/notAnInteger/checkin/1/999999");
         expect(response.status).toBe(400);
         expect(response.body.message).toContain("has to be an integer");
     });
 
     it("should return 400 if user ID is not an integer", async () => {
-        const response = await agent.patch("/events/1/checkin/notAnInteger");
+        const response = await agent.patch("/events/1/checkin/notAnInteger/999999");
         expect(response.status).toBe(400);
         expect(response.body.message).toContain("has to be an integer");
-    });
-
-    it("should return 401 if the session user is not the organizer", async () => {
-        prisma.event.findUnique.mockResolvedValueOnce({
-            id: 1,
-            organizer_id: 2, // Different from session user ID
-        });
-        prisma.rSVP.findFirst.mockResolvedValueOnce({ id: 1 });
-        const response = await agent.patch("/events/1/checkin/1");
-        expect(response.status).toBe(401);
-        expect(response.body.message).toContain(
-            "Only the organizer can check in people."
-        );
     });
 
     it("should return 404 if the event does not exist", async () => {
         prisma.event.findUnique.mockResolvedValueOnce(null);
         prisma.rSVP.findMany.mockResolvedValueOnce([{ id: 1 }]);
-        const response = await agent.patch("/events/1/checkin/1");
+        const response = await agent.patch("/events/1/checkin/1/999999");
         expect(response.status).toBe(404);
         expect(response.body.message).toContain(
             "The event with the specified ID does not exist"
@@ -223,7 +210,7 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
             organizer_id: 1, // Same as session user ID
         });
         prisma.rSVP.findFirst.mockResolvedValueOnce(null);
-        const response = await agent.patch("/events/1/checkin/1");
+        const response = await agent.patch("/events/1/checkin/1/999999");
         expect(response.status).toBe(404);
         expect(response.body.message).toContain(
             "RSVP data for this user and event does not exist"
@@ -239,7 +226,7 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
             id: 1,
             status: "Not Going",
         });
-        const response = await agent.patch("/events/1/checkin/1");
+        const response = await agent.patch("/events/1/checkin/1/999999");
         expect(response.status).toBe(400);
         expect(response.body.message).toContain(
             "User has to change status before checking in."
@@ -256,10 +243,28 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
             status: "Going",
             check_in_time: new Date(Date.now()),
         });
-        const response = await agent.patch("/events/1/checkin/1");
+        const response = await agent.patch("/events/1/checkin/1/999999");
         expect(response.status).toBe(409);
         expect(response.body.message).toContain(
             "User already checked in!"
+        );
+    });
+
+    it("should return 401 if code is wrong", async () => {
+        prisma.event.findUnique.mockResolvedValueOnce({
+            id: 1,
+            organizer_id: 1, // Same as session user ID
+            code: 123456
+        });
+        prisma.rSVP.findFirst.mockResolvedValueOnce({
+            id: 1,
+            status: "Going",
+            check_in_time: null,
+        });
+        const response = await agent.patch("/events/1/checkin/1/999999");
+        expect(response.status).toBe(401);
+        expect(response.body.message).toContain(
+            "The code is not correct"
         );
     });
 
@@ -278,6 +283,7 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
         prisma.event.findUnique.mockResolvedValueOnce({
             id: 1,
             organizer_id: 1, // Same as session user ID
+            code: 123456
         });
         prisma.rSVP.findFirst.mockResolvedValueOnce(mockRSVP);
         prisma.rSVP.update.mockResolvedValueOnce(updatedRSVP);
@@ -290,7 +296,7 @@ describe("PATCH /events/:eventid/checkin/:userid", () => {
         prisma.badge.findMany.mockResolvedValueOnce([{id:2}])
         prisma.profile.update.mockResolvedValueOnce({ id: 1, points: 1000 });
 
-        const response = await agent.patch("/events/1/checkin/1");
+        const response = await agent.patch("/events/1/checkin/1/123456");
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual(
