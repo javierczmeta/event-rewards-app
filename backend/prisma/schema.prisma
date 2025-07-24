@@ -31,6 +31,7 @@ model Event {
   organizer   User       @relation("UserOrganizedEvents", fields: [organizer_id], references: [id])
   organizer_id Int
   rsvps RSVP[]
+  code        Int       @default(999999)
   profiles_saved  Profile[] @relation("SavedEvents")
 }
 
