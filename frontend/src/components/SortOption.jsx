@@ -1,4 +1,4 @@
-const FilterOption = ({ option, setShowSorters, sortState, setSortState }) => {
+const SortOption = ({ option, setShowSorters, sortState, setSortState }) => {
     const containerClass = "feed-tool-container " + (sortState === option[0] ? "sort-selected" : "")
     
     return (
@@ -14,4 +14,4 @@ const FilterOption = ({ option, setShowSorters, sortState, setSortState }) => {
     );
 };
 
-export default FilterOption;
+export default SortOption;

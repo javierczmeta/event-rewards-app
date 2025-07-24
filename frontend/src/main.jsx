@@ -3,6 +3,7 @@ import "./index.css";
 import App from "./App.jsx";
 import { BrowserRouter } from "react-router";
 import { UserProvider } from "./contexts/UserContext.jsx";
+import { CategoryProvider } from "./contexts/CategoryContext.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
@@ -13,7 +14,9 @@ ReactDOM.createRoot(root).render(
     <BrowserRouter>
         <QueryClientProvider client={queryClient}>
             <UserProvider>
-                <App />
+                <CategoryProvider>
+                    <App />
+                </CategoryProvider>
             </UserProvider>
         </QueryClientProvider>
     </BrowserRouter>

@@ -34,9 +34,26 @@ function App() {
 
     const [isRecommending,setIsRecommending] = useState(false)
 
+
+    // Filter props
+
+    const [checkboxData, setCheckboxData] = useState({
+        after: false,
+        before: false,
+        closer: false,
+        category: null,
+    });
+
+    const filterOptions = {
+        afterProps: useFormInput(null),
+        beforeProps: useFormInput(null),
+        closerProps: useFormInput(null),
+        categoryProps: useFormInput("Miscellaneous"),
+    };
+
     return (
         <>
-            <Header searchFieldProps={searchFieldProps} sortState={sortState} setSortState={setSortState} setIsRecommending={setIsRecommending} isRecommending={isRecommending}/>
+            <Header searchFieldProps={searchFieldProps} sortState={sortState} setSortState={setSortState} setIsRecommending={setIsRecommending} isRecommending={isRecommending} checkboxData={checkboxData} setCheckboxData={setCheckboxData} filterOptions={filterOptions}/>
             <Routes>
                 <Route path="/*" element={<ProtectedRoot/>} />
                 <Route element={<UserAuthPage />}>
@@ -44,7 +61,7 @@ function App() {
                     <Route path="/signup" element={<Register />} />
                 </Route>
                 <Route path="/create" element={<ProtectedCreate/>}/>
-                <Route path="/feed/*" element={<ProtectedFeed searchFieldProps={searchFieldProps} sortState={sortState} isRecommending={isRecommending}/>}/>
+                <Route path="/feed/*" element={<ProtectedFeed searchFieldProps={searchFieldProps} sortState={sortState} isRecommending={isRecommending} checkboxData={checkboxData} filterOptions={filterOptions}/>}/>
                 <Route path="/map/*" element={<ProtectedMap/>}/>
                 <Route path="/schedule/*" element={<ProtectedSchedule/>}/>
                 <Route path="/calendar/*" element={<CalendarPage/>}/>
