@@ -4,6 +4,7 @@ import axios from "axios";
 import { useUser } from "../contexts/UserContext";
 import { useParams } from "react-router";
 import { ToastContainer, toast, Slide } from "react-toastify";
+import CheckIn from "./CheckIn";
 
 
 const RSVP = () => {
@@ -58,6 +59,10 @@ const RSVP = () => {
         rsvpState = rsvpState.status
     }
 
+    if (getRSVP.isSuccess && getRSVP.data.data.check_in_time) {
+        return <div><p>You have checked in!</p></div>
+    }
+
     return (
         <>
             <div className="rsvp-container">
@@ -86,6 +91,11 @@ const RSVP = () => {
                     Not Going...
                 </button>
             </div>
+            {rsvpState === "Going" && !getRSVP.data.data.check_in_time &&
+                <div>
+                    <CheckIn/>
+                </div>
+            }
             <ToastContainer
                     position="top-right"
                     autoClose={3000}
