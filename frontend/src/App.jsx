@@ -64,7 +64,7 @@ function App() {
                 <Route path="/feed/*" element={<ProtectedFeed searchFieldProps={searchFieldProps} sortState={sortState} isRecommending={isRecommending} checkboxData={checkboxData} filterOptions={filterOptions}/>}/>
                 <Route path="/map/*" element={<ProtectedMap/>}/>
                 <Route path="/schedule/*" element={<ProtectedSchedule/>}/>
-                <Route path="/calendar/*" element={<CalendarPage/>}/>
+                <Route path="/calendar/*" element={<ProtectedCalendar/>}/>
                 <Route path="/users/:userId" element={<ProtectedUser/>}/>
             </Routes>
             <Footer />
