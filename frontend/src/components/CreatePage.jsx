@@ -64,9 +64,6 @@ const CreatePage = () => {
             description: formInputs.descProps.value,
             category: formInputs.catProps.value,
         };
-        if (newEvent.price === 0) {
-            newEvent[price] = "Free"
-        }
         createEventMutation.mutate(newEvent);
     };
 

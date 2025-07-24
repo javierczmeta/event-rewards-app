@@ -190,7 +190,7 @@ server.get("/events", async (req, res, next) => {
     fetchedEvents = await prisma.event.findMany({
         where: {
             name: { contains: requestQueries.search, mode: "insensitive" },
-            end_time: { gte: new Date(Date.now()) },
+            end_time: { gte: new Date((new Date(Date.now())).getTime() - ((new Date()).getTimezoneOffset() * 60 * 1000)) },
         },
         include: { organizer: { include: { profile: true } }, profiles_saved: true },
     });
