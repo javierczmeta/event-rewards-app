@@ -19,7 +19,7 @@ const SaveButton = ({saved, eventId}) => {
             });
         },
         onSuccess: () => {
-            queryClient.invalidateQueries("events", "organized-events");
+            queryClient.refetchQueries(["user", document.cookie]);
         },
     });
 
