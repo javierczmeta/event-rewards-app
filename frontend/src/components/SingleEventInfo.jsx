@@ -118,15 +118,17 @@ const SingleEventInfo = ({ chosenEvent }) => {
                 </>) : <></>}
             </div>
             <div className="span-grid status-container">
-                <p>
-                    <span>Your status:</span>
-                </p>
+                
                 {user.id === chosenEvent.organizer_id ? (
                     <>
-                        <p> Organizer: </p> <CheckIn />{" "}
+                        <p><span>Your Event Code:</span> {chosenEvent.code}</p> 
                     </>
                 ) : (
+                    <>
+                    <p><span>Your status:</span></p>
                     <RSVP />
+                    </>
+                    
                 )}
             </div>
             {user.id === chosenEvent.organizer_id ? (

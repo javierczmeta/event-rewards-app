@@ -532,6 +532,7 @@ server.post("/events", isAuthenticated, async (req, res, next) => {
         price,
         description,
         category,
+        code: Math.floor(100000 + Math.random() * 900000),
         organizer_id: req.session.userId,
     };
 
@@ -624,21 +625,13 @@ server.get(
     Adds current time to rsvp
     */
 server.patch(
-    "/events/:eventId/checkin/:userId",
+    "/events/:eventId/checkin/:userId/:code",
     isAuthenticated,
     verifyParamstoInt,
     verifyEventExistance,
     verifyRsvpExistance,
     async (req, res, next) => {
         const sessionID = req.session.userId;
-
-        // Check Organizer
-        if (req.event.organizer_id !== sessionID) {
-            return next({
-                message: "Only the organizer can check in people.",
-                status: 401,
-            });
-        }
 
         if (req.rsvp.status === "Not Going") {
             return next({
@@ -651,6 +644,13 @@ server.patch(
             return next({
                 message: "User already checked in!",
                 status: 409,
+            });
+        }
+
+        if (req.params.code !== req.event.code) {
+            return next({
+                message: "The code is not correct",
+                status: 401,
             });
         }
 
