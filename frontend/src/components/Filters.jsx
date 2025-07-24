@@ -2,6 +2,7 @@ import { Settings2 } from "lucide-react";
 import "../styles/Filters.css";
 import useComponentVisible from "../utils/useComponentVisible";
 import { useUser } from "../contexts/UserContext";
+import CategorySelector from "./CategorySelector";
 
 const Filters = ({
     checkboxData,
@@ -120,35 +121,7 @@ const Filters = ({
                                 <p>📊 By category</p>
                             </label>
                             {checkboxData.category && (
-                                <select
-                                    required
-                                    {...filterOptions.categoryProps}
-                                >
-                                    <option value="Miscellaneous">
-                                        --Category: Please choose an option--
-                                    </option>
-                                    <option value="Music and Arts">
-                                        Music and Arts
-                                    </option>
-                                    <option value="Sports and Fitness">
-                                        Sports and Fitness
-                                    </option>
-                                    <option value="Food and Drink">
-                                        Food and Drink
-                                    </option>
-                                    <option value="Networking and Conferences">
-                                        Networking and Conferences
-                                    </option>
-                                    <option value="Travel and Adventure">
-                                        Travel and Adventure
-                                    </option>
-                                    <option value="Family and Kids">
-                                        Family and Kids
-                                    </option>
-                                    <option value="Charity and Fundraising">
-                                        Charity and Fundraising
-                                    </option>
-                                </select>
+                                <CategorySelector selectorOptions={filterOptions.categoryProps}/>
                             )}
 
                             <button type="submit" className="root-button">

@@ -8,6 +8,7 @@ import { useNavigate } from "react-router";
 import { reverseCreateDateWithOffset } from "../utils/createDateWithOffset";
 import LoadingGif from "./LoadingGif";
 import { useUser } from "../contexts/UserContext";
+import CategorySelector from "./CategorySelector";
 
 const CreatePage = () => {
     const {location, MENLO_PARK_COORDS} = useUser()
@@ -126,26 +127,7 @@ const CreatePage = () => {
                         {...formInputs.descProps}
                     ></input>
 
-                    <select required {...formInputs.catProps}>
-                        <option value="Miscellaneous">
-                            --Category: Please choose an option--
-                        </option>
-                        <option value="Music and Arts">Music and Arts</option>
-                        <option value="Sports and Fitness">
-                            Sports and Fitness
-                        </option>
-                        <option value="Food and Drink">Food and Drink</option>
-                        <option value="Networking and Conferences">
-                            Networking and Conferences
-                        </option>
-                        <option value="Travel and Adventure">
-                            Travel and Adventure
-                        </option>
-                        <option value="Family and Kids">Family and Kids</option>
-                        <option value="Charity and Fundraising">
-                            Charity and Fundraising
-                        </option>
-                    </select>
+                    <CategorySelector selectorOptions={formInputs.catProps}/>
                 </div>
                 {createEventMutation.isPending || createEventMutation.isSuccess ? <LoadingGif/> : (<button type="submit">Create</button>)}
             </form>
