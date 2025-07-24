@@ -174,13 +174,14 @@ async function scheduleWithCommutes(events) {
 /**
  * Updates the events to include profit field by rewards
  * @param {Array} events array of events
+ * @param {number} weight number between 0 and 1
  */
-function getProfitByPoints(events) {
+function getProfitByPoints(events, weight) {
     for (let i = 0; i < events.length; i++) {
         if (events[i].profit === undefined) {
-            events[i].profit = events[i].rewards
+            events[i].profit = events[i].rewards * weight
         } else {
-            events[i].profit += events[i].rewards
+            events[i].profit += events[i].rewards * weight
         }
     }
     return events
@@ -190,18 +191,95 @@ function getProfitByPoints(events) {
  * Updates the events to include profit field by distance
  * @param {Array} events array of events
  * @param {object} userLocation {lng, lat}
+ * @param {number} weight number between 0 and 1
  */
-function getProfitByDistance(events, userLocation) {
+function getProfitByDistance(events, userLocation, weight) {
+    // Get max score -> median of event rewards
+    const MAX_SCORE = getMedianRewards(events)
+    const distances = []
+    let min_distance = Infinity
+    let max_distance = -Infinity
     for (let i = 0; i < events.length; i++) {
-        // 100 so that events farther than 100km are negative (ignored)
+        // reverse profit, closer = higher profit
         const distanceKM = haversine({lon: events[i].longitude, lat: events[i].latitude}, {lon: userLocation.lng, lat: userLocation.lat}).km
+        distances.push(distanceKM)
+        if (distanceKM < min_distance) {
+            min_distance = distanceKM
+        }
+        if (distanceKM > max_distance) {
+            max_distance = distanceKM
+        }
+    }
+    
+    for (let i = 0; i < events.length; i++) {
+        // Score is linear decrease between min distance and max distance
+        let score = (MAX_SCORE/(min_distance - max_distance)) * distances[i] - ((MAX_SCORE * max_distance) / (min_distance - max_distance))
+        if (Number.isNaN(score)) {
+            score = 0
+        }
         if (events[i].profit) {
-            events[i].profit += 100 - distanceKM
+            events[i].profit += score * weight
         } else {
-            events[i].profit = 100 - distanceKM
+            events[i].profit = score * weight
         }
     }
     return events
 }
 
-module.exports = { schedule, scheduleWithCommutes, getProfitByPoints, getProfitByDistance };
+/**
+ * Updates the events to include profit field by price, same logic as distance
+ * @param {Array} events array of events
+ * @param {number} weight number between 0 and 1
+ */
+function getProfitByPrice(events, weight) {
+    // Get max score -> median of event rewards
+    const MAX_SCORE = getMedianRewards(events)
+    const prices = []
+    let min_price = Infinity
+    let max_price = -Infinity
+    for (let i = 0; i < events.length; i++) {
+        // reverse profit, closer = higher profit
+        prices.push(events[i].price)
+        if (events[i].price < min_price) {
+            min_price = events[i].price
+        }
+        if (events[i].price > max_price) {
+            max_price = events[i].price
+        }
+    }
+
+    
+    for (let i = 0; i < events.length; i++) {
+        // Score is linear decrease between min price and max price
+        const score = min_price !== max_price ? (MAX_SCORE/(min_price - max_price)) * prices[i] - ((MAX_SCORE * max_price) / (min_price - max_price)) : 0
+
+        if (events[i].profit) {
+            events[i].profit += score * weight
+        } else {
+            events[i].profit = score * weight
+        }
+    }
+    return events
+}
+
+/**
+ * Returns the median rewards value from an event list
+ * @param {object} events must have rewards property 
+ * @returns {number} median
+ */
+function getMedianRewards(events) {
+    if (events.length === 0) {
+        return 0
+    }
+
+    const rewards = events.map(e => e.rewards).sort((a, b) => a - b);
+    const middleIndex = Math.floor(rewards.length / 2)
+
+    if (rewards.length % 2 === 0) {
+        return (rewards[middleIndex - 1] + rewards[middleIndex]) / 2
+    } else {
+        return rewards[middleIndex]
+    }
+}
+
+module.exports = { schedule, scheduleWithCommutes, getProfitByPoints, getProfitByDistance, getProfitByPrice };

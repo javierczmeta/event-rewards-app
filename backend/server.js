@@ -24,7 +24,7 @@ const {
 
 const { calculateCategoryWeights, probabilityGoing, distancePenalty } = require("./recommendation");
 const { prisma } = require("./prismaClient");
-const { getProfitByPoints, getProfitByDistance, schedule, scheduleWithCommutes } = require("./scheduler");
+const { getProfitByPoints, getProfitByDistance, schedule, scheduleWithCommutes, getProfitByPrice } = require("./scheduler");
 
 let sessionConfig = {
     name: "sessionId",
@@ -300,19 +300,25 @@ server.post('/events/schedule', async (req,res,next) => {
     }
 
     let {events, userLocation, profitModes} = req.body
-    profitModes = new Set(profitModes)
 
 
-    if (profitModes.has("points")) {
-        events = getProfitByPoints(events)
+    if (profitModes.some(x => x.name === "points")) {
+        const weight = profitModes.find(x => x.name === "points").weight
+        events = getProfitByPoints(events, weight)
     }
 
-    if (profitModes.has("distance")) {
+    if (profitModes.some(x => x.name === "price")) {
+        const weight = profitModes.find(x => x.name === "price").weight
+        events = getProfitByPrice(events, weight)
+    }
+
+    if (profitModes.some(x => x.name === "distance")) {
         if (userLocation === undefined) {
             return next({status: 400, message: "Cannot get distance profit without user location"})
         }
         else {
-            events = getProfitByDistance(events, userLocation)
+            const weight = profitModes.find(x => x.name === "distance").weight
+            events = getProfitByDistance(events, userLocation, weight)
         }
     }
 

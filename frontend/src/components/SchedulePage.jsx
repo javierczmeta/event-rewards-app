@@ -18,7 +18,10 @@ import EventModal from "./EventModal";
 const SchedulePage = () => {
     const { user, location } = useUser();
     const [withCommute, setWithCommute] = useState(false);
-    const [profitModes, setProfitModes] = useState(["points"]);
+    const [profitModes, setProfitModes] = useState(
+                                                    {points: {weight: 0.5, on: true}, 
+                                                    distance: {weight: 0.5, on: false}, 
+                                                    price: {weight: 0.5, on: false}});
 
     const [showItinerary, setShowItinerary] = useState(false);
     const [selectedEventIds, setSelectedEventIds] = useState([])
@@ -74,19 +77,20 @@ const SchedulePage = () => {
     return (
         <main className="schedule-main">
             <div className="schedule-events-container">
-                <div>
-                    <h2>Events to Schedule:</h2>
-                    <p className="schedule-desc">
-                        Save events to see them here!
-                    </p>
+                <div className="schedule-header">
+                    <div>
+                        <h2>Events to Schedule:</h2>
+                        <p className="schedule-desc">
+                            Save events to see them here!
+                        </p>
+                    </div>
+                    <SchedulingOptions
+                        withCommute={withCommute}
+                        setWithCommute={setWithCommute}
+                        profitModes={profitModes}
+                        setProfitModes={setProfitModes}
+                    />
                 </div>
-
-                <SchedulingOptions
-                    withCommute={withCommute}
-                    setWithCommute={setWithCommute}
-                    profitModes={profitModes}
-                    setProfitModes={setProfitModes}
-                />
 
                 <div className="organized-container">
                     {getEvents.isPending && (
@@ -110,15 +114,16 @@ const SchedulePage = () => {
                             <button
                                 className="schedule-button"
                                 onClick={() => {
-                                    if (profitModes.length < 1) {
-                                        toast.error("Must select at least 1 profit mode")
+                                    const modes = Object.keys(profitModes).filter(x => profitModes[x].on && profitModes[x].weight > 0).map(x => {return {name: x, weight: profitModes[x].weight}})
+                                    if (modes.length < 1) {
+                                        toast.error("Must select at least 1 profit mode with weight > 0")
                                         return
                                     }
                                     scheduleMutation.mutate({
                                         events: getEvents.data.data
                                             .saved_events,
                                         commute: withCommute,
-                                        profitModes: profitModes,
+                                        profitModes: modes,
                                     });
                                 }}
                             >

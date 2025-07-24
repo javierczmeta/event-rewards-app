@@ -84,6 +84,10 @@
 
     padding: 10px;
     cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .profit-mode:hover, .profit-mode.active:hover {
@@ -119,3 +123,14 @@
 .bold {
     font-weight: 900;
 }
+
+.schedule-header {
+    position: sticky;
+    top:0;
+    z-index: 2;
+    background-color: white;
+    padding: 20px;
+    border-style: solid;
+    border-color: #adb5bd;
+    border-radius: 30px;
+} 

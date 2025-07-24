@@ -28,7 +28,7 @@ describe("POST /events/schedule", () => {
 
         const response = await agent.post("/events/schedule").send({
             events: [{ id: 1, name: "Event 1" }],
-            profitModes: ["distance"],
+            profitModes: [{name: "distance", weight: 0.3}],
         });
 
         expect(response.status).toBe(400);
@@ -40,7 +40,7 @@ describe("POST /events/schedule", () => {
 
         const response = await agent.post("/events/schedule").send({
             events: [{ id: 1, name: "Event 1" }],
-            profitModes: ["points"],
+            profitModes: [{name: "points", weight: 0.3}],
         });
 
         expect(response.status).toBe(200);
@@ -52,7 +52,7 @@ describe("POST /events/schedule", () => {
 
         const response = await agent.post("/events/schedule?commute=true").send({
             events: [{ id: 1, name: "Event 1" }],
-            profitModes: ["points"],
+            profitModes: [{name: "points", weight: 0.3}],
         });
 
         expect(response.status).toBe(200);
