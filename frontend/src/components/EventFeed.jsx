@@ -29,6 +29,7 @@ const EventFeed = () => {
         },
         refetchOnWindowFocus: false,
         refetchInterval: 1000 * 60 * 5,
+        staleTime: 0,
     });
 
     const getRecommended = useQuery({
@@ -53,7 +54,7 @@ const EventFeed = () => {
             setShownEvents(filter(getEvents.data.data, checkboxData, filterOptions, location))
             setNeedsFiltering(false)
         }
-    }, [getEvents.isSuccess, needsFiltering])
+    }, [getEvents.data, needsFiltering])
 
     return (
         <main className="feed-main">
