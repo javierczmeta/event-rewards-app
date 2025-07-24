@@ -38,7 +38,7 @@ function App() {
                 <Route path="/map/*" element={<ProtectedMap/>}/>
                 <Route path="/schedule/*" element={<ProtectedSchedule/>}/>
                 <Route path="/calendar/*" element={<ProtectedCalendar/>}/>
-                <Route path="/users/:userId" element={<ProtectedUser/>}/>
+                <Route path="/users/:userId/*" element={<ProtectedUser/>}/>
             </Routes>
             <Footer />
         </>
