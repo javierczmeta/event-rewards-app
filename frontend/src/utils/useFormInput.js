@@ -11,9 +11,12 @@ export function useFormInput(initialValue) {
 
     const inputProps = {
         value: value,
-        setValue: setValue,
         onChange: handleChange,
     };
 
-    return inputProps;
+    const helpers = {
+        setValue,
+    };
+
+    return [inputProps, helpers];
 }
