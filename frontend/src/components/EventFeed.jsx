@@ -11,7 +11,7 @@ import { filter } from "../utils/filter";
 import { useFeed } from "../contexts/FeedContext";
 
 const EventFeed = () => {
-    const {user, location} = useUser()
+    const {location, savedEvents} = useUser()
     const {searchFieldProps, sortState, isRecommending, checkboxData, filterOptions, needsFiltering, setNeedsFiltering} = useFeed()
 
     const [shownEvents, setShownEvents] = useState([]);
@@ -94,7 +94,7 @@ const EventFeed = () => {
                         )}
                     {getEvents.isSuccess &&
                         shownEvents.map((event) => {
-                            return <Event key={event.id} event={event} saved={event.profiles_saved.filter(saved_user => saved_user.user_id === user.id).length > 0} navigatePage={"/feed"}/>
+                            return <Event key={event.id} event={event} saved={savedEvents.has(event.id)} navigatePage={"/feed"}/>
 })}
                 </div>
             )}
