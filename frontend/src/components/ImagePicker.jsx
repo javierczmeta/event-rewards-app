@@ -8,7 +8,7 @@ import { ToastContainer, toast, Slide } from "react-toastify";
 
 
 const ImagePicker = ({ imageInput }) => {
-    const [imageQueryProps, {setValue: setImage}] = useFormInput("")[0];
+    const [imageQueryProps, _] = useFormInput("");
 
     const imageMutation = useMutation({
         mutationFn: (search) => {
@@ -16,7 +16,7 @@ const ImagePicker = ({ imageInput }) => {
             const url = `https://api.unsplash.com/photos/random?client_id=${UNSPLASH_KEY}&orientation=squarish&query=${search}`;
             return axios.get(url);
         },
-        onSuccess: (data) => {setImage(data.data.urls.regular); toast.success("Success setting image!")},
+        onSuccess: (data) => {imageInput[1].setValue(data.data.urls.regular); toast.success("Success setting image!")},
         onError: (e) => {toast.error("An error happened, try again later..."); console.error(e)}
     });
 

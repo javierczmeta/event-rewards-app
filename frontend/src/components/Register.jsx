@@ -12,7 +12,7 @@ const Register = () => {
     const usenameInput = useFormInput("")[0];
     const passInput = useFormInput("")[0];
     const repeatInput = useFormInput("")[0];
-    const imageInput = useFormInput("")[0];
+    const imageInput = useFormInput("");
     const dobInput = useFormInput("")[0];
 
     const signUpMutation = useMutation({
