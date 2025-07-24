@@ -158,6 +158,7 @@ server.get("/me", async (req, res, next) => {
                     display_badges: true,
                     image: true,
                     points: true,
+                    saved_events: true
                 },
             },
         },

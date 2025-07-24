@@ -20,6 +20,7 @@ export const UserProvider = ({ children }) => {
     });
 
     const [user, setUser] = useLocalStorage("user", null);
+    const [savedEvents, setSavedEvents]= useState(new Set())
 
     const MENLO_PARK_COORDS = {lng: -122.1486120978705, lat: 37.4845092388847}
     const [userLocation, setUserLocation] = useState(null)
@@ -36,10 +37,11 @@ export const UserProvider = ({ children }) => {
     useEffect(() => {
         if (getUserProfile.status === "success") {
             setUser(getUserProfile.data.data);
+            setSavedEvents(new Set(getUserProfile.data.data.profile.saved_events.map(e => e.id)))
         } else if (getUserProfile.status === "error") {
             setUser(null);
         }
-    }, [getUserProfile.status]);
+    }, [getUserProfile.data]);
 
         //get user's actual location
     useEffect(() => {
@@ -63,7 +65,7 @@ export const UserProvider = ({ children }) => {
 
 
     return (
-        <UserContext.Provider value={{ user, refetch: getUserProfile.refetch, logOut, location: userLocation, MENLO_PARK_COORDS}}>
+        <UserContext.Provider value={{ user, savedEvents, refetch: getUserProfile.refetch, logOut, location: userLocation, MENLO_PARK_COORDS}}>
             {children}
         </UserContext.Provider>
     );
