@@ -251,10 +251,8 @@ function getProfitByPrice(events, weight) {
     
     for (let i = 0; i < events.length; i++) {
         // Score is linear decrease between min price and max price
-        let score = (MAX_SCORE/(min_price - max_price)) * prices[i] - ((MAX_SCORE * max_price) / (min_price - max_price))
-        if (Number.isNaN(score)) {
-            score = 0
-        }
+        const score = min_price !== max_price ? (MAX_SCORE/(min_price - max_price)) * prices[i] - ((MAX_SCORE * max_price) / (min_price - max_price)) : 0
+
         if (events[i].profit) {
             events[i].profit += score * weight
         } else {
@@ -274,13 +272,7 @@ function getMedianRewards(events) {
         return 0
     }
 
-    const rewards = []
-    for (let i = 0; i < events.length; i++) {
-        rewards.push(events[i].rewards)
-    }
-    
-    rewards.sort((a, b) => a - b);
-
+    const rewards = events.map(e => e.rewards).sort((a, b) => a - b);
     const middleIndex = Math.floor(rewards.length / 2)
 
     if (rewards.length % 2 === 0) {
