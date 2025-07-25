@@ -54,6 +54,11 @@ const schedulerValidation = Joi.object({
     })).min(1).required()
 }).required();
 
+const reviewValidation = Joi.object({
+    rating: Joi.number().min(1).max(5).required(),
+    review: Joi.string().allow(''),
+}).required()
+
 // Authentication Verification
 const isAuthenticated = (req, res, next) => {
     if (!req.session.userId) {
@@ -89,5 +94,6 @@ module.exports = {
     isAuthenticated,
     verifyParamstoInt,
     displayBadgeSchema,
-    schedulerValidation
+    schedulerValidation,
+    reviewValidation
 };

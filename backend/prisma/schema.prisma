@@ -16,48 +16,50 @@ datasource db {
 
 // Event model
 model Event {
-  id          Int        @id @default(autoincrement())
-  name        String
-  latitude    Float
-  longitude   Float
-  image       String?
-  start_time  DateTime
-  end_time    DateTime
-  created_at  DateTime   @default(now())
-  price       Int        @default(0)
-  rewards     Int       @default(0)
-  description String
-  category    String    @default("Miscellaneous")
-  organizer   User       @relation("UserOrganizedEvents", fields: [organizer_id], references: [id])
-  organizer_id Int
-  rsvps RSVP[]
-  code        Int       @default(999999)
-  profiles_saved  Profile[] @relation("SavedEvents")
+  id             Int       @id @default(autoincrement())
+  name           String
+  latitude       Float
+  longitude      Float
+  image          String?
+  start_time     DateTime
+  end_time       DateTime
+  created_at     DateTime  @default(now())
+  price          Int       @default(0)
+  rewards        Int       @default(0)
+  description    String
+  category       String    @default("Miscellaneous")
+  organizer      User      @relation("UserOrganizedEvents", fields: [organizer_id], references: [id])
+  organizer_id   Int
+  rsvps          RSVP[]
+  code           Int       @default(999999)
+  profiles_saved Profile[] @relation("SavedEvents")
+  Review         Review[]
 }
 
 // User model
 model User {
-  id             Int        @id @default(autoincrement())
-  username       String     @unique
-  password_hash  String
-  profile        Profile?
-  rsvps RSVP[]
+  id              Int      @id @default(autoincrement())
+  username        String   @unique
+  password_hash   String
+  profile         Profile?
+  rsvps           RSVP[]
   organizedEvents Event[]  @relation("UserOrganizedEvents")
+  Review          Review[]
 }
 
 // Profile model
 model Profile {
-  id              Int       @id @default(autoincrement())
-  user            User      @relation(fields: [user_id], references: [id])
-  user_id         Int       @unique
-  display_name    String
-  points          Int       @default(0)
-  badges          Badge[]   @relation("ProfileBadges")
-  display_badges  Badge[]   @relation("ProfileDisplayBadges")
-  image           String?
-  dob             DateTime
-  badge_order     Int[]
-  saved_events    Event[]   @relation("SavedEvents")
+  id             Int      @id @default(autoincrement())
+  user           User     @relation(fields: [user_id], references: [id])
+  user_id        Int      @unique
+  display_name   String
+  points         Int      @default(0)
+  badges         Badge[]  @relation("ProfileBadges")
+  display_badges Badge[]  @relation("ProfileDisplayBadges")
+  image          String?
+  dob            DateTime
+  badge_order    Int[]
+  saved_events   Event[]  @relation("SavedEvents")
 }
 
 // RSVP model
@@ -69,18 +71,29 @@ model RSVP {
   event_id      Int
   status        String
   check_in_time DateTime?
-  updated_at    DateTime @default(now())
+  updated_at    DateTime  @default(now())
 }
-
 
 // Badge model
 model Badge {
-  id          Int     @id @default(autoincrement())
-  name        String
-  description String
-  requirement Int
-  icon        String
-  profiles    Profile[] @relation("ProfileBadges")
+  id              Int       @id @default(autoincrement())
+  name            String
+  description     String
+  requirement     Int
+  icon            String
+  profiles        Profile[] @relation("ProfileBadges")
   displayProfiles Profile[] @relation("ProfileDisplayBadges")
-  color       String    @default("red")
+  color           String    @default("red")
+}
+
+model Review {
+  id       Int @id @default(autoincrement())
+  rating   Int
+  review   String?
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId Int
+  event    Event  @relation(fields: [eventId], references: [id])
+  eventId  Int
+
+  @@unique([authorId, eventId]) // Optional: ensures one review per user per event
 }

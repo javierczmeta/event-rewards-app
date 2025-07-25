@@ -19,7 +19,8 @@ const {
     rsvpValidation,
     verifyParamstoInt,
     displayBadgeSchema,
-    schedulerValidation
+    schedulerValidation,
+    reviewValidation
 } = require("./validation");
 
 const { calculateCategoryWeights, probabilityGoing, distancePenalty } = require("./recommendation");
@@ -173,9 +174,12 @@ server.post("/logout", async (req, res, next) => {
         if (err) {
             return res.status(500).json({ error: "Failed to log out" });
         }
-        res.clearCookie("sessionId", (err) => {
-            console.log(err);
-        }); // Clear session cookie
+        res.clearCookie("sessionId", {
+            path: '/',
+            httpOnly: false,
+            secure: process.env.RENDER ? true : false,
+            sameSite: process.env.RENDER ? 'None' : 'Lax'
+        });
         res.json({ message: "Logged out successfully" });
     });
 });
@@ -424,7 +428,7 @@ server.get("/users/:id", verifyParamstoInt, async (req, res, next) => {
         select: {
             username: true,
             id: true,
-            rsvps: {include: {event: true}},
+            rsvps: {include: {event: true}, orderBy: {updated_at: 'desc'}},
             profile: {
                 select: {
                     display_name: true,
@@ -753,6 +757,49 @@ server.patch('/events/saved/:eventId', isAuthenticated, verifyParamstoInt, verif
     const updated = await prisma.profile.update({where: {id: userProfile.id}, data: {saved_events: {set: newEvents}}})
 
     res.json(updated)
+})
+
+// [POST] a review
+server.post('/events/:eventId/reviews', isAuthenticated, verifyParamstoInt, verifyEventExistance, async (req,res,next) => {
+    const sessionId = req.session.userId;
+
+    // Validate body contains a review
+    const { error } = reviewValidation.validate(req.body)
+    if (error) {
+        return next({ status: 400, message: error.details[0].message });
+    }
+
+    const hasBeen = (await prisma.rSVP.count({where: {user_id: sessionId, event_id: req.params.eventId, check_in_time: {not: null}}})) != 0
+    if (!hasBeen) {
+        return next({status: 403, message: "Cannot post review because user has not checked to event"})
+    }
+
+    const createdReview = await prisma.review.upsert({
+        where: {
+            authorId_eventId: {
+                authorId: sessionId,
+                eventId: req.params.eventId,
+                }
+        },
+        update: {
+            rating: req.body.rating,
+            review: req.body.review,
+        },
+        create: {
+            rating: req.body.rating,
+            review: req.body.review,
+            eventId: req.params.eventId,
+            authorId: sessionId,
+        }
+    })
+
+    res.json(createdReview)
+})
+
+// [GET] reviews by eventID
+server.get('/events/:eventId/reviews', verifyParamstoInt, verifyEventExistance, async (req,res,next) => {
+    const fetchedReviews = await prisma.review.findMany({where: {eventId: req.params.eventId}, include: {author: {select: {profile: true}}}})
+    res.json(fetchedReviews)
 })
 
 
