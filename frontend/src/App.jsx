@@ -13,6 +13,7 @@ import MapPage from "./components/MapPage";
 import UserPage from "./components/UserPage";
 import SchedulePage from "./components/SchedulePage";
 import CalendarPage from "./components/CalendarPage";
+import ReviewPage from "./components/ReviewPage";
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
     let ProtectedUser = WithAuth(UserPage)
     let ProtectedSchedule = WithAuth(SchedulePage)
     let ProtectedCalendar = WithAuth(CalendarPage)
+    let ProtectedReview = WithAuth(ReviewPage)
 
     return (
         <>
@@ -38,6 +40,7 @@ function App() {
                 <Route path="/map/*" element={<ProtectedMap/>}/>
                 <Route path="/schedule/*" element={<ProtectedSchedule/>}/>
                 <Route path="/calendar/*" element={<ProtectedCalendar/>}/>
+                <Route path="/review/:eventID" element={<ProtectedReview/>}/>
                 <Route path="/users/:userId/*" element={<ProtectedUser/>}/>
             </Routes>
             <Footer />
