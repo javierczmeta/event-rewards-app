@@ -11,7 +11,7 @@ const WithAuth = (WrappedComponent) => {
             if (!user) {
                 navigate("/login");
             }
-        }, [user, navigate]);
+        }, [user]);
 
         if (!user) {
             return <p>Loading...</p>; 
