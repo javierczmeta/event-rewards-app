@@ -75,7 +75,7 @@ const EventFeed = () => {
                         )}
                     {getRecommended.isSuccess &&
                         getRecommended.data.data.map((event) => (
-                            <Event key={event.id} event={event} navigatePage={"/feed"}/>
+                            <Event key={event.id} event={event} navigatePage={"/feed"} saved={savedEvents.has(event.id)}/>
                         ))}
                 </div>
             ) : (
