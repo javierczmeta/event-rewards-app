@@ -20,3 +20,28 @@
 .event-history-info {
     font-weight: 600;
 }
+
+.review-button {
+    margin: 5px;
+    padding: 10px;
+    border-style: solid;
+    width: max-content;
+    border-radius: 5px;
+    font-weight: 700;
+    background-color: var(--root-button-bg);
+    border-color: var(--root-button-border);
+    color: white;
+    border-radius: 40px;
+    box-shadow: 0 0 4px rgb(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.review-button:hover {
+    background-color: var(--root-button-bg-hover);
+}
+.review-button:focus {
+    background-color: var(--root-button-bg);
+}
