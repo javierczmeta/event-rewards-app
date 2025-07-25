@@ -1,0 +1,36 @@
+.review-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.review-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+}
+
+.review-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    border-style: solid;
+    border-color: #d6ccc2;
+
+    padding: 20px;
+    border-radius: 20px;
+    border-width: 3px;
+}
+
+textarea:focus {
+    background-color: white;
+}
+
+.review-image {
+    width: 250px;
+    aspect-ratio: 1/1;
+    border-radius: 20px;
+    object-fit: cover;
+}
