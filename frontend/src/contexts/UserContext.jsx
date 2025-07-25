@@ -2,10 +2,13 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {useLocalStorage} from "@uidotdev/usehooks"
+import { useNavigate } from "react-router";
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+
+    const navigate = useNavigate()
     
     const getUserProfile = useQuery({
         queryKey: ['user', document.cookie],
@@ -16,7 +19,8 @@ export const UserProvider = ({ children }) => {
             });
         },
         refetchOnWindowFocus: false,
-        retry: false
+        retry: false,
+        refetchInterval: 1000 * 60 // every minute
     });
 
     const [user, setUser] = useLocalStorage("user", null);
@@ -40,8 +44,9 @@ export const UserProvider = ({ children }) => {
             setSavedEvents(new Set(getUserProfile.data.data.profile.saved_events.map(e => e.id)))
         } else if (getUserProfile.status === "error") {
             setUser(null);
+            navigate("/")
         }
-    }, [getUserProfile.data]);
+    }, [getUserProfile.data, getUserProfile.status]);
 
         //get user's actual location
     useEffect(() => {
@@ -60,6 +65,7 @@ export const UserProvider = ({ children }) => {
             );
         } else {
             setUserLocation(null);
+            
         }
     }, []);
 
