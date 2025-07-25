@@ -55,7 +55,7 @@ const schedulerValidation = Joi.object({
 }).required();
 
 const reviewValidation = Joi.object({
-    rating: Joi.number().min(1).max(5),
+    rating: Joi.number().min(1).max(5).required(),
     review: Joi.string().allow(''),
 }).required()
 
