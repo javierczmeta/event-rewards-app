@@ -1,0 +1,32 @@
+.single-review-container {
+    display: flex;
+    flex-direction: row;
+    box-shadow: 0 0 4px rgb(0,0,0,0.2);
+    padding: 10px;
+    width: 100%;
+    gap: 20px;
+}
+
+.review-user-image{
+    aspect-ratio: 1/1;
+    width: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.review-list-container {
+    padding: 15px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    overflow-y: scroll;
+    overflow-x: visible;
+    height: 100px;
+}
+
+.review-user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
