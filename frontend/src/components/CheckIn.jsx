@@ -26,6 +26,7 @@ const CheckIn = () => {
         onSuccess: () => {
             toast.success("Success");
             queryClient.refetchQueries(["attendees", eventID])
+            queryClient.refetchQueries(["user", user.id])
         },
         onError: (e) => {
             console.log(e);
