@@ -30,7 +30,7 @@ const Register = () => {
             username: usenameInput.value,
             display_name: nameInput.value,
             password: passInput.value,
-            img_url: imageInput.value,
+            img_url: imageInput[0].value,
             dob: dobInput.value,
         };
 

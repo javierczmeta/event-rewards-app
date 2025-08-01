@@ -25,7 +25,7 @@ const newEventSchema = Joi.object({
         .uri({
             scheme: ["http", "https"],
         })
-        .pattern(/\.(jpg|jpeg|png|gif|bmp|webp)$/i)
+        .pattern(/\.(jpg|jpeg|png|gif|bmp|webp)/i)
         .allow(""),
     start_time: Joi.date().required().min("now"),
     end_time: Joi.date().required().min(Joi.ref("start_time")),
